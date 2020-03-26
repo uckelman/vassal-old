@@ -26,6 +26,8 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import VASSAL.tools.ArgsParser;
 
@@ -33,6 +35,8 @@ import VASSAL.tools.ArgsParser;
  * The server-side Main class
  */
 public class Server extends Thread {
+  private static final Logger logger = Logger.getLogger(Server.class.getName());
+
   private AsynchronousServerNode rootNode;
   private ServerSocket socket;
 
@@ -53,14 +57,23 @@ public class Server extends Thread {
       }
       // FIXME: review error message
       catch (Exception e) {
-        e.printStackTrace();
+        logger.log(Level.SEVERE, "Exception in run()", e);
         consecutiveFailures++;
       }
     }
     System.exit(1);
   }
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) {
+    try {
+      do_it(args);
+    }
+    catch (Throwable t) {
+      logger.log(Level.SEVERE, "Exception in main()", t);
+    }
+  }
+
+  public static void do_it(String[] args) throws Exception {
     Properties p = new ArgsParser(args).getProperties();
 
     int port = Integer.parseInt(p.getProperty("port", "5050")); //$NON-NLS-1$ //$NON-NLS-2$
