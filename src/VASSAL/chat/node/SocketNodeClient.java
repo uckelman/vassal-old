@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Properties;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import VASSAL.chat.CgiServerStatus;
 import VASSAL.chat.WelcomeMessageServer;
@@ -61,6 +63,17 @@ public class SocketNodeClient extends NodeClient implements SocketWatcher {
     Socket s = new Socket(serverInfo.getHostName(), serverInfo.getPort());
     sender = new BufferedSocketHandler(s, this);
     sender.start();
+
+    Timer timer = new Timer();
+
+    timer.scheduleAtFixedRate(new TimerTask() {
+	    @Override
+	    public void run() {
+		sender.writeLine("");
+	    }
+	},
+	2*60*1000,
+	2*60*1000);
 
   }
 
