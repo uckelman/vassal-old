@@ -48,6 +48,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
@@ -182,7 +184,7 @@ import org.jdesktop.swinghelper.layer.demo.DebugPainter;
  * A Map may contain many different {@link Buildable} subcomponents. Components which are added directly to a Map are
  * contained in the <code>VASSAL.build.module.map</code> package
  */
-public class Map extends AbstractConfigurable implements GameComponent, MouseListener, MouseMotionListener, DropTargetListener, Configurable,
+public class Map extends AbstractConfigurable implements GameComponent, MouseListener, MouseMotionListener, MouseWheelListener, DropTargetListener, Configurable,
     UniqueIdManager.Identifyable, ToolBarComponent, MutablePropertiesContainer, PropertySource, PlayerRoster.SideChangeListener {
   protected static boolean changeReportingEnabled = true;
   protected String mapID = ""; //$NON-NLS-1$
@@ -209,7 +211,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   protected String markUnmovedTooltip = Resources.getString("Map.mark_unmoved"); //$NON-NLS-1$
   protected MouseListener multicaster = null;
   protected ArrayList<MouseListener> mouseListenerStack =
-    new ArrayList<MouseListener>();
+      new ArrayList<MouseListener>();
+  protected ArrayList<MouseWheelListener> mouseWheelListenerStack =
+      new ArrayList<MouseWheelListener>();
   protected List<Board> boards = new CopyOnWriteArrayList<Board>();
   protected int[][] boardWidths; // Cache of board widths by row/column
   protected int[][] boardHeights; // Cache of board heights by row/column
@@ -243,6 +247,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   public Map() {
     getView();
     theMap.addMouseListener(this);
+    theMap.addMouseWheelListener(this);
     if (shouldDockIntoMainWindow()) {
       toolBar.setLayout(new MigLayout("ins 0,gapx 0,hidemode 3"));
     }
@@ -1208,11 +1213,27 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
   }
 
   /**
+   * MouseWheelListeners on a map may be pushed and popped onto a stack.
+   * Only the top listener on the stack receives mouse wheel events.
+   */
+  public void pushMouseWheelListener(MouseWheelListener l) {
+    mouseWheelListenerStack.add(l);
+  }
+
+  /**
    * MouseListeners on a map may be pushed and popped onto a stack. Only the top listener on the stack receives mouse
    * events
    */
   public void popMouseListener() {
     mouseListenerStack.remove(mouseListenerStack.size()-1);
+  }
+
+  /**
+   * MouseWheelListeners on a map may be pushed and popped onto a stack. Only the top listener on the stack receives mouse
+   * wheel events
+   */
+  public void popMouseWheelListener() {
+    mouseWheelListenerStack.remove(mouseWheelListenerStack.size()-1);
   }
 
   public void mouseEntered(MouseEvent e) {
@@ -1240,6 +1261,15 @@ mainWindowDock = splitter.splitBottom(splitter.getSplitAncestor(GameModule.getGa
       e.translatePoint(p.x - e.getX(), p.y - e.getY());
       multicaster.mouseClicked(e);
     }
+  }
+
+  @Override
+  public void mouseWheelMoved(MouseWheelEvent e) {
+    if (mouseWheelListenerStack.isEmpty()) {
+      return;
+    }
+
+    mouseWheelListenerStack.get(mouseWheelListenerStack.size() - 1).mouseWheelMoved(e);
   }
 
   /**
