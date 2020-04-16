@@ -123,6 +123,9 @@ public class ProgressDialog extends JDialog {
 
     // pack again to ensure that we respect the minimum size
     pack();
+
+    //Center V & H
+    setLocationRelativeTo(null);
   }
 
   protected void fireCancelledEvent(ActionEvent e) {
