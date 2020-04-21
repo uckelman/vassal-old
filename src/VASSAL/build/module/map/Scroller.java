@@ -27,6 +27,8 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.i18n.Resources;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
 /**
  * This component listens to key events on a Map window and
@@ -34,7 +36,7 @@ import VASSAL.i18n.Resources;
  * will use number keypad or arrow keys, or will offer a
  * preferences setting for the user to choose
  */
-public class Scroller extends AbstractBuildable implements KeyListener {
+public class Scroller extends AbstractBuildable implements KeyListener, MouseWheelListener {
   /**
    * The attribute name for whether to use arrow keys
    * instead of number keypad.  Should be one of ALWAYS, NEVER, or PROMPT
@@ -52,6 +54,7 @@ public class Scroller extends AbstractBuildable implements KeyListener {
   public void addTo(Buildable parent) {
     map = (Map) parent;
     map.getView().addKeyListener(this);
+    map.getView().addMouseWheelListener(this);
 
     final BooleanConfigurer c = new BooleanConfigurer(
       USE_ARROWS,
@@ -142,5 +145,23 @@ public class Scroller extends AbstractBuildable implements KeyListener {
       e.consume();
       noEcho = 0;
     }
+  }
+
+  @Override
+  public void mouseWheelMoved(MouseWheelEvent event) {
+    int dx = 0;
+    int dy;
+    int direction = event.getWheelRotation();
+    if (direction > 0)
+    {
+      dy = 1;
+    }
+    else
+    {
+      dy = -1;
+    }
+
+    map.scroll(dx * xStep, dy * yStep);
+    event.consume();
   }
 }
