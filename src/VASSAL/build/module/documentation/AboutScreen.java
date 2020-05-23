@@ -21,6 +21,7 @@ package VASSAL.build.module.documentation;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.Objects;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -154,7 +155,7 @@ public class AboutScreen extends AbstractConfigurable {
       title = (String) val;
 
       // don't permit "About VASSAL"
-      if (title != null && title.equals(Resources.getString("AboutScreen.about_vassal"))) {
+      if (Objects.equals(title, Resources.getString("AboutScreen.about_vassal"))) {
         title = Resources.getString("Documentation.about_module");
       }
 

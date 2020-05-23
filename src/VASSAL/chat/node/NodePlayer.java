@@ -21,6 +21,7 @@
  */
 package VASSAL.chat.node;
 
+import java.util.Objects;
 import java.util.Properties;
 
 import VASSAL.build.module.Chatter;
@@ -47,7 +48,7 @@ public class NodePlayer extends SimplePlayer {
 
     final NodePlayer hPlayer = (NodePlayer) o;
 
-    if (id != null ? !id.equals(hPlayer.id) : hPlayer.id != null) return false;
+    if (!Objects.equals(id, hPlayer.id)) return false;
 
     return true;
   }

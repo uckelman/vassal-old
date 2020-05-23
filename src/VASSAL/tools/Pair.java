@@ -18,6 +18,8 @@
  */
 package VASSAL.tools;
 
+import java.util.Objects;
+
 /**
  * An immutable class for pairs of objects.
  *
@@ -58,8 +60,8 @@ public final class Pair<A,B> {
     if (o == null || o.getClass() != this.getClass()) return false;
 
     final Pair<?,?> p = (Pair<?,?>) o;
-    return (first  == p.first  || (first  != null && first.equals(p.first))) &&
-           (second == p.second || (second != null && second.equals(p.second)));
+    return (Objects.equals(first, p.first)) &&
+           (Objects.equals(second, p.second));
   }
 
   /**

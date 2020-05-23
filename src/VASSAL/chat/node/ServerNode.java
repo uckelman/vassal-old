@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -174,7 +175,7 @@ public class ServerNode extends Node {
       e.printStackTrace();
       return;
     }
-    if (roomOwnerId == null || !roomOwnerId.equals(kicker.getId())) {
+    if (!Objects.equals(roomOwnerId, kicker.getId())) {
       return;
     }
     // Check the kickee belongs to the same room

@@ -16,6 +16,8 @@ package bsh.util;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
+
 import bsh.*;
 import bsh.util.*;
 
@@ -27,11 +29,11 @@ public class JDemoApplet extends JApplet
 	public void init()
 	{
 		String debug = getParameter("debug");
-		if ( debug != null && debug.equals("true") )
+		if (Objects.equals(debug, "true"))
 			Interpreter.DEBUG=true;
 
 		String type = getParameter("type");
-		if ( type != null && type.equals("desktop") )
+		if (Objects.equals(type, "desktop"))
 			// start the desktop
 			try {
 				new Interpreter().eval( "desktop()" );

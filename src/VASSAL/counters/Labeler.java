@@ -35,6 +35,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -540,10 +541,10 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
       if (!(o instanceof LabelOp)) return false;
 
       final LabelOp lop = (LabelOp) o;
-      return (txt == null ? lop.txt == null : txt.equals(lop.txt)) &&
-             (font == null ? lop.font == null : font.equals(lop.font)) &&
-             (fg == null ? lop.fg == null : fg.equals(lop.fg)) &&
-             (bg == null ? lop.bg == null : bg.equals(lop.bg));
+      return (Objects.equals(txt, lop.txt)) &&
+             (Objects.equals(font, lop.font)) &&
+             (Objects.equals(fg, lop.fg)) &&
+             (Objects.equals(bg, lop.bg));
     }
 
     @Override

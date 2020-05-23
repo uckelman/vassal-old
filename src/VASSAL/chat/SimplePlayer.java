@@ -18,6 +18,8 @@ package VASSAL.chat;
 
 import VASSAL.build.module.Chatter;
 
+import java.util.Objects;
+
 
 /**
  * Simple Player bean
@@ -59,7 +61,7 @@ public class SimplePlayer implements VASSAL.chat.Player {
 
   public boolean equals(Object o) {
     if (o instanceof Player) {
-      return id != null && id.equals(((Player) o).getId());
+      return Objects.equals(id, ((Player) o).getId());
     }
     else {
       return false;

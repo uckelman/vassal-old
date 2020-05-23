@@ -22,6 +22,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.swing.KeyStroke;
 
@@ -66,7 +67,7 @@ public class KeyStrokeListener {
   }
 
   public void keyPressed(KeyStroke stroke) {
-    if (stroke != null && stroke.equals(key)) {
+    if (Objects.equals(stroke, key)) {
       l.actionPerformed(new ActionEvent(this,0,"Direct Invocation"));
     }
   }

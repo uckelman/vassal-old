@@ -21,6 +21,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Properties;
 
 import org.apache.commons.codec.binary.Base64;
@@ -328,7 +329,7 @@ public abstract class NodeClient implements LockableChatServerConnection,
       if (room.getName().equals(roomName)) {
         if (room instanceof NodeRoom) {
           final String owner = ((NodeRoom) room).getOwner();
-          if (owner != null && owner.equals(playerId)) {
+          if (Objects.equals(owner, playerId)) {
             setRoom(room, playerId);
             return;
           }

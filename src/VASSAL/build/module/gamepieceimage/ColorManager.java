@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
@@ -137,7 +138,7 @@ public class ColorManager extends AbstractConfigurable {
 
     if (swatch == null) {
       for (int j = 0; j < standardColors.length && swatch == null; j++) {
-        if (standardColors[j] != null && standardColors[j].equals(color)) {
+        if (Objects.equals(standardColors[j], color)) {
           swatch = new ColorSwatch(standardColorNames[j], standardColors[j]);
         }
       }

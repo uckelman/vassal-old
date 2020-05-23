@@ -25,6 +25,7 @@ import java.util.AbstractMap;
 import java.util.AbstractSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -217,7 +218,7 @@ public class ConcurrentSoftHashMap<K,V> extends AbstractMap<K,V>
     }
 
     private static boolean eq(Object o1, Object o2) {
-        return o1 == null ? o2 == null : o1.equals(o2);
+        return Objects.equals(o1, o2);
     }
   }
 

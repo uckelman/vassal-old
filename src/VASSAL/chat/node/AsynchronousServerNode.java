@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -112,7 +113,7 @@ public class AsynchronousServerNode extends ServerNode {
               final Properties roomProps = new PropertiesEncoder(rooms[i].getInfo()).getProperties();
               final String roomOwner = roomProps.getProperty("owner");
               final String playerId = new PropertiesEncoder(c[0].getInfo()).getProperties().getProperty("id");
-              if (roomOwner == null || (! roomOwner.equals(playerId))) {
+              if (!Objects.equals(roomOwner, playerId)) {
                 roomProps.setProperty("owner", playerId);
                 rooms[i].setInfo(new PropertiesEncoder(roomProps).toString());
               }

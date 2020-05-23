@@ -34,6 +34,7 @@ import java.awt.Window;
 import java.awt.event.InputEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.Objects;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
@@ -150,7 +151,7 @@ public class ReportState extends Decorator implements TranslatablePiece {
       final NamedKeyStroke[] allKeys = ArrayUtils.append(keys, cycleDownKeys);
 
       for (int i = 0; i < allKeys.length; ++i) {
-        if (stroke != null && stroke.equals(allKeys[i].getKeyStroke())) {
+        if (Objects.equals(stroke, allKeys[i].getKeyStroke())) {
 
           //
           // Find the Command Name

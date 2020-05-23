@@ -21,6 +21,7 @@ package VASSAL.property;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -112,7 +113,7 @@ public class ConcurrentPropertySupport implements PropertySupport {
   public <T> void fireChanged(Object src, Property<T> prop,
                               T oldVal, T newVal) {
     // do nothing if oldVal and newVal are the same
-    if (oldVal == newVal || (oldVal != null && oldVal.equals(newVal))) return;
+    if (Objects.equals(oldVal, newVal)) return;
 
     // notify all general listeners
     for (PropertyListener<Object> l : listeners) {

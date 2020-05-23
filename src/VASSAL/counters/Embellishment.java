@@ -34,6 +34,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -636,7 +637,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         doDecrease();
       }
 
-      if (resetKey != null && resetKey.equals(stroke)) {
+      if (Objects.equals(resetKey, stroke)) {
         final GamePiece outer = Decorator.getOutermost(this);
         final String levelText = resetLevel.getText(outer);
         try {
@@ -649,7 +650,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
         }
       }
       // random layers
-      if (rndKey != null && rndKey.equals(stroke)) {
+      if (Objects.equals(rndKey, stroke)) {
         int val = 0;
         val = GameModule.getGameModule().getRNG().nextInt(nValues) + 1;
         value = value > 0 ? val : -val;

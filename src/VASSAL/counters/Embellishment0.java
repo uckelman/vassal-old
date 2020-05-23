@@ -36,6 +36,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -535,7 +536,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
             break;
           }
         }
-        if (resetKey != null && resetKey.equals(stroke)) {
+        if (Objects.equals(resetKey, stroke)) {
           if (tracker == null) {
             tracker = new ChangeTracker(this);
           }
@@ -551,7 +552,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
           }
         }
         // random layers
-        if (rndKey != null && rndKey.equals(stroke)) {
+        if (Objects.equals(rndKey, stroke)) {
           if (tracker == null) {
             tracker = new ChangeTracker(this);
           }
@@ -566,7 +567,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
 
     private char getMatchingActivationChar(KeyStroke stroke) {
       for (int i = 0; i < activateKey.length(); ++i) {
-        if (stroke != null && stroke.equals(KeyStroke.getKeyStroke(activateKey.charAt(i), activateModifiers))) {
+        if (Objects.equals(stroke, KeyStroke.getKeyStroke(activateKey.charAt(i), activateModifiers))) {
           return activateKey.charAt(i);
         }
       }

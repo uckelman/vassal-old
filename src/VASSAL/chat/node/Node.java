@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import VASSAL.tools.PropertiesEncoder;
@@ -105,7 +106,7 @@ public class Node implements MsgSender {
 
     final Node node = (Node) o;
 
-    if (id != null ? !id.equals(node.id) : node.id != null) return false;
+    if (!Objects.equals(id, node.id)) return false;
 
     return true;
   }

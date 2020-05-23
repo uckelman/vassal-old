@@ -1,6 +1,7 @@
 package VASSAL.build.module.noteswindow;
 
 import java.util.Date;
+import java.util.Objects;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.module.PlayerRoster;
@@ -88,8 +89,8 @@ public class SecretNote {
 
     final SecretNote secretNote = (SecretNote) o;
 
-    if (name != null ? !name.equals(secretNote.name) : secretNote.name != null) return false;
-    if (owner != null ? !owner.equals(secretNote.owner) : secretNote.owner != null) return false;
+    if (!Objects.equals(name, secretNote.name)) return false;
+    if (!Objects.equals(owner, secretNote.owner)) return false;
 
     return true;
   }
