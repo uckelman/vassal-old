@@ -30,13 +30,13 @@ import VASSAL.build.module.documentation.HelpFile;
 public interface EditablePiece extends GamePiece {
 
   /** A plain-English description of this type of piece */
-  public String getDescription();
+  String getDescription();
 
   /** Set the type information for this piece.  See {@link Decorator#myGetType} */
-  public void mySetType(String type);
+  void mySetType(String type);
 
   /** Get the configurer for this trait */
-  public PieceEditor getEditor();
+  PieceEditor getEditor();
 
-  public HelpFile getHelpFile();
+  HelpFile getHelpFile();
 }

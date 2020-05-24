@@ -158,7 +158,7 @@ public class SoundConfigurer extends Configurer {
   }
 
   protected interface AudioClipFactory {
-    public AudioClip getAudioClip(URL url) throws IOException;
+    AudioClip getAudioClip(URL url) throws IOException;
   }
 
   protected AudioClipFactory createAudioClipFactory() {

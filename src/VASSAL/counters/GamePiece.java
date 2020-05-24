@@ -39,9 +39,9 @@ import VASSAL.command.Command;
 public interface GamePiece extends PropertySource {
 
   /** Each GamePiece belongs to a single {@link Map} */
-  public void setMap(Map map);
+  void setMap(Map map);
 
-  public Map getMap();
+  Map getMap();
 
   /**
    * Draw this GamePiece
@@ -51,20 +51,20 @@ public interface GamePiece extends PropertySource {
    * @param obs the Component on which this piece is being drawn
    * @param zoom the scaling factor.
    */
-  public void draw(Graphics g, int x, int y, Component obs, double zoom);
+  void draw(Graphics g, int x, int y, Component obs, double zoom);
 
   /**
    * @return the location of this piece on its owning {@link Map}
    */
-  public Point getPosition();
+  Point getPosition();
 
-  public void setPosition(Point p);
+  void setPosition(Point p);
 
   /**
    * The area which this GamePiece occupies when
    * drawn at the point (0,0)
    */
-  public Rectangle boundingBox();
+  Rectangle boundingBox();
 
   /**
    * The shape of the piece from the user's viewpoint.  This defines the area
@@ -72,14 +72,14 @@ public interface GamePiece extends PropertySource {
    * Like {@link #boundingBox}, it assumes the position is (0,0) and must be translated
    * to the actual location where the piece is being drawn.
    */
-  public Shape getShape();
+  Shape getShape();
 
   /**
    * @return the {@link Stack} to which this piece belongs, or null if it doesn't belong to a stack.
    */
-  public Stack getParent();
+  Stack getParent();
 
-  public void setParent(Stack s);
+  void setParent(Stack s);
 
   /**
    * Keyboard events are forward to this method when a piece is selected
@@ -90,43 +90,43 @@ public interface GamePiece extends PropertySource {
    *
    * @see VASSAL.build.module.map.ForwardToKeyBuffer
    */
-  public Command keyEvent(KeyStroke stroke);
+  Command keyEvent(KeyStroke stroke);
 
   /** The plain English name for this piece */
-  public String getName();
+  String getName();
 
   /** And the translated name for this piece */
-  public String getLocalizedName();
+  String getLocalizedName();
 
   /**
    * Each GamePiece must have a unique String identifier
    * @see GameState#getNewPieceId
    */
-  public String getId();
+  String getId();
 
-  public void setId(String id);
+  void setId(String id);
 
   /** The type information is information that does not change
    * during the course of a game.  Image file names, popup menu
    * command names, etc., all should be reflected in the type.
    * @see BasicCommandEncoder */
-  public String getType();
+  String getType();
 
   /** The state information is information that can change during
    * the course of a game.  State information is saved when the game
    * is saved and is transferred between players on the server.  For
    * example, the relative order of pieces in a stack is state
    * information, but whether the stack is expanded is not */
-  public String getState();
+  String getState();
 
-  public void setState(String newState);
+  void setState(String newState);
 
   /**
    * Other properties, possibly game-specific, can be associated with a piece.
    * The properties may or may not need to be encoded
    * in the piece's {@link #getState} method.  */
-  public void setProperty(Object key, Object val);
+  void setProperty(Object key, Object val);
 
   @Override
-  public Object getProperty(Object key);
+  Object getProperty(Object key);
 }

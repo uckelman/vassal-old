@@ -47,7 +47,7 @@ public class SetPrivateTextCommand extends Command {
     return null;
   }
 
-  public static interface Interface {
+  public interface Interface {
     void addPrivateText(PrivateText p);
   }
 }

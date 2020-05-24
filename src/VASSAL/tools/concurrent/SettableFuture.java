@@ -37,7 +37,7 @@ public interface SettableFuture<V> extends Future<V> {
    *
    * @param t the exception
    */
-  public void setException(Throwable t);
+  void setException(Throwable t);
 
   /**
    * Sets the result to be returned by {@link #get}.
@@ -46,5 +46,5 @@ public interface SettableFuture<V> extends Future<V> {
    *
    * @param r the result
    */
-  public void set(V r);
+  void set(V r);
 }

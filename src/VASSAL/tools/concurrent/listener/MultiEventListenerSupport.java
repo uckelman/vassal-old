@@ -35,7 +35,7 @@ public interface MultiEventListenerSupport {
    * @param c the class to listen for
    * @param l the listener to add
    */
-  public <T> void addEventListener(Class<T> c, EventListener<? super T> l);
+  <T> void addEventListener(Class<T> c, EventListener<? super T> l);
 
   /**
    * Removes an {@link EventListener}.
@@ -43,7 +43,7 @@ public interface MultiEventListenerSupport {
    * @param c the class to check
    * @param l the listener to remove
    */
-  public <T> void removeEventListener(Class<T> c, EventListener<? super T> l);
+  <T> void removeEventListener(Class<T> c, EventListener<? super T> l);
 
   /**
    * Checks whether there are any {@link EventListener}s.
@@ -51,7 +51,7 @@ public interface MultiEventListenerSupport {
    * @param c the class to check
    * @return <code>true</code> if there are any listeners for the given class
    */
-  public boolean hasEventListeners(Class<?> c);
+  boolean hasEventListeners(Class<?> c);
 
   /**
    * Gets the list of listerners.
@@ -59,12 +59,12 @@ public interface MultiEventListenerSupport {
    * @param c the class to check
    * @return the list of listeners for the given class
    */
-  public <T> List<EventListener<? super T>> getEventListeners(Class<T> c);
+  <T> List<EventListener<? super T>> getEventListeners(Class<T> c);
 
   /**
    * Notify the listeners of an event.
    *
    * @param event the event to send
    */
-  public void notify(Object event);
+  void notify(Object event);
 }

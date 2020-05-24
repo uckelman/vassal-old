@@ -27,6 +27,6 @@ import java.util.List;
  */
 public interface PropertyNameSource {
 
-  public List<String> getPropertyNames();
+  List<String> getPropertyNames();
 
 }

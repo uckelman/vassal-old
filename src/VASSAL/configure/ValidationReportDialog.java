@@ -100,7 +100,7 @@ public class ValidationReportDialog extends JDialog {
     return ok;
   }
 
-  public static interface CallBack {
+  public interface CallBack {
     void ok();
     void cancel();
   }

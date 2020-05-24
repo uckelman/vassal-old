@@ -122,9 +122,9 @@ public class TileSlicerImpl implements TileSlicer {
     }
   }
 
-  protected static interface TaskMaker {
-    public TileTask make(BufferedImage src, File f,
-                         int tx, int ty, int tw, int th, int dw, int dh);
+  protected interface TaskMaker {
+    TileTask make(BufferedImage src, File f,
+                  int tx, int ty, int tw, int th, int dw, int dh);
   }
 
   protected static void queueTileTasks(

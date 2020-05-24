@@ -36,5 +36,5 @@ import java.util.concurrent.Future;
  */
 public interface RunnableFuture<V> extends Runnable, Future<V> {
   @Override
-  public void run();
+  void run();
 }
