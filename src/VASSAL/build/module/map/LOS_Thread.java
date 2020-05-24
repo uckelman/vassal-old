@@ -18,6 +18,7 @@
  */
 package VASSAL.build.module.map;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -94,6 +95,7 @@ public class LOS_Thread extends AbstractConfigurable implements
   public static final String PERSISTENT_ICON_NAME = "persistentIconName";
   public static final String GLOBAL = "global";
   public static final String LOS_COLOR = "threadColor";
+  public static final String LOS_STROKE_WIDTH = "threadStrokeWidth";
   public static final String HOTKEY = "hotkey";
   public static final String TOOLTIP = "tooltip";
   public static final String ICON_NAME = "iconName";
@@ -135,6 +137,7 @@ public class LOS_Thread extends AbstractConfigurable implements
   protected boolean visible;
   protected boolean drawRange;
   protected int rangeScale;
+  protected int strokeWidth = 1;
   protected double rangeRounding = 0.5;
   protected boolean hideCounters;
   protected int hideOpacity = 0;
@@ -263,8 +266,9 @@ public class LOS_Thread extends AbstractConfigurable implements
       HIDE_COUNTERS,
       HIDE_OPACITY,
       LOS_COLOR,
+      LOS_STROKE_WIDTH,
       RANGE_FOREGROUND,
-      RANGE_BACKGROUND
+      RANGE_BACKGROUND,
     };
   }
 
@@ -326,6 +330,12 @@ public class LOS_Thread extends AbstractConfigurable implements
       fixedColor = (String) value;
       threadColor = ColorConfigurer.stringToColor(fixedColor);
     }
+    else if (LOS_STROKE_WIDTH.equals(key)) {
+      if (value instanceof String) {
+        value = Integer.valueOf((String) value);
+      }
+      setStrokeWidth(((Integer) value).intValue());
+    }
     else if (SNAP_START.equals(key)) {
       if (value instanceof String) {
         value = Boolean.valueOf((String) value);
@@ -371,6 +381,16 @@ public class LOS_Thread extends AbstractConfigurable implements
     }
   }
 
+  protected void setStrokeWidth(int width) {
+    if (width < 1) {
+      width = 1;
+    }
+    else if (width > 100) {
+      width = 100;
+    }
+    strokeWidth = width;
+  }
+
   public String getAttributeValueString(String key) {
     if (DRAW_RANGE.equals(key)) {
       return String.valueOf(drawRange);
@@ -406,6 +426,9 @@ public class LOS_Thread extends AbstractConfigurable implements
     }
     else if (LOS_COLOR.equals(key)) {
       return fixedColor;
+    }
+    else if (LOS_STROKE_WIDTH.equals(key)) {
+      return String.valueOf(strokeWidth);
     }
     else if (SNAP_START.equals(key)) {
       return String.valueOf(snapStart);
@@ -471,6 +494,7 @@ public class LOS_Thread extends AbstractConfigurable implements
     g.setColor(threadColor);
     Point mapAnchor = map.mapToDrawing(anchor, os_scale);
     Point mapArrow = map.mapToDrawing(arrow, os_scale);
+    g2d.setStroke(new BasicStroke(strokeWidth));
     g.drawLine(mapAnchor.x, mapAnchor.y, mapArrow.x, mapArrow.y);
 
     if (drawRange) {
@@ -784,6 +808,7 @@ public class LOS_Thread extends AbstractConfigurable implements
       Resources.getString("Editor.LosThread.hidden"), //$NON-NLS-1$
       Resources.getString("Editor.LosThread.opacity"), //$NON-NLS-1$
       Resources.getString(Resources.COLOR_LABEL),
+      Resources.getString("Editor.LosThread.stroke_width"), //$NON-NLS-1$
     };
   }
 
@@ -805,7 +830,8 @@ public class LOS_Thread extends AbstractConfigurable implements
       RoundingOptions.class,
       Boolean.class,
       Integer.class,
-      Color.class
+      Color.class,
+      Integer.class
     };
   }
 
