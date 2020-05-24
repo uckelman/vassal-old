@@ -391,7 +391,7 @@ public class Base64
      * <strong>feel free to delete this method (in fact you probably should)
      * if you're embedding this code into a larger program.</strong>
      */
-    public final static void main( String[] args )
+    public static void main(String[] args )
     {
         if( args.length < 3 ){
             usage("Not enough arguments.");
