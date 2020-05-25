@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GameState;
 import VASSAL.tools.imports.ImportAction;
-import VASSAL.tools.io.IOUtils;
 
 public class MetaDataFactory {
   private static final Logger logger =
@@ -56,10 +55,8 @@ public class MetaDataFactory {
     if (file == null || !file.exists() || !file.isFile())
       return null;
 
-    ZipFile zip = null;
-    try {
+    try (ZipFile zip = new ZipFile(file)) {
       // Check it is a Zip file
-      zip = new ZipFile(file);
 
       // Check if it is a Save Game file
       ZipEntry entry = zip.getEntry(GameState.SAVEFILE_ZIP_ENTRY);
@@ -85,10 +82,8 @@ public class MetaDataFactory {
       }
 
       // read the first few lines of the buildFile
-      BufferedReader br = null;
-      try {
-        br = new BufferedReader(new InputStreamReader(zip
-            .getInputStream(buildFileEntry)));
+      try (BufferedReader br = new BufferedReader(new InputStreamReader(zip
+        .getInputStream(buildFileEntry)))) {
         for (int i = 0; i < 10; i++) {
           final String s = br.readLine();
           if (s.indexOf(BUILDFILE_MODULE_ELEMENT1) > 0
@@ -101,13 +96,7 @@ public class MetaDataFactory {
             return new ExtensionMetaData(zip);
           }
         }
-        br.close();
       }
-      finally {
-        IOUtils.closeQuietly(br);
-      }
-
-      zip.close();
     }
     catch (ZipException e) {
       // It is not a Zip file, check for an Importable file
@@ -115,9 +104,6 @@ public class MetaDataFactory {
     }
     catch (IOException e) {
       logger.error("", e);
-    }
-    finally {
-      IOUtils.closeQuietly(zip);
     }
 
     return null;

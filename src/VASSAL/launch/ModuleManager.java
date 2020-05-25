@@ -139,11 +139,9 @@ public class ModuleManager {
     int port = 0;
     long key = 0;
 
-    RandomAccessFile kraf = null;
     FileLock klock = null;
-    try {
+    try (RandomAccessFile kraf = new RandomAccessFile(keyfile, "rw")) {
       // acquire an exclusive lock on the key file
-      kraf = new RandomAccessFile(keyfile, "rw");
 
       try {
         klock = kraf.getChannel().lock();
@@ -202,10 +200,7 @@ public class ModuleManager {
       e.printStackTrace();
       System.exit(1);
     }
-    finally {
-      // this will also release the lock on the key file
-      IOUtils.closeQuietly(kraf);
-    }
+    // lock on the key file is released
 
     lr.key = key;
 

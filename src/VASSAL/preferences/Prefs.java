@@ -208,9 +208,7 @@ public class Prefs implements Closeable {
       FileUtils.forceMkdir(Info.getPrefsDir());
     }
 
-    RandomAccessFile raf = null;
-    try {
-      raf = new RandomAccessFile(file, "rw");
+    try (RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
       final FileChannel ch = raf.getChannel();
 
       // lock the prefs file
@@ -235,10 +233,7 @@ public class Prefs implements Closeable {
       storedValues.store(out, null);
       out.flush();
     }
-    finally {
-      // also closes the channel, the streams, and releases the lock
-      IOUtils.closeQuietly(raf);
-    }
+    // channel and streams closed, lock released
   }
 
   /** Save these preferences and write to disk. */

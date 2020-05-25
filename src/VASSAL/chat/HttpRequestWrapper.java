@@ -32,8 +32,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
-import VASSAL.tools.io.IOUtils;
-
 /**
  * Performs Get and Post operations to a given URL
  */
@@ -49,18 +47,15 @@ public class HttpRequestWrapper {
   }
 
   private List<String> readLines(InputStream is) throws IOException {
-    BufferedReader in = null;
-    try {
-      in = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8)); //$NON-NLS-1$
+    try (BufferedReader in = new BufferedReader(
+      new InputStreamReader(is, StandardCharsets.UTF_8))) {
+      //$NON-NLS-1$
 
       final ArrayList<String> l = new ArrayList<>();
       String line;
       while ((line = in.readLine()) != null) l.add(line);
 
       return l;
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 
