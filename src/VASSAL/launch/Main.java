@@ -19,7 +19,7 @@ package VASSAL.launch;
 import VASSAL.tools.ErrorDialog;
 
 /**
- * @deprecated Use {@link Editor}, {@link Player}, and {@link ModuleManager}
+ * @deprecated Use {@link Editor}, {@link Player}, and {@link ModuleManagerMain}
  *  as entry points for VASSAL instead.
  */
 @Deprecated
@@ -33,7 +33,7 @@ public class Main {
       null, null,
       "Obsolete Entry Point",
       "The Entry Point VASSAL.launch.Main is Obsolete",
-      "You have attempted to start VASSAL from the VASSAL.launch.Main entry point. This entry point is no longer current. The current entry points are VASSAL.launch.ModuleManager, VASSAL.launch.Player, and VASSAL.launch.Editor.\n\nIf this message makes no sense to you, or you were trying to load a module, please ask for help at the VASSAL Forum."
+      "You have attempted to start VASSAL from the VASSAL.launch.Main entry point. This entry point is no longer current. The current entry points are VASSAL.launch.ModuleManagerMain, VASSAL.launch.Player, and VASSAL.launch.Editor.\n\nIf this message makes no sense to you, or you were trying to load a module, please ask for help at the VASSAL Forum."
     );
   }
 }
