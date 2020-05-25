@@ -20,22 +20,17 @@ package VASSAL.launch;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.io.RandomAccessFile;
 import java.lang.reflect.InvocationTargetException;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.channels.FileLock;
-import java.nio.channels.OverlappingFileLockException;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
@@ -54,7 +49,6 @@ import VASSAL.build.module.metadata.SaveMetaData;
 import VASSAL.configure.IntConfigurer;
 import VASSAL.configure.LongConfigurer;
 import VASSAL.i18n.Resources;
-import VASSAL.i18n.TranslateVassalWindow;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ThrowableUtils;
@@ -81,155 +75,6 @@ public class ModuleManager {
   public static final String MAXIMUM_HEAP = "maximumHeap"; //$NON-NLS-1$
   public static final String INITIAL_HEAP = "initialHeap"; //$NON-NLS-1$
 
-  public static void main(String[] args) {
-// FIXME: We need to catch more exceptions in main() and then exit in
-// order to avoid situations where the main thread ends due to an uncaught
-// exception, but there are other threads still running, and so VASSAL
-// does not quit. For example, this can happen if an IllegalArgumentException
-// is thrown here...
-
-    // parse command-line arguments
-    LaunchRequest lr = null;
-    try {
-      lr = LaunchRequest.parseArgs(args);
-    }
-    catch (LaunchRequestException e) {
-// FIXME: should be a dialog...
-      System.err.println("VASSAL: " + e.getMessage());
-      System.exit(1);
-    }
-
-    // do this before the graphics subsystem fires up or it won't stick
-    System.setProperty("swing.boldMetal", "false");
-
-    if (lr.mode == LaunchRequest.Mode.TRANSLATE) {
-      // show the translation window in translation mode
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          // FIXME: does this window exit on close?
-          new TranslateVassalWindow(null).setVisible(true);
-        }
-      });
-      return;
-    }
-
-    //
-    // How we start exactly one request server:
-    //
-    // To ensure that exactly one process acts as the request server, we
-    // acquire a lock on the ~/VASSAL/key file, and then attempt to acquire
-    // a lock on the ~/VASSAL/lock file. If we cannot lock ~/VASSAL/lock,
-    // then there is already a server running; in that case, we read the
-    // port number and security key from ~/VASSAL/key. If we can lock
-    // ~/VASSAL/lock, then we start the server, write the port number and
-    // key to ~/VASSAL/key, and continue to hold the lock on ~/VASSAL/lock.
-    // Finally, we unlock ~/VASSAL/key and proceed to act as a client,
-    // sending requests over localhost:port using the security key.
-    //
-    // The advantages of this method are:
-    //
-    // (1) No race conditions between processes started at the same time.
-    // (2) No port collisions, because we don't use a predetermined port.
-    //
-
-    final File keyfile = new File(Info.getConfDir(), "key");
-    final File lockfile = new File(Info.getConfDir(), "lock");
-
-    int port = 0;
-    long key = 0;
-
-    FileLock klock = null;
-    try (RandomAccessFile kraf = new RandomAccessFile(keyfile, "rw")) {
-      // acquire an exclusive lock on the key file
-
-      try {
-        klock = kraf.getChannel().lock();
-      }
-      catch (OverlappingFileLockException e) {
-        throw new IOException(e);
-      }
-
-      // determine whether we are the server or a client
-
-      // Note: We purposely keep lout open in the case where we are the
-      // server, because closing lout will release the lock.
-      FileLock lock = null;
-      final FileOutputStream lout = new FileOutputStream(lockfile);
-      try {
-        lock = lout.getChannel().tryLock();
-      }
-      catch (OverlappingFileLockException e) {
-        throw new IOException(e);
-      }
-
-      if (lock != null) {
-        // we have the lock, so we will be the request server
-
-        // bind to an available port on the loopback device
-        final ServerSocket serverSocket =
-          new ServerSocket(0, 0, InetAddress.getByName(null));
-
-        // write the port number where we listen to the key file
-        port = serverSocket.getLocalPort();
-        kraf.writeInt(port);
-
-        // create new security key and write it to the key file
-        key = (long) (Math.random() * Long.MAX_VALUE);
-        kraf.writeLong(key);
-
-        // create a new Module Manager
-        new ModuleManager(serverSocket, key, lout, lock);
-      }
-      else {
-        // we do not have the lock, so we will be a request client
-        lout.close();
-
-        // read the port number we will connect to from the key file
-        port = kraf.readInt();
-
-        // read the security key from the key file
-        key = kraf.readLong();
-      }
-    }
-    catch (IOException e) {
-// FIXME: should be a dialog...
-      System.err.println("VASSAL: IO error");
-      e.printStackTrace();
-      System.exit(1);
-    }
-    // lock on the key file is released
-
-    lr.key = key;
-
-    // pass launch parameters on to the ModuleManager via the socket
-    Socket clientSocket = null;
-    ObjectOutputStream out = null;
-    InputStream in = null;
-    try {
-      clientSocket = new Socket((String) null, port);
-
-      out = new ObjectOutputStream(
-              new BufferedOutputStream(clientSocket.getOutputStream()));
-      out.writeObject(lr);
-      out.flush();
-
-      in = clientSocket.getInputStream();
-      IOUtils.copy(in, System.err);
-    }
-    catch (IOException e) {
-// FIXME: should be a dialog...
-      System.err.println("VASSAL: Problem with socket on port " + port);
-      e.printStackTrace();
-      System.exit(1);
-    }
-    finally {
-      IOUtils.closeQuietly(in);
-      IOUtils.closeQuietly((Closeable) out);
-      IOUtils.closeQuietly(clientSocket);
-    }
-  }
-
   private static ModuleManager instance = null;
 
   public static ModuleManager getInstance() {
@@ -238,10 +83,8 @@ public class ModuleManager {
 
   private final long key;
 
-  private FileOutputStream lout;
-  private FileLock lock;
-
-  private final ServerSocket serverSocket;
+  private final FileOutputStream lout;
+  private final FileLock lock;
 
   public ModuleManager(ServerSocket serverSocket, long key,
                        FileOutputStream lout, FileLock lock)
@@ -250,7 +93,6 @@ public class ModuleManager {
     if (instance != null) throw new IllegalStateException();
     instance = this;
 
-    this.serverSocket = serverSocket;
     this.key = key;
 
     // we hang on to these to prevent the lock from being lost
@@ -311,12 +153,7 @@ public class ModuleManager {
     if (SystemUtils.IS_OS_MAC_OSX) new MacOSXMenuManager();
     else new ModuleManagerMenuManager();
 
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        launch();
-      }
-    });
+    SwingUtilities.invokeLater(this::launch);
 
     // ModuleManagerWindow.getInstance() != null now, so listen on the socket
     final Thread socketListener = new Thread(
@@ -382,26 +219,21 @@ public class ModuleManager {
 
     @Override
     public void run() {
-      try {
-        ObjectInputStream in = null;
-        PrintStream out = null;
-        Socket clientSocket = null;
+      try (serverSocket) {
         while (true) {
-          try {
-            clientSocket = serverSocket.accept();
-            in = new ObjectInputStream(
-                  new BufferedInputStream(clientSocket.getInputStream()));
-
+          try (Socket clientSocket = serverSocket.accept();
+               ObjectInputStream in =
+                 new ObjectInputStream(new BufferedInputStream(clientSocket.getInputStream()));
+               PrintStream out =
+                 new PrintStream(new BufferedOutputStream(clientSocket.getOutputStream()))
+          ) {
             final String message = execute(in.readObject());
             in.close();
             clientSocket.close();
 
             if (message == null || clientSocket.isClosed()) continue;
 
-            out = new PrintStream(
-                    new BufferedOutputStream(clientSocket.getOutputStream()));
             out.println(message);
-            out.close();
           }
           catch (IOException e) {
             ErrorDialog.showDetails(
@@ -413,15 +245,10 @@ public class ModuleManager {
           catch (ClassNotFoundException e) {
             ErrorDialog.bug(e);
           }
-          finally {
-            IOUtils.closeQuietly((Closeable) in);
-            IOUtils.closeQuietly(out);
-            IOUtils.closeQuietly(clientSocket);
-          }
         }
       }
-      finally {
-        IOUtils.closeQuietly(serverSocket);
+      catch (IOException e) {
+        logger.error("ServerSocket threw an Exception", e);
       }
     }
   }
