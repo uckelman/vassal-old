@@ -81,12 +81,8 @@ public class TileUtils {
    * @throws ImageNotFoundException if the file isn't found
    */
   public static BufferedImage read(File src) throws ImageIOException {
-    InputStream in = null;
-    try {
-      in = new BufferedInputStream(new FileInputStream(src));
-
+    try (InputStream in = new BufferedInputStream(new FileInputStream(src))) {
       final BufferedImage img = read(in);
-      in.close();
       return img;
     }
     catch (FileNotFoundException e) {
@@ -94,9 +90,6 @@ public class TileUtils {
     }
     catch (IOException e) {
       throw new ImageIOException(src, e);
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 
@@ -129,14 +122,8 @@ public class TileUtils {
     final byte[] cdata = IOUtils.toByteArray(in);
 
     // decompress the image data
-    InputStream zin = null;
-    try {
-      zin = new GZIPInputStream(new ByteArrayInputStream(cdata));
+    try (InputStream zin = new GZIPInputStream(new ByteArrayInputStream(cdata))) {
       bb = ByteBuffer.wrap(IOUtils.toByteArray(zin));
-      zin.close();
-    }
-    finally {
-      IOUtils.closeQuietly(zin);
     }
 
     // build the image
@@ -217,12 +204,9 @@ public class TileUtils {
    * @throws ImageNotFoundException if the file isn't found
    */
   public static Dimension size(File src) throws ImageIOException {
-    InputStream in = null;
-    try {
+    try (InputStream in = new FileInputStream(src)) {
       // NB: We don't buffer here because we're reading only 18 bytes.
-      in = new FileInputStream(src);
       final Dimension d = size(in);
-      in.close();
       return d;
     }
     catch (FileNotFoundException e) {
@@ -230,9 +214,6 @@ public class TileUtils {
     }
     catch (IOException e) {
       throw new ImageIOException(src, e);
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 
@@ -283,17 +264,11 @@ public class TileUtils {
    */
   public static void write(BufferedImage tile, File dst)
                                                       throws ImageIOException {
-    OutputStream out = null;
-    try {
-      out = new BufferedOutputStream(new FileOutputStream(dst));
+    try (OutputStream out = new BufferedOutputStream(new FileOutputStream(dst))) {
       write(tile, out);
-      out.close();
     }
     catch (IOException e) {
       throw new ImageIOException(dst, e);
-    }
-    finally {
-      IOUtils.closeQuietly(out);
     }
   }
 

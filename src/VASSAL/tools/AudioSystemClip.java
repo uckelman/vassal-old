@@ -30,7 +30,6 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import VASSAL.tools.AudioClip;
-import VASSAL.tools.io.IOUtils;
 
 public class AudioSystemClip implements AudioClip {
   protected Clip the_clip;
@@ -39,38 +38,15 @@ public class AudioSystemClip implements AudioClip {
     if (!in.markSupported()) {
       // AudioInputStream requires a stream which is markable
       in = new BufferedInputStream(in);
+      // TODO stream is never closed, close it?
     }
 
     // try to get a Clip
-    Clip clip = null;
-    try {
-      try {
-        clip = AudioSystem.getClip();
-      }
-      catch (IllegalArgumentException | SecurityException | LineUnavailableException e) {
-        throw new IOException(e);
-      }
-
+    try (Clip clip = AudioSystem.getClip()) {
       // wrap the input stream
-      AudioInputStream ais = null;
-      try {
-        try {
-          ais = AudioSystem.getAudioInputStream(in);
-        }
-        catch (UnsupportedAudioFileException e) {
-          throw new IOException(e);
-        }
-
+      try (AudioInputStream ais = AudioSystem.getAudioInputStream(in)) {
         // convert the audio stream to the type the clip wants
-        AudioInputStream cais = null;
-        try {
-          try {
-            cais = AudioSystem.getAudioInputStream(clip.getFormat(), ais);
-          }
-          catch (IllegalArgumentException e) {
-            throw new IOException(e);
-          }
-
+        try (AudioInputStream cais = AudioSystem.getAudioInputStream(clip.getFormat(), ais)) {
           try {
             clip.open(cais);
             return clip;
@@ -79,28 +55,25 @@ public class AudioSystemClip implements AudioClip {
             throw new IOException(e);
           }
         }
-        finally {
-          IOUtils.closeQuietly(cais);
+        catch (IllegalArgumentException e) {
+          throw new IOException(e);
         }
       }
-      finally {
-        IOUtils.closeQuietly(ais);
+      catch (UnsupportedAudioFileException e) {
+        throw new IOException(e);
       }
     }
+    catch (IllegalArgumentException | SecurityException | LineUnavailableException e) {
+      throw new IOException(e);
+    }
     catch (Exception e) {
-      IOUtils.closeQuietly(clip);
       throw e;
     }
   }
 
   public AudioSystemClip(URL url) throws IOException {
-    InputStream in = null;
-    try {
-      in = url.openStream();
+    try (InputStream in = url.openStream()) {
       the_clip = getClip(in);
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 

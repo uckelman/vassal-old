@@ -23,8 +23,6 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import VASSAL.tools.io.IOUtils;
-
 /**
  * A (partial) JPEG decoder.
  *
@@ -108,24 +106,19 @@ class JPEGDecoder {
   }
 
   public static void main(String[] args) throws IOException {
-    DataInputStream in = null;
-    try {
-      in = new DataInputStream(new FileInputStream(args[0]));
-      
+    try (DataInputStream in = new DataInputStream(new FileInputStream(args[0]))) {
+
       if (!JPEGDecoder.decodeSignature(in)) {
         System.out.println("Not a JPEG");
       }
 
-      JPEGDecoder.Chunk ch;
+      Chunk ch;
       do {
         ch = JPEGDecoder.decodeChunk(in);
-	      System.out.println("type == " + Integer.toHexString(ch.type) + ", length == " + ch.data.length);
+        System.out.println("type == " + Integer.toHexString(ch.type) + ", length == " + ch.data.length);
 
 
       } while (ch.type != JPEGDecoder.EOI);
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 }

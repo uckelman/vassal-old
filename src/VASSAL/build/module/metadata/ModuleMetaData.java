@@ -33,7 +33,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import VASSAL.build.GameModule;
-import VASSAL.tools.io.IOUtils;
 
 /**
  *
@@ -106,12 +105,14 @@ public class ModuleMetaData extends AbstractMetaData {
    *  - Check it has a Zip Entry named buildfile
    *  - If it has a metadata file, read and parse it.
    *
-   * @param file Module File
+   * Closes the {@link ZipFile}.
+   *
+   * @param zip Module File
    */
   public void read(ZipFile zip) {
     version = "";
 
-    try {
+    try (zip) {
       // Try to parse the metadata. Failure is not catastrophic, we can
       // treat it like an old-style module with no metadata and parse
       // the first lines of the buildFile
@@ -128,10 +129,7 @@ public class ModuleMetaData extends AbstractMetaData {
         handler = new MetadataXMLHandler();
       }
 
-      BufferedInputStream in = null;
-      try {
-        in = new BufferedInputStream(zip.getInputStream(data));
-
+      try (BufferedInputStream in = new BufferedInputStream(zip.getInputStream(data))) {
         synchronized (parser) {
           parser.setContentHandler(handler);
           parser.setDTDHandler(handler);
@@ -139,23 +137,13 @@ public class ModuleMetaData extends AbstractMetaData {
           parser.setErrorHandler(handler);
           parser.parse(new InputSource(in));
         }
-
-        in.close();
       }
-      finally {
-        IOUtils.closeQuietly(in);
-      }
-
-      zip.close();
     }
     catch (SAXEndException e) {
       // Indicates End of module/extension parsing. not an error.
     }
     catch (IOException | SAXException e) {
       logger.error("", e);
-    }
-    finally {
-      IOUtils.closeQuietly(zip);
     }
   }
 

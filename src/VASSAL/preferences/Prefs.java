@@ -185,21 +185,15 @@ public class Prefs implements Closeable {
   }
 
   protected void read() {
-    InputStream in = null;
-    try {
-      in = new BufferedInputStream(new FileInputStream(file));
+    try (InputStream in = new BufferedInputStream(new FileInputStream(file))) {
       storedValues.clear();
       storedValues.load(in);
-      in.close();
     }
     catch (FileNotFoundException e) {
       // First time for this module, not an error.
     }
     catch (IOException e) {
       ReadErrorDialog.errorNoI18N(e, file);
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 

@@ -28,7 +28,6 @@ import java.util.Properties;
 
 import VASSAL.Info;
 import VASSAL.tools.ReadErrorDialog;
-import VASSAL.tools.io.IOUtils;
 
 /**
  * A simple preferences class which permits reading stored values.
@@ -47,20 +46,14 @@ public class ReadOnlyPrefs {
   }
 
   protected ReadOnlyPrefs(File file) {
-    BufferedInputStream in = null;
-    try {
-      in = new BufferedInputStream(new FileInputStream(file));
+    try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(file))) {
       storedValues.load(in);
-      in.close();
     }
     catch (FileNotFoundException e) {
       // First time for this module, not an error.
     }
     catch (IOException e) {
       ReadErrorDialog.error(e, file);
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 

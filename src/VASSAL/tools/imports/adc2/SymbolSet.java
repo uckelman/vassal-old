@@ -483,11 +483,8 @@ public class SymbolSet extends Importer{
   @Override
   protected void load(File f) throws IOException {
     super.load(f);
-    DataInputStream in = null;
 
-    try {
-      in = new DataInputStream(new BufferedInputStream(new FileInputStream(f)));
-
+    try (DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(f)))) {
       // if header is 0xFD, then mask indeces are one-byte long. Otherwise, if
       // the header is anything else greater than 0xFA, then mask indeces are base-250
       // two-byte words.
@@ -543,7 +540,7 @@ public class SymbolSet extends Importer{
         // all the same size or not square
         if (!isCardSet) {
           if (mapBoardData[i].rect.height != mapBoardData[0].rect.height
-              || mapBoardData[i].rect.width != mapBoardData[0].rect.width)
+            || mapBoardData[i].rect.width != mapBoardData[0].rect.width)
             throw new FileFormatException("Map board image dimensions are inconsistent");
           if (mapBoardData[i].rect.width != mapBoardData[i].rect.height)
             throw new FileFormatException("Map board image dimensions are not square");
@@ -575,9 +572,6 @@ public class SymbolSet extends Importer{
 
       /* See if there is a single-image underlay for the map. */
       underlay = loadSymbolImage(baseName, 'z', false);
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
 
     readPermutationFile(f);
@@ -650,15 +644,9 @@ public class SymbolSet extends Importer{
 
   @Override
   public boolean isValidImportFile(File f) throws IOException {
-    DataInputStream in = null;
-    try {
-      in = new DataInputStream(new FileInputStream(f));
+    try (DataInputStream in = new DataInputStream(new FileInputStream(f))) {
       boolean valid = in.readUnsignedByte() >= 0xFA;
-      in.close();
       return valid;
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 }

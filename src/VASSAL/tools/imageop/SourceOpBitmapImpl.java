@@ -34,7 +34,6 @@ import VASSAL.tools.image.ImageIOException;
 import VASSAL.tools.image.ImageNotFoundException;
 import VASSAL.tools.image.ImageUtils;
 import VASSAL.tools.io.FileArchive;
-import VASSAL.tools.io.IOUtils;
 
 /**
  * An {@link ImageOp} which loads an image from the {@link DataArchive}.
@@ -111,12 +110,8 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
    */
   @Override
   public BufferedImage eval() throws ImageIOException {
-    InputStream in = null;
-    try {
-      in = getInputStream();
-
+    try (InputStream in = getInputStream()) {
       final BufferedImage img = ImageUtils.getImage(name, in);
-      in.close();
       return img;
     }
     catch (ImageIOException e) {
@@ -128,9 +123,6 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
     }
     catch (IOException e) {
       throw new ImageIOException(name, e);
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 
@@ -147,10 +139,7 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
 
   protected Dimension getImageSize() {
     try {
-      InputStream in = null;
-      try {
-        in = getInputStream();
-
+      try (InputStream in = getInputStream()) {
         final Dimension d = ImageUtils.getImageSize(name, in);
         in.close();
         return d;
@@ -165,11 +154,10 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
       catch (IOException e) {
         throw new ImageIOException(name, e);
       }
-      finally {
-        IOUtils.closeQuietly(in);
-      }
     }
     catch (IOException e) {
+      // TODO: outer try-catch simply catches either of the 3 IOExceptions thrown in the inner try-catch,
+      // possibly remove the outer try-catch and replace the 3 inner catch blocks with one multi-catch
       if (!Op.handleException(e)) ErrorDialog.bug(e);
     }
 

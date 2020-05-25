@@ -82,18 +82,13 @@ public class ZipUpdater implements Runnable {
       if (crc < 0) {
         CRC32 checksum = new CRC32();
 
-        final InputStream in = file.getInputStream(entry);
-        try {
+        try (InputStream in = file.getInputStream(entry)) {
           final byte[] buffer = new byte[1024];
           int count;
           while ((count = in.read(buffer)) >= 0) {
             checksum.update(buffer, 0, count);
           }
-          in.close();
           crc = checksum.getValue();
-        }
-        finally {
-          IOUtils.closeQuietly(in);
         }
       }
     }
@@ -111,15 +106,9 @@ public class ZipUpdater implements Runnable {
       throw new IOException("This updater was created with an original that differs from the file you're trying to update.\nLocal entry does not match original:  "+newEntry.getName());
     }
 
-    BufferedInputStream in = null;
-    try {
-      in = new BufferedInputStream(newContents);
+    try (BufferedInputStream in = new BufferedInputStream(newContents)) {
       long cs = writeEntry(newContents, output, newEntry);
-      in.close();
       return cs;
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 
@@ -147,14 +136,8 @@ public class ZipUpdater implements Runnable {
     if (rin == null)
       throw new IOException("Resource not found: " + CHECKSUM_RESOURCE);
 
-    BufferedInputStream in = null;
-    try {
-      in = new BufferedInputStream(rin);
+    try (BufferedInputStream in = new BufferedInputStream(rin)) {
       checkSums.load(in);
-      in.close();
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
 
     final File tempFile = File.createTempFile("VSL", ".zip");
@@ -244,12 +227,9 @@ public class ZipUpdater implements Runnable {
       oldZipFile = new ZipFile(oldFile);
       final String inputArchiveName = oldFile.getName();
 
-      final ZipFile goal = new ZipFile(newFile);
-      try {
-        JarOutputStream out = null;
-        try {
-          out = new JarOutputStream(
-                  new BufferedOutputStream(new FileOutputStream(updaterFile)));
+      try (ZipFile goal = new ZipFile(newFile)) {
+        try (JarOutputStream out = new JarOutputStream(
+          new BufferedOutputStream(new FileOutputStream(updaterFile)))) {
           for (ZipEntry entry : iterate(goal.entries())) {
             final long goalCrc = getCrc(goal, entry);
             final long inputCrc =
@@ -259,14 +239,8 @@ public class ZipUpdater implements Runnable {
                 new ZipEntry(ENTRIES_DIR + entry.getName());
               outputEntry.setMethod(entry.getMethod());
 
-              InputStream gis = null;
-              try {
-                gis = new BufferedInputStream(goal.getInputStream(entry));
+              try (InputStream gis = new BufferedInputStream(goal.getInputStream(entry))) {
                 writeEntry(gis, out, outputEntry);
-                gis.close();
-              }
-              finally {
-                IOUtils.closeQuietly(gis);
               }
             }
             checkSums.put(entry.getName(), goalCrc + "");
@@ -315,26 +289,10 @@ public class ZipUpdater implements Runnable {
           if (is == null)
             throw new IOException("Resource not found: " + className);
 
-          BufferedInputStream in = null;
-          try {
-            in = new BufferedInputStream(is);
+          try (BufferedInputStream in = new BufferedInputStream(is)) {
             writeEntry(is, out, classEntry);
-            in.close();
           }
-          finally {
-            IOUtils.closeQuietly(in);
-          }
-
-          out.close();
         }
-        finally {
-          IOUtils.closeQuietly(out);
-        }
-
-        goal.close();
-      }
-      finally {
-        IOUtils.closeQuietly(goal);
       }
 
       oldZipFile.close();

@@ -108,23 +108,9 @@ public class FileUtils {
     if (src.renameTo(dst)) return;
 
     // otherwise, do the copy manually
-    InputStream in = null;
-    try {
-      in = new FileInputStream(src);
-      OutputStream out = null;
-      try {
-        out = new FileOutputStream(dst);
+    try (InputStream in = new FileInputStream(src);
+         OutputStream out = new FileOutputStream(dst)) {
         IOUtils.copy(in, out);
-        out.close();
-      }
-      finally {
-        IOUtils.closeQuietly(out);
-      }
-
-      in.close();
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
 
     src.delete();

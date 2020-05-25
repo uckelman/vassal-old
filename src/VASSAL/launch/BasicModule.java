@@ -68,7 +68,6 @@ import VASSAL.preferences.Prefs;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ReflectionUtils;
 import VASSAL.tools.SequenceEncoder;
-import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.menu.MenuManager;
 
 public class BasicModule extends GameModule {
@@ -94,26 +93,14 @@ public class BasicModule extends GameModule {
     }
     else {
       // existing module
-      BufferedInputStream in = null;
-      try {
-        try {
-          in = new BufferedInputStream(darch.getInputStream(BUILDFILE));
-        }
-        // FIXME: review error message
-        // FIXME: this should be more specific, to separate the case where
-        // we have failed I/O from when we read ok but have no module
-        catch (IOException e) {
-          throw new IOException(
-            Resources.getString("BasicModule.not_a_module"), //$NON-NLS-1$
-            e);
-        }
-
+      try (BufferedInputStream in = new BufferedInputStream(darch.getInputStream(BUILDFILE))) {
         final Document doc = Builder.createDocument(in);
         build(doc.getDocumentElement());
-        in.close();
       }
-      finally {
-        IOUtils.closeQuietly(in);
+      catch (IOException e) {
+        throw new IOException(
+          Resources.getString("BasicModule.not_a_module"), //$NON-NLS-1$
+          e);
       }
     }
 

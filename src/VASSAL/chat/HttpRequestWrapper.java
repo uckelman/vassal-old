@@ -116,13 +116,8 @@ public class HttpRequestWrapper {
     conn.setUseCaches(false);
     //      conn.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
 
-    DataOutputStream out = null;
-    try {
-      out = new DataOutputStream(conn.getOutputStream());
+    try (DataOutputStream out = new DataOutputStream(conn.getOutputStream())) {
       out.writeBytes(content);
-    }
-    finally {
-      IOUtils.closeQuietly(out);
     }
 
     return readLines(conn.getInputStream());

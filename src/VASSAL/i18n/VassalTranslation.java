@@ -30,7 +30,6 @@ import java.util.Locale;
 import java.util.Properties;
 
 import VASSAL.tools.ReadErrorDialog;
-import VASSAL.tools.io.IOUtils;
 
 /**
  * Utility class to allow translation of VASSAL using the Component
@@ -47,16 +46,11 @@ public class VassalTranslation extends Translation {
     setConfigureName("VASSAL");
 
     final InputStream is = getClass().getResourceAsStream("VASSAL.properties");
+    // TODO: close stream?
     try {
       if (is != null) {
-        BufferedInputStream in = null;
-        try {
-          in = new BufferedInputStream(is);
+        try (BufferedInputStream in = new BufferedInputStream(is)) {
           baseValues.load(in);
-          in.close();
-        }
-        finally {
-          IOUtils.closeQuietly(in);
         }
       }
       else {
@@ -116,26 +110,16 @@ public class VassalTranslation extends Translation {
   }
 
   public void saveProperties(File file, Locale locale) throws IOException {
-    BufferedOutputStream out = null;
-    try {
-      out = new BufferedOutputStream(new FileOutputStream(file));
+    try (BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(file))) {
       localProperties.store(out, locale.getDisplayName());
-      out.close();
       dirty = false;
-    }
-    finally {
-      IOUtils.closeQuietly(out);
     }
   }
 
   protected void loadProperties(InputStream in) throws IOException {
-    try {
+    try (in) {
       localProperties.load(in);
       dirty = false;
-      in.close();
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 }

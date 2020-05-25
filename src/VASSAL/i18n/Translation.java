@@ -34,7 +34,6 @@ import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.tools.ArchiveWriter;
 import VASSAL.tools.ReadErrorDialog;
-import VASSAL.tools.io.IOUtils;
 
 public class Translation extends AbstractConfigurable
                          implements Comparable<Translation> {
@@ -179,26 +178,17 @@ public class Translation extends AbstractConfigurable
     }
 
     if (GameModule.getGameModule() != null) {
-      BufferedInputStream in = null;
-      try {
-        try {
-          in = new BufferedInputStream(
-            GameModule.getGameModule()
-                      .getDataArchive()
-                      .getInputStream(getBundleFileName())
-          );
-        }
-        catch (FileNotFoundException e) {
-          // ignore, properties have not been saved yet
-          dirty = false;
-          return;
-        }
-
+      try (BufferedInputStream in = new BufferedInputStream(
+        GameModule.getGameModule()
+                  .getDataArchive()
+                  .getInputStream(getBundleFileName())
+      )) {
         localProperties.load(in);
-        in.close();
       }
-      finally {
-        IOUtils.closeQuietly(in);
+      catch (FileNotFoundException e) {
+        // ignore, properties have not been saved yet
+        dirty = false;
+        return;
       }
     }
 
@@ -206,20 +196,13 @@ public class Translation extends AbstractConfigurable
   }
 
   protected VassalResourceBundle getBundle() throws IOException {
-    BufferedInputStream in = null;
-    try {
-      in = new BufferedInputStream(
-        GameModule.getGameModule()
-                  .getDataArchive()
-                  .getInputStream(getBundleFileName())
-      );
-
+    try (BufferedInputStream in = new BufferedInputStream(
+      GameModule.getGameModule()
+                .getDataArchive()
+                .getInputStream(getBundleFileName())
+    )) {
       final VassalResourceBundle b = new VassalResourceBundle(in);
-      in.close();
       return b;
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 

@@ -42,7 +42,6 @@ import VASSAL.tools.ReadErrorDialog;
 import VASSAL.tools.URLUtils;
 import VASSAL.tools.filechooser.AudioFileFilter;
 import VASSAL.tools.filechooser.FileChooser;
-import VASSAL.tools.io.IOUtils;
 
 /**
  * Configurer for specifying a Clip. This class is intended to allow
@@ -165,18 +164,12 @@ public class SoundConfigurer extends Configurer {
     return new AudioClipFactory() {
       @Override
       public AudioClip getAudioClip(URL url) {
-        try {
-          final InputStream in = url.openStream();
-          try {
-            if (url.toString().toLowerCase().endsWith(".mp3")) {
-              return new Mp3AudioClip(url);
-            }
-            else {
-              return new AudioSystemClip(in);
-            }
+        try (InputStream in = url.openStream()) {
+          if (url.toString().toLowerCase().endsWith(".mp3")) {
+            return new Mp3AudioClip(url);
           }
-          finally {
-            IOUtils.closeQuietly(in);
+          else {
+            return new AudioSystemClip(in);
           }
         }
         catch (IOException e) {

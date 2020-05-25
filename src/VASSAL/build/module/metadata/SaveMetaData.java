@@ -35,7 +35,6 @@ import org.xml.sax.SAXException;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.io.FileArchive;
-import VASSAL.tools.io.IOUtils;
 
 /**
  * Class representing the metadata for a Save Game/Log File. Details
@@ -129,10 +128,12 @@ public class SaveMetaData extends AbstractMetaData {
    * Check that it has a Zip Entry named savedgame.
    * If it has a metadata file, read and parse it.
    *
-   * @param file Saved Game File
+   * Closes the {@link ZipFile}
+   *
+   * @param zip Saved Game File
    */
   public void read(ZipFile zip) {
-    try {
+    try (zip) {
       // Try to parse the metadata. Failure is not catastrophic, we can
       // treat it like an old-style save with no metadata.
       final ZipEntry data = zip.getEntry(getZipEntryName());
@@ -142,10 +143,7 @@ public class SaveMetaData extends AbstractMetaData {
       final XMLHandler handler = new XMLHandler();
 
       // parse! parse!
-      BufferedInputStream in = null;
-      try {
-        in = new BufferedInputStream(zip.getInputStream(data));
-
+      try (BufferedInputStream in = new BufferedInputStream(zip.getInputStream(data))) {
         synchronized (parser) {
           parser.setContentHandler(handler);
           parser.setDTDHandler(handler);
@@ -153,23 +151,13 @@ public class SaveMetaData extends AbstractMetaData {
           parser.setErrorHandler(handler);
           parser.parse(new InputSource(in));
         }
-
-        in.close();
-      }
-      finally {
-        IOUtils.closeQuietly(in);
       }
 
       // read the matching Module data
       moduleData = new ModuleMetaData(zip);
-
-      zip.close();
     }
     catch (IOException | SAXException e) {
       logger.error("", e);
-    }
-    finally {
-      IOUtils.closeQuietly(zip);
     }
   }
 }

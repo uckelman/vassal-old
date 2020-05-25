@@ -155,24 +155,9 @@ public class ZipArchive implements FileArchive {
 
     // copy each entry to the new archive
     for (String name : src.getFiles()) {
-      InputStream in = null;
-      try {
-        in = src.getInputStream(name);
-
-        OutputStream out = null;
-        try {
-          out = getOutputStream(name);
-          IOUtils.copy(in, out, buf);
-          out.close();
-        }
-        finally {
-          IOUtils.closeQuietly(out);
-        }
-
-        in.close();
-      }
-      finally {
-        IOUtils.closeQuietly(in);
+      try (InputStream in = src.getInputStream(name);
+           OutputStream out = getOutputStream(name)) {
+        IOUtils.copy(in, out, buf);
       }
     }
 
@@ -309,14 +294,8 @@ public class ZipArchive implements FileArchive {
   /** {@inheritDoc} */
   @Override
   public void add(String path, File extPath) throws IOException {
-    FileInputStream in = null;
-    try {
-      in = new FileInputStream(extPath);
+    try (FileInputStream in = new FileInputStream(extPath)) {
       add(path, in);
-      in.close();
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 
@@ -329,14 +308,8 @@ public class ZipArchive implements FileArchive {
   /** {@inheritDoc} */
   @Override
   public void add(String path, InputStream in) throws IOException {
-    OutputStream out = null;
-    try {
-      out = getOutputStream(path);
+    try (OutputStream out = getOutputStream(path)) {
       IOUtils.copy(in, out);
-      out.close();
-    }
-    finally {
-      IOUtils.closeQuietly(out);
     }
   }
 
@@ -429,11 +402,9 @@ public class ZipArchive implements FileArchive {
     final File tmpFile =
       File.createTempFile("tmp", ".zip", archiveFile.getParentFile());
 
-    ZipOutputStream out = null;
-    try {
-      out = new ZipOutputStream(
-              new BufferedOutputStream(
-                new FileOutputStream(tmpFile)));
+    try (ZipOutputStream out = new ZipOutputStream(
+      new BufferedOutputStream(
+        new FileOutputStream(tmpFile)))) {
       out.setLevel(9);
 
       final byte[] buf = new byte[8192];
@@ -443,11 +414,9 @@ public class ZipArchive implements FileArchive {
         zipFile = null;
 
         // copy unmodified file into the temp archive
-        ZipInputStream in = null;
-        try {
-          in = new ZipInputStream(
-                 new BufferedInputStream(
-                   new FileInputStream(archiveFile)));
+        try (ZipInputStream in = new ZipInputStream(
+          new BufferedInputStream(
+            new FileInputStream(archiveFile)))) {
 
           ZipEntry ze = null;
           while ((ze = in.getNextEntry()) != null) {
@@ -468,11 +437,6 @@ public class ZipArchive implements FileArchive {
 
             entries.remove(ze.getName());
           }
-
-          in.close();
-        }
-        finally {
-          IOUtils.closeQuietly(in);
         }
       }
 
@@ -481,23 +445,12 @@ public class ZipArchive implements FileArchive {
         if (e == null || e.file == null) continue;
 
         // write new or modified file into the temp archive
-        FileInputStream in = null;
-        try {
-          in = new FileInputStream(e.file);
+        try (FileInputStream in = new FileInputStream(e.file)) {
           e.ze.setTime(e.file.lastModified());
           out.putNextEntry(e.ze);
           IOUtils.copy(in, out, buf);
-          in.close();
-        }
-        finally {
-          IOUtils.closeQuietly(in);
         }
       }
-
-      out.close();
-    }
-    finally {
-      IOUtils.closeQuietly(out);
     }
 
     // Replace old archive with temp archive.
@@ -756,14 +709,8 @@ public class ZipArchive implements FileArchive {
 
     // read test
 
-    InputStream in = null;
-    try {
-      in = archive.getInputStream("NOTES");
+    try (InputStream in = archive.getInputStream("NOTES")) {
       IOUtils.copy(in, System.out);
-      in.close();
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
 
     archive.close();

@@ -98,19 +98,14 @@ public class FileImageTypeConverter implements ImageTypeConverter {
 
     try {
       // write the converted image data to a file
-      OutputStream out = null;
-      try {
-        out = new BufferedOutputStream(
-                new GZIPOutputStream(
-                  new FileOutputStream(tmp)));
+      try (OutputStream out = new BufferedOutputStream(
+        new GZIPOutputStream(
+          new FileOutputStream(tmp)))) {
         write(src, out);
         out.close();
       }
       catch (IOException e) {
         throw new ImageIOException(tmp, e);
-      }
-      finally {
-        IOUtils.closeQuietly(out);
       }
 
       final int w = src.getWidth();
@@ -122,20 +117,14 @@ public class FileImageTypeConverter implements ImageTypeConverter {
       final BufferedImage dst = new BufferedImage(w, h, type);
 
       // read the converted image data back
-      InputStream in = null;
-      try {
-        in = new BufferedInputStream(
-               new GZIPInputStream(
-                 new FileInputStream(tmp)));
+      try (InputStream in = new BufferedInputStream(
+        new GZIPInputStream(
+          new FileInputStream(tmp)))) {
         read(in, dst);
-        in.close();
         return dst;
       }
       catch (IOException e) {
         throw new ImageIOException(tmp, e);
-      }
-      finally {
-        IOUtils.closeQuietly(in);
       }
     }
     finally {

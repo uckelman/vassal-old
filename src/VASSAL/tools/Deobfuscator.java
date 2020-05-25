@@ -39,17 +39,13 @@ public class Deobfuscator {
 
   public Deobfuscator(InputStream in) throws IOException {
     String s = null;
-    try {
+    try (in) {
       s = IOUtils.toString(in, StandardCharsets.UTF_8);
-      in.close();
     }
     catch (UnsupportedEncodingException e) {
       // should never happen
       ErrorDialog.bug(e);
       throw e;
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
 
     int offset = Obfuscator.HEADER.length();

@@ -142,10 +142,7 @@ public class ExtensionMetaData extends AbstractMetaData {
       }
 
       // parse! parse!
-      BufferedInputStream in = null;
-      try {
-        in = new BufferedInputStream(zip.getInputStream(data));
-
+      try (BufferedInputStream in = new BufferedInputStream(zip.getInputStream(data))) {
         synchronized (parser) {
           parser.setContentHandler(handler);
           parser.setDTDHandler(handler);
@@ -153,11 +150,6 @@ public class ExtensionMetaData extends AbstractMetaData {
           parser.setErrorHandler(handler);
           parser.parse(new InputSource(in));
         }
-
-        in.close();
-      }
-      finally {
-        IOUtils.closeQuietly(in);
       }
 
       // read the matching Module data. A basic moduledata may have been

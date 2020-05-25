@@ -92,18 +92,12 @@ public class HtmlChart extends Widget implements MouseListener {
     if (fname == null) return null;
 
     String s = null;
-    InputStream in = null;
-    try {
-      in = new BufferedInputStream(
-        GameModule.getGameModule().getDataArchive().getInputStream(fname));
-      s =  IOUtils.toString(in);
-      in.close();
+    try (InputStream in = new BufferedInputStream(
+      GameModule.getGameModule().getDataArchive().getInputStream(fname))) {
+      s = IOUtils.toString(in);
     }
     catch (IOException e) {
-      ErrorDialog.dataError(new BadDataReport(this, Resources.getString("Error.not_found", "Chart"),fname,e));
-    }
-    finally {
-      IOUtils.closeQuietly(in);
+      ErrorDialog.dataError(new BadDataReport(this, Resources.getString("Error.not_found", "Chart"), fname, e));
     }
 
     return s;

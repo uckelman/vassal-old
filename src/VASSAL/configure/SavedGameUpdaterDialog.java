@@ -53,7 +53,6 @@ import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SavedGameUpdater;
 import VASSAL.tools.ScrollPane;
-import VASSAL.tools.io.IOUtils;
 
 public class SavedGameUpdaterDialog extends JDialog {
   private static final long serialVersionUID = 1L;
@@ -227,19 +226,12 @@ public class SavedGameUpdaterDialog extends JDialog {
       p.put(MODULE_NAME_KEY, GameModule.getGameModule().getGameName());
       p.put(VERSION_KEY, GameModule.getGameModule().getGameVersion());
 
-      BufferedOutputStream out = null;
-      try {
-        out = new BufferedOutputStream(
-                new FileOutputStream(fc.getSelectedFile()));
+      try (BufferedOutputStream out = new BufferedOutputStream(
+        new FileOutputStream(fc.getSelectedFile()))) {
         p.store(out, null);
-        out.close();
       }
-      // FIXME: review error message
       catch (IOException e) {
-        showErrorMessage(e, "Export failed","Unable to write info");
-      }
-      finally {
-        IOUtils.closeQuietly(out);
+        showErrorMessage(e, "Export failed", "Unable to write info");
       }
     }
   }
@@ -249,11 +241,8 @@ public class SavedGameUpdaterDialog extends JDialog {
     if (JFileChooser.CANCEL_OPTION != fc.showOpenDialog(this)) {
       oldPieceInfo = new Properties();
 
-      BufferedInputStream in = null;
-      try {
-        in = new BufferedInputStream(new FileInputStream(fc.getSelectedFile()));
+      try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(fc.getSelectedFile()))) {
         oldPieceInfo.load(in);
-        in.close();
 
         String moduleVersion = oldPieceInfo.getProperty(VERSION_KEY);
         String moduleName = oldPieceInfo.getProperty(MODULE_NAME_KEY);
@@ -279,9 +268,6 @@ public class SavedGameUpdaterDialog extends JDialog {
       catch (IllegalArgumentException e) { // catches malformed input files
         showErrorMessage(e, "Import failed", "Malformed input file");
         oldPieceInfo = null;
-      }
-      finally {
-        IOUtils.closeQuietly(in);
       }
     }
     updateButton.setEnabled(oldPieceInfo != null);
