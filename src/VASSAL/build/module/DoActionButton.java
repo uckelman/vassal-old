@@ -109,15 +109,12 @@ public class DoActionButton extends AbstractConfigurable
   protected boolean loopPropertyRegistered = false;
 
   public DoActionButton() {
-    ActionListener rollAction = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        try {
-          doActions();
-        }
-        catch (RecursionLimitException ex) {
-          RecursionLimiter.infiniteLoop(ex);
-        }
+    ActionListener rollAction = e -> {
+      try {
+        doActions();
+      }
+      catch (RecursionLimitException ex) {
+        RecursionLimiter.infiniteLoop(ex);
       }
     };
 
@@ -463,60 +460,28 @@ public class DoActionButton extends AbstractConfigurable
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (REPORT_FORMAT.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return doReport;
-        }};
+      return () -> doReport;
     }
     else if (SOUND_CLIP.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return doSound;
-        }};
+      return () -> doSound;
     }
     else if (HOTKEYS.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return doHotkey;
-        }};
+      return () -> doHotkey;
     }
     else if (LOOP_COUNT.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return doLoop && LoopControl.LOOP_COUNTED.equals(loopType);
-        }};
+      return () -> doLoop && LoopControl.LOOP_COUNTED.equals(loopType);
     }
     else if (WHILE_EXPRESSION.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return doLoop && LoopControl.LOOP_WHILE.equals(loopType);
-        }};
+      return () -> doLoop && LoopControl.LOOP_WHILE.equals(loopType);
     }
     else if (UNTIL_EXPRESSION.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return doLoop && LoopControl.LOOP_UNTIL.equals(loopType);
-        }};
+      return () -> doLoop && LoopControl.LOOP_UNTIL.equals(loopType);
     }
     else if (LOOP_TYPE.equals(name) || PRE_LOOP_HOTKEY.equals(name) || POST_LOOP_HOTKEY.equals(name) || INDEX.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return doLoop;
-        }};
+      return () -> doLoop;
     }
     else if (INDEX_PROPERTY.equals(name) || INDEX_START.equals(name) || INDEX_STEP.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return doLoop && hasIndex;
-        }};
+      return () -> doLoop && hasIndex;
     }
     else {
       return null;

@@ -378,36 +378,27 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     reverseKey = st.nextNamedKeyStroke(null);
 
     if (shuffleListener == null) {
-      shuffleListener = new NamedKeyStrokeListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          GameModule.getGameModule().sendAndLog(shuffle());
-          repaintMap();
-        }
+      shuffleListener = new NamedKeyStrokeListener(e -> {
+        GameModule.getGameModule().sendAndLog(shuffle());
+        repaintMap();
       });
       GameModule.getGameModule().addKeyStrokeListener(shuffleListener);
     }
     shuffleListener.setKeyStroke(getShuffleKey());
 
     if (reshuffleListener == null) {
-      reshuffleListener = new NamedKeyStrokeListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          GameModule.getGameModule().sendAndLog(sendToDeck());
-          repaintMap();
-        }
+      reshuffleListener = new NamedKeyStrokeListener(e -> {
+        GameModule.getGameModule().sendAndLog(sendToDeck());
+        repaintMap();
       });
       GameModule.getGameModule().addKeyStrokeListener(reshuffleListener);
     }
     reshuffleListener.setKeyStroke(getReshuffleKey());
 
     if (reverseListener == null) {
-      reverseListener = new NamedKeyStrokeListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          GameModule.getGameModule().sendAndLog(reverse());
-          repaintMap();
-        }
+      reverseListener = new NamedKeyStrokeListener(e -> {
+        GameModule.getGameModule().sendAndLog(reverse());
+        repaintMap();
       });
       GameModule.getGameModule().addKeyStrokeListener(reverseListener);
     }
@@ -1257,30 +1248,22 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
     d.add(new JLabel(Resources.getString("Deck.then_click"))); //$NON-NLS-1$
     Box box = Box.createHorizontalBox();
     JButton b = new JButton(Resources.getString(Resources.OK));
-    b.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        int[] selection = list.getSelectedIndices();
-        if (selection.length > 0) {
-          nextDraw = new ArrayList<>();
-          for (int value : selection) {
-            nextDraw.add(pieces[value].piece);
-          }
+    b.addActionListener(e -> {
+      int[] selection = list.getSelectedIndices();
+      if (selection.length > 0) {
+        nextDraw = new ArrayList<>();
+        for (int value : selection) {
+          nextDraw.add(pieces[value].piece);
         }
-        else {
-          nextDraw = null;
-        }
-        d.dispose();
       }
+      else {
+        nextDraw = null;
+      }
+      d.dispose();
     });
     box.add(b);
     b = new JButton(Resources.getString(Resources.CANCEL));
-    b.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        d.dispose();
-      }
-    });
+    b.addActionListener(e -> d.dispose());
     box.add(b);
     d.add(box);
     d.pack();

@@ -74,12 +74,7 @@ public class ColorConfigurer extends Configurer {
       p.add(new JLabel(getName()));
 
       cb = new ColorButton(colorValue());
-      cb.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          setValue(JColorChooser.showDialog(null, getName(), colorValue()));
-        }
-      });
+      cb.addActionListener(e -> setValue(JColorChooser.showDialog(null, getName(), colorValue())));
 
       p.add(cb);
     }

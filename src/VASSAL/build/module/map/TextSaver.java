@@ -56,12 +56,7 @@ public class TextSaver extends AbstractConfigurable {
   protected LaunchButton launch;
 
   public TextSaver() {
-    ActionListener al = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        apply();
-      }
-    };
+    ActionListener al = e -> apply();
 
     launch = new LaunchButton("Save Text", TOOLTIP, BUTTON_TEXT,
                               HOTKEY, ICON_NAME, al);

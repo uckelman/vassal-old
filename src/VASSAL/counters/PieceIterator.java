@@ -96,13 +96,8 @@ public class PieceIterator {
   }
 
   public static <T extends GamePiece> PieceIterator visible(Iterator<T> i) {
-    return new PieceIterator(i, new PieceFilter() {
-      @Override
-      public boolean accept(GamePiece piece) {
-        return !Boolean.TRUE.equals(
-          piece.getProperty(Properties.INVISIBLE_TO_ME));
-      }
-    });
+    return new PieceIterator(i,
+      piece -> !Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME)));
   }
 
   @Deprecated

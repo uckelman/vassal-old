@@ -60,12 +60,9 @@ public class AutoConfigurer extends Configurer
 
     target = c;
     setValue(target);
-    target.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(final PropertyChangeEvent evt) {
-        if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
-          setName((String) evt.getNewValue());
-        }
+    target.addPropertyChangeListener(evt -> {
+      if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
+        setName((String) evt.getNewValue());
       }
     });
 

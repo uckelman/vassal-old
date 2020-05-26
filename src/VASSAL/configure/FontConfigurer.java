@@ -89,14 +89,9 @@ public class FontConfigurer extends Configurer {
       size.setMaximumSize(new Dimension(size.getMaximumSize().width,size.getPreferredSize().height));
       p.add(size);
 
-      ItemListener l = new ItemListener() {
-        @Override
-        public void itemStateChanged(ItemEvent evt) {
-          setValue(new Font((String) family.getSelectedItem(),
-                            Font.PLAIN,
-                            Integer.parseInt((String) size.getSelectedItem())));
-        }
-      };
+      ItemListener l = evt -> setValue(new Font((String) family.getSelectedItem(),
+                        Font.PLAIN,
+                        Integer.parseInt((String) size.getSelectedItem())));
       size.addItemListener(l);
       family.addItemListener(l);
     }
@@ -120,16 +115,13 @@ public class FontConfigurer extends Configurer {
     final JTextArea tf = new JTextArea();
     tf.setText("The quick brown fox jumps over the lazy dog.");
     f.add(new ScrollPane(tf));
-    c.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-      @Override
-      public void propertyChange(java.beans.PropertyChangeEvent evt) {
-        Font font = (Font) evt.getNewValue();
-        FontConfigurer fc = new FontConfigurer(null, null, font);
-        fc.setValue(fc.getValueString());
-        font = (Font) fc.getValue();
-        tf.setFont(font);
-        f.pack();
-      }
+    c.addPropertyChangeListener(evt -> {
+      Font font = (Font) evt.getNewValue();
+      FontConfigurer fc = new FontConfigurer(null, null, font);
+      fc.setValue(fc.getValueString());
+      font = (Font) fc.getValue();
+      tf.setFont(font);
+      f.pack();
     });
     f.pack();
     f.setVisible(true);

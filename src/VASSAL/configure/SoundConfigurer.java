@@ -71,28 +71,13 @@ public class SoundConfigurer extends Configurer {
       controls.setLayout(new BoxLayout(controls, BoxLayout.X_AXIS));
       controls.add(new JLabel(name));
       JButton b = new JButton("Play");
-      b.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          play();
-        }
-      });
+      b.addActionListener(e -> play());
       controls.add(b);
       b = new JButton("Default");
-      b.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          setValue(DEFAULT);
-        }
-      });
+      b.addActionListener(e -> setValue(DEFAULT));
       controls.add(b);
       b = new JButton("Select");
-      b.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          chooseClip();
-        }
-      });
+      b.addActionListener(e -> chooseClip());
       controls.add(b);
       textField = new JTextField();
       textField.setMaximumSize(
@@ -161,19 +146,16 @@ public class SoundConfigurer extends Configurer {
   }
 
   protected AudioClipFactory createAudioClipFactory() {
-    return new AudioClipFactory() {
-      @Override
-      public AudioClip getAudioClip(URL url) {
-        if (url.toString().toLowerCase().endsWith(".mp3")) {
-          return new Mp3AudioClip(url);
+    return url -> {
+      if (url.toString().toLowerCase().endsWith(".mp3")) {
+        return new Mp3AudioClip(url);
+      }
+      else {
+        try (InputStream in = url.openStream()) {
+          return new AudioSystemClip(in);
         }
-        else {
-          try (InputStream in = url.openStream()) {
-            return new AudioSystemClip(in);
-          }
-          catch (IOException e) {
-            return null;
-          }
+        catch (IOException e) {
+          return null;
         }
       }
     };

@@ -80,12 +80,8 @@ public class ToolbarMenu extends AbstractConfigurable
   protected Runnable menuBuilder;
 
   public ToolbarMenu() {
-    launch = new LaunchButton(Resources.getString(Resources.MENU), TOOLTIP, BUTTON_TEXT, BUTTON_HOTKEY, BUTTON_ICON, new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        launch();
-      }
-    });
+    launch = new LaunchButton(
+      Resources.getString(Resources.MENU), TOOLTIP, BUTTON_TEXT, BUTTON_HOTKEY, BUTTON_ICON, e -> launch());
     menu = new JPopupMenu();
     launch.putClientProperty(MENU_PROPERTY, menu);
     launch.setToolTipText("Display Menu Options");
@@ -239,12 +235,7 @@ public class ToolbarMenu extends AbstractConfigurable
             final JMenuItem otherItem = (JMenuItem) component;
             JMenuItem myItem =
               new JMenuItem(otherItem.getText(), otherItem.getIcon());
-            myItem.addActionListener(new ActionListener() {
-              @Override
-              public void actionPerformed(ActionEvent e) {
-                otherItem.doClick();
-              }
-            });
+            myItem.addActionListener(e -> otherItem.doClick());
             subMenu.add(myItem);
             buttonsToMenuMap.put(otherItem, myItem);
           }
@@ -254,12 +245,7 @@ public class ToolbarMenu extends AbstractConfigurable
         else {
           JMenuItem mi = new JMenuItem(b.getText(), b.getIcon());
           mi.setEnabled(b.isEnabled());
-          mi.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-              b.doClick();
-            }
-          });
+          mi.addActionListener(e -> b.doClick());
           buttonsToMenuMap.put(b, mi);
           menu.add(mi);
         }
@@ -269,12 +255,9 @@ public class ToolbarMenu extends AbstractConfigurable
 
   protected void scheduleBuildMenu() {
     if (menuBuilder == null) {
-      menuBuilder = new Runnable() {
-        @Override
-        public void run() {
-          buildMenu();
-          menuBuilder = null;
-        }
+      menuBuilder = () -> {
+        buildMenu();
+        menuBuilder = null;
       };
       SwingUtilities.invokeLater(menuBuilder);
     }

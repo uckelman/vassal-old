@@ -75,19 +75,9 @@ public class PredefinedSetup extends AbstractConfigurable implements GameCompone
 
     menu = new MenuProxy();
 
-    showFile = new VisibilityCondition() {
-      @Override
-      public boolean shouldBeVisible() {
-        return !isMenu && useFile;
-      }
-    };
+    showFile = () -> !isMenu && useFile;
 
-    showUseFile = new VisibilityCondition() {
-      @Override
-      public boolean shouldBeVisible() {
-        return !isMenu;
-      }
-    };
+    showUseFile = () -> !isMenu;
   }
 
   @Override

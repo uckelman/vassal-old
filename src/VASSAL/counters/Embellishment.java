@@ -988,12 +988,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       controls.add(nameConfig.getControls(), "span 4,wrap,growx");
 
       alwaysActiveConfig = new BooleanConfigurer(null, "Always active?", e.alwaysActive);
-      alwaysActiveConfig.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          showHideFields();
-        }
-      });
+      alwaysActiveConfig.addPropertyChangeListener(evt -> showHideFields());
 
       controls.add(alwaysActiveConfig.getControls(), "span 2");
       controls.add(drawUnderneath, "span 2,wrap");
@@ -1020,12 +1015,7 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       levelBox.add(firstLevelConfig.getControls());
       controls.add(levelBox, "span 2,wrap");
 
-      followConfig.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          showHideFields();
-        }
-      });
+      followConfig.addPropertyChangeListener(e14 -> showHideFields());
 
       actionLabel =  new JLabel("Action");
       final Font defaultFont = actionLabel.getFont();
@@ -1083,26 +1073,14 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       controls.add(rndKeyConfig.getControls(), "wrap");
 
       images = getImagePicker();
-      images.addListSelectionListener(new ListSelectionListener() {
-        @Override
-        public void valueChanged(ListSelectionEvent e) {
-          setUpDownEnabled();
-        }});
+      images.addListSelectionListener(e13 -> setUpDownEnabled());
       controls.add(images, "span 4,split,grow");
 
       up = new JButton(IconFactory.getIcon("go-up", IconFamily.XSMALL));
-      up.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          moveSelectedUp();
-        }});
+      up.addActionListener(e12 -> moveSelectedUp());
 
       down = new JButton(IconFactory.getIcon("go-down", IconFamily.XSMALL));
-      down.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          moveSelectedDown();
-        }});
+      down.addActionListener(e1 -> moveSelectedDown());
 
       final Box upDownPanel = Box.createVerticalBox();
       upDownPanel.add(Box.createVerticalGlue());
@@ -1124,23 +1102,17 @@ public class Embellishment extends Decorator implements TranslatablePiece {
       controls.add(box, "span 2,growx");
 
       box = Box.createHorizontalBox();
-      prefix.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent evt) {
-          if (prefix.isSelected()) {
-            suffix.setSelected(false);
-          }
-          changeLevelName();
+      prefix.addActionListener(evt -> {
+        if (prefix.isSelected()) {
+          suffix.setSelected(false);
         }
+        changeLevelName();
       });
-      suffix.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent evt) {
-          if (suffix.isSelected()) {
-            prefix.setSelected(false);
-          }
-          changeLevelName();
+      suffix.addActionListener(evt -> {
+        if (suffix.isSelected()) {
+          prefix.setSelected(false);
         }
+        changeLevelName();
       });
       box.add(prefix);
       box.add(suffix);
@@ -1148,37 +1120,26 @@ public class Embellishment extends Decorator implements TranslatablePiece {
 
       final JPanel buttonPanel = new JPanel(new MigLayout("ins 0","[grow 1]rel[grow 1]"));
       JButton b = new JButton("Add Level");
-      b.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent evt) {
-          names.add(null);
-          isPrefix.add(null);
-          images.addEntry();
-        }
+      b.addActionListener(evt -> {
+        names.add(null);
+        isPrefix.add(null);
+        images.addEntry();
       });
       buttonPanel.add(b, "growx");
 
       b = new JButton("Remove Level");
-      b.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent evt) {
-          final int index = images.getList().getSelectedIndex();
-          if (index >= 0) {
-            names.remove(index);
-            isPrefix.remove(index);
-            images.removeEntryAt(index);
-          }
+      b.addActionListener(evt -> {
+        final int index = images.getList().getSelectedIndex();
+        if (index >= 0) {
+          names.remove(index);
+          isPrefix.remove(index);
+          images.removeEntryAt(index);
         }
       });
       buttonPanel.add(b, "growx");
       controls.add(buttonPanel, "span 4,center,growx,wrap");
 
-      images.getList().addListSelectionListener(new ListSelectionListener() {
-        @Override
-        public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-          updateLevelName();
-        }
-      });
+      images.getList().addListSelectionListener(evt -> updateLevelName());
 
       showHideFields();
 

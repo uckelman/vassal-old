@@ -458,22 +458,19 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
       idDisplay.setEditable(false);
       idBox.add(idDisplay);
       JButton change = new JButton("Change");
-      change.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          String s = (String)JOptionPane.showInputDialog(
-              GameModule.getGameModule().getFrame(),
-              "Are you sure you wish to change the Extension Id?\n\nThe Extension Id links counters in existing save\ngames to the counter definitions in this Extension.\n\nIf you change the Id, then the Saved Game Updater\nmay not be able to update the counters from existing\nSaved Games.\n\nNew Extension Id:",
-              "",
-              JOptionPane.WARNING_MESSAGE,
-              null,
-              null,
-              getExtensionId());
-          if (s != null && ! s.equals(getExtensionId())) {
-            extensionId = s;
-            updateGpIds();
-            idDisplay.setText(getExtensionId());
-          }
+      change.addActionListener(e -> {
+        String s = (String)JOptionPane.showInputDialog(
+            GameModule.getGameModule().getFrame(),
+            "Are you sure you wish to change the Extension Id?\n\nThe Extension Id links counters in existing save\ngames to the counter definitions in this Extension.\n\nIf you change the Id, then the Saved Game Updater\nmay not be able to update the counters from existing\nSaved Games.\n\nNew Extension Id:",
+            "",
+            JOptionPane.WARNING_MESSAGE,
+            null,
+            null,
+            getExtensionId());
+        if (s != null && ! s.equals(getExtensionId())) {
+          extensionId = s;
+          updateGpIds();
+          idDisplay.setText(getExtensionId());
         }
       });
       idBox.add(change);
@@ -484,23 +481,15 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
 
       Box b = Box.createHorizontalBox();
       JButton ok = new JButton("Save");
-      ok.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          setAttribute(VERSION, config.getValue());
-          setAttribute(DESCRIPTION, dconfig.getValue());
-          setAttribute(UNIVERSAL, uconfig.getValue());
-          d.dispose();
-        }
+      ok.addActionListener(e -> {
+        setAttribute(VERSION, config.getValue());
+        setAttribute(DESCRIPTION, dconfig.getValue());
+        setAttribute(UNIVERSAL, uconfig.getValue());
+        d.dispose();
       });
       b.add(ok);
       JButton cancel = new JButton("Cancel");
-      cancel.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          d.dispose();
-        }
-      });
+      cancel.addActionListener(e -> d.dispose());
       b.add(cancel);
       d.add(b);
       d.pack();

@@ -371,19 +371,18 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
       tf.setText(trait.mapShaderName);
       final JButton b = new JButton("Select");
       selectShader.add(b);
-      b.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          ChooseComponentDialog d = new ChooseComponentDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, panel), MapShader.class);
-          d.setVisible(true);
-          if (d.getTarget() != null) {
-            mapShaderId = d.getTarget().getConfigureName();
-            tf.setText(mapShaderId);
-          }
-          else {
-            mapShaderId = null;
-            tf.setText("");
-          }
+      b.addActionListener(e -> {
+        ChooseComponentDialog d = new ChooseComponentDialog(
+          (Frame) SwingUtilities.getAncestorOfClass(Frame.class, panel),
+          MapShader.class);
+        d.setVisible(true);
+        if (d.getTarget() != null) {
+          mapShaderId = d.getTarget().getConfigureName();
+          tf.setText(mapShaderId);
+        }
+        else {
+          mapShaderId = null;
+          tf.setText("");
         }
       });
 
@@ -394,12 +393,7 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
 
       fixedRadius = new BooleanConfigurer(null, "Fixed Radius?",
                                           Boolean.valueOf(trait.fixedRadius));
-      fixedRadius.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          updateRangeVisibility();
-        }
-      });
+      fixedRadius.addPropertyChangeListener(evt -> updateRangeVisibility());
       panel.add(fixedRadius.getControls());
 
       radiusValue = new IntConfigurer(null, "Radius: ", trait.radius);
@@ -414,20 +408,10 @@ public class AreaOfEffect extends Decorator implements TranslatablePiece, MapSha
 
       updateRangeVisibility();
 
-      alwaysActive.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          updateCommandVisibility();
-        }
-      });
+      alwaysActive.addPropertyChangeListener(evt -> updateCommandVisibility());
       updateCommandVisibility();
 
-      useMapShader.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          updateFillVisibility();
-        }
-      });
+      useMapShader.addPropertyChangeListener(evt -> updateFillVisibility());
       updateFillVisibility();
 
       panel.add(alwaysActive.getControls());

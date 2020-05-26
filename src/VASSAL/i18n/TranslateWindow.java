@@ -131,13 +131,10 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     langPanel.add(new JLabel("Language:  "));
     langBox = new JComboBox<>(Localization.getInstance().getTranslationList());
     langPanel.add(langBox);
-    boxListener = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        commitTableEdit();
-        String selectedTranslation = (String) ((JComboBox) e.getSource()).getSelectedItem();
-        changeLanguage(selectedTranslation);
-      }
+    boxListener = e -> {
+      commitTableEdit();
+      String selectedTranslation = (String) ((JComboBox) e.getSource()).getSelectedItem();
+      changeLanguage(selectedTranslation);
     };
     langBox.addActionListener(boxListener);
     if (Localization.getInstance().getTranslationList().length > 0) {
@@ -146,11 +143,7 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     langPanel.setMinimumSize(new Dimension(800, 0));
 
     JButton addButton = new JButton("Add translation");
-    addButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        getNewTranslation();
-      }});
+    addButton.addActionListener(e -> getNewTranslation());
 
     langPanel.add(addButton);
 
@@ -275,28 +268,20 @@ public class TranslateWindow extends JDialog implements ListSelectionListener,
     buttonBox.add(helpButton);
 
     final JButton okButton = new JButton(Resources.getString(Resources.OK));
-    okButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        try {
-          save();
-        }
-        catch (IOException e1) {
-          WriteErrorDialog.error(e1,
-            GameModule.getGameModule().getArchiveWriter().getName());
-        }
+    okButton.addActionListener(e -> {
+      try {
+        save();
+      }
+      catch (IOException e1) {
+        WriteErrorDialog.error(e1,
+          GameModule.getGameModule().getArchiveWriter().getName());
       }
     });
     buttonBox.add(okButton);
 
     final JButton cancelButton = new JButton(
       Resources.getString(Resources.CANCEL));
-    cancelButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        cancel();
-      }
-    });
+    cancelButton.addActionListener(e -> cancel());
     buttonBox.add(cancelButton);
 
     return buttonBox;

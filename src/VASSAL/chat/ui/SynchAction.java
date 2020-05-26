@@ -97,15 +97,12 @@ public class SynchAction extends AbstractAction {
 
 
   public static PlayerActionFactory factory(final ChatServerConnection client) {
-    return new PlayerActionFactory() {
-      @Override
-      public Action getAction(SimplePlayer p, JTree tree) {
-        final Room r = client.getRoom();
-        if (client instanceof LockableChatServerConnection && ((LockableChatServerConnection) client).isDefaultRoom(r)) {
-          return null;
-        }
-        return new SynchAction(p,client);
+    return (p, tree) -> {
+      final Room r = client.getRoom();
+      if (client instanceof LockableChatServerConnection && ((LockableChatServerConnection) client).isDefaultRoom(r)) {
+        return null;
       }
+      return new SynchAction(p,client);
     };
   }
 }

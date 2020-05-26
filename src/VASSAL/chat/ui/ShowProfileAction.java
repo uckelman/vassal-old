@@ -50,12 +50,7 @@ public class ShowProfileAction extends AbstractAction {
   }
 
   public static PlayerActionFactory factory() {
-    return new PlayerActionFactory() {
-      @Override
-      public Action getAction(SimplePlayer p, JTree tree) {
-        return new ShowProfileAction(p,
-          (Frame) SwingUtilities.getAncestorOfClass(Frame.class, tree));
-      }
-    };
+    return (p, tree) -> new ShowProfileAction(p,
+      (Frame) SwingUtilities.getAncestorOfClass(Frame.class, tree));
   }
 }

@@ -385,14 +385,11 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         if (commitStyle == COMMIT_ON_APPLY) {
           applyButton = new JButton("Apply");
 
-          applyButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-              if (applyButton != null) {
-                applyButton.setEnabled(false);
-              }
-              updateStateFromFields();
+          applyButton.addActionListener(event -> {
+            if (applyButton != null) {
+              applyButton.setEnabled(false);
             }
+            updateStateFromFields();
           });
 
           applyButton.setMnemonic(java.awt.event.KeyEvent.VK_A); // respond to Alt+A
@@ -422,12 +419,7 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
               case COMMIT_IMMEDIATELY:
                 // queue commit operation because it could do something
                 // unsafe in a an event update
-                SwingUtilities.invokeLater(new Runnable() {
-                  @Override
-                  public void run() {
-                    updateStateFromFields();
-                  }
-                });
+                SwingUtilities.invokeLater(() -> updateStateFromFields());
                 break;
               case COMMIT_ON_APPLY:
                 applyButton.setEnabled(true);
@@ -534,12 +526,9 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
           JButton closeButton = new JButton("Close");
           closeButton.setMnemonic(java.awt.event.KeyEvent.VK_C); // respond to Alt+C // key event cannot be resolved
 
-          closeButton.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-              updateStateFromFields();
-              frame.setVisible(false);
-            }
+          closeButton.addActionListener(e -> {
+            updateStateFromFields();
+            frame.setVisible(false);
           });
 
           c.gridwidth = 1;
@@ -676,20 +665,17 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
         button.setBackground(value);
         button.setText("sample");
       }
-      button.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent event) {
-          JButton button = (JButton) event.getSource();
-          Color value = button.getBackground();
-          Color newColor = JColorChooser.showDialog(PropertyPanel.this, "Choose background color or CANCEL to use default color scheme", value);
-          if (newColor != null) {
-            button.setBackground(newColor);
-            button.setText("sample");
-          }
-          else {
-            button.setBackground(PropertyPanel.this.getBackground());
-            button.setText("Default");
-          }
+      button.addActionListener(event -> {
+        JButton button1 = (JButton) event.getSource();
+        Color value1 = button1.getBackground();
+        Color newColor = JColorChooser.showDialog(PropertyPanel.this, "Choose background color or CANCEL to use default color scheme", value1);
+        if (newColor != null) {
+          button1.setBackground(newColor);
+          button1.setText("sample");
+        }
+        else {
+          button1.setBackground(PropertyPanel.this.getBackground());
+          button1.setText("Default");
         }
       });
       ++c.gridx;
@@ -780,32 +766,29 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       // add button
       JButton addButton = new JButton("Insert Row");
       buttonPanel.add(addButton);
-      addButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
+      addButton.addActionListener(e -> {
 
-          if (table.isEditing()) {
-            table.getCellEditor().stopCellEditing();
-          }
+        if (table.isEditing()) {
+          table.getCellEditor().stopCellEditing();
+        }
 
-          ListSelectionModel selection = table.getSelectionModel();
-          int iSelection;
-          if (selection.isSelectionEmpty()) {
-            tableModel.addRow(defaultValues);
-            iSelection = tableModel.getRowCount() - 1;
-          }
-          else {
-            iSelection = selection.getMaxSelectionIndex();
-            tableModel.insertRow(iSelection, defaultValues);
-          }
-          tableModel.fireTableDataChanged(); // BING BING BING
-          selection.setSelectionInterval(iSelection, iSelection);
-          table.grabFocus();
-          table.editCellAt(iSelection, 0);
-          Component comp = table.getCellEditor().getTableCellEditorComponent(table, null, true, iSelection, 0);
-          if (comp instanceof JComponent) {
-            ((JComponent) comp).grabFocus();
-          }
+        ListSelectionModel selection = table.getSelectionModel();
+        int iSelection;
+        if (selection.isSelectionEmpty()) {
+          tableModel.addRow(defaultValues);
+          iSelection = tableModel.getRowCount() - 1;
+        }
+        else {
+          iSelection = selection.getMaxSelectionIndex();
+          tableModel.insertRow(iSelection, defaultValues);
+        }
+        tableModel.fireTableDataChanged(); // BING BING BING
+        selection.setSelectionInterval(iSelection, iSelection);
+        table.grabFocus();
+        table.editCellAt(iSelection, 0);
+        Component comp = table.getCellEditor().getTableCellEditorComponent(table, null, true, iSelection, 0);
+        if (comp instanceof JComponent) {
+          ((JComponent) comp).grabFocus();
         }
       });
 
@@ -813,33 +796,27 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
       final JButton deleteButton = new JButton("Delete Row");
       deleteButton.setEnabled(false);
       buttonPanel.add(deleteButton);
-      deleteButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
+      deleteButton.addActionListener(e -> {
 
-          if (table.isEditing()) {
-            table.getCellEditor().stopCellEditing();
-          }
-
-          ListSelectionModel selection = table.getSelectionModel();
-          for (int i = selection.getMaxSelectionIndex(); i >= selection.getMinSelectionIndex(); --i) {
-            if (selection.isSelectedIndex(i)) {
-              tableModel.removeRow(i);
-            }
-          }
-          tableModel.fireTableDataChanged(); // BING BING BING
+        if (table.isEditing()) {
+          table.getCellEditor().stopCellEditing();
         }
+
+        ListSelectionModel selection = table.getSelectionModel();
+        for (int i = selection.getMaxSelectionIndex(); i >= selection.getMinSelectionIndex(); --i) {
+          if (selection.isSelectedIndex(i)) {
+            tableModel.removeRow(i);
+          }
+        }
+        tableModel.fireTableDataChanged(); // BING BING BING
       });
 
       // Ask to be notified of selection changes.
-      table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-        @Override
-        public void valueChanged(ListSelectionEvent event) {
-          //Ignore extra messages.
-          if (!event.getValueIsAdjusting()) {
-            ListSelectionModel lsm = (ListSelectionModel) event.getSource();
-            deleteButton.setEnabled(!lsm.isSelectionEmpty());
-          }
+      table.getSelectionModel().addListSelectionListener(event -> {
+        //Ignore extra messages.
+        if (!event.getValueIsAdjusting()) {
+          ListSelectionModel lsm = (ListSelectionModel) event.getSource();
+          deleteButton.setEnabled(!lsm.isSelectionEmpty());
         }
       });
 

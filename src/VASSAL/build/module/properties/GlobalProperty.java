@@ -64,12 +64,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
   protected MutablePropertiesContainer parentContainer;
 
   public GlobalProperty() {
-    numericVisibility = new VisibilityCondition() {
-      @Override
-      public boolean shouldBeVisible() {
-        return isNumeric();
-      }
-    };
+    numericVisibility = () -> isNumeric();
   }
 
   public GlobalProperty(GlobalProperty p) {

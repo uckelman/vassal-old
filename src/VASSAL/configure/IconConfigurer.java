@@ -98,22 +98,16 @@ public class IconConfigurer extends Configurer {
       p.setPreferredSize(new Dimension(32,32));
       controls.add(p);
       final JButton reset = new JButton("Select");
-      reset.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          selectImage();
-          p.repaint();
-        }
+      reset.addActionListener(e -> {
+        selectImage();
+        p.repaint();
       });
       controls.add(reset);
       if (defaultImage != null) {
         final JButton useDefault = new JButton("Default");
-        useDefault.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            setValue(defaultImage);
-            p.repaint();
-          }
+        useDefault.addActionListener(e -> {
+          setValue(defaultImage);
+          p.repaint();
         });
         controls.add(useDefault);
       }

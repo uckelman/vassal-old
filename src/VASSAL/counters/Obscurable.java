@@ -551,12 +551,7 @@ public class Obscurable extends Decorator implements TranslatablePiece {
     if (retVal != null && PEEK == displayStyle &&
         peekKey == null && obscuredToOthers()) {
 // FIXME: This probably causes a race condition. Can we do this directly?
-      Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-          KeyBuffer.getBuffer().remove(Decorator.getOutermost(Obscurable.this));
-        }
-      };
+      Runnable runnable = () -> KeyBuffer.getBuffer().remove(Decorator.getOutermost(Obscurable.this));
       SwingUtilities.invokeLater(runnable);
     }
     return retVal;
@@ -709,17 +704,14 @@ public class Obscurable extends Decorator implements TranslatablePiece {
       imagePicker.setVisible(p.displayStyle == IMAGE);
       controls.add(imagePicker);
 
-      displayOption.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          showDisplayOption.repaint();
-          peekKeyInput.getControls().setVisible(optionNames[1].equals(evt.getNewValue()));
-          peekCommandInput.getControls().setVisible(optionNames[1].equals(evt.getNewValue()));
-          imagePicker.setVisible(optionNames[3].equals(evt.getNewValue()));
-          Window w = SwingUtilities.getWindowAncestor(controls);
-          if (w != null) {
-            w.pack();
-          }
+      displayOption.addPropertyChangeListener(evt -> {
+        showDisplayOption.repaint();
+        peekKeyInput.getControls().setVisible(optionNames[1].equals(evt.getNewValue()));
+        peekCommandInput.getControls().setVisible(optionNames[1].equals(evt.getNewValue()));
+        imagePicker.setVisible(optionNames[3].equals(evt.getNewValue()));
+        Window w = SwingUtilities.getWindowAncestor(controls);
+        if (w != null) {
+          w.pack();
         }
       });
     }

@@ -255,12 +255,7 @@ public class MovementMarkable extends Decorator implements TranslatablePiece {
             || GlobalOptions.PROMPT.equals(value);
       }
       if (!enabled) {
-        Runnable runnable = new Runnable() {
-          @Override
-          public void run() {
-            JOptionPane.showMessageDialog(box, "You must enable the \"Mark Pieces that Move\" option in one or more Map Windows", "Option not enabled", JOptionPane.WARNING_MESSAGE);
-          }
-        };
+        Runnable runnable = () -> JOptionPane.showMessageDialog(box, "You must enable the \"Mark Pieces that Move\" option in one or more Map Windows", "Option not enabled", JOptionPane.WARNING_MESSAGE);
         SwingUtilities.invokeLater(runnable);
       }
       return box;

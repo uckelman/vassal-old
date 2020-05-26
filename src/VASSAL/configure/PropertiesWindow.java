@@ -82,12 +82,9 @@ public class PropertiesWindow extends JDialog {
 
     setLayout(new BoxLayout(getContentPane(),BoxLayout.Y_AXIS));
     configurer = target.getConfigurer();
-    target.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
-          setTitle((String) evt.getNewValue());
-        }
+    target.addPropertyChangeListener(evt -> {
+      if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
+        setTitle((String) evt.getNewValue());
       }
     });
     add(configurer.getControls());
@@ -96,21 +93,11 @@ public class PropertiesWindow extends JDialog {
 
     final Box buttonBox = Box.createHorizontalBox();
     final JButton okButton = new JButton("Ok");
-    okButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        save();
-      }
-    });
+    okButton.addActionListener(e -> save());
     buttonBox.add(okButton);
 
     final JButton cancelButton = new JButton("Cancel");
-    cancelButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        cancel();
-      }
-    });
+    cancelButton.addActionListener(e -> cancel());
     buttonBox.add(cancelButton);
 
     if (target.getHelpFile() != null) {

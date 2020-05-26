@@ -209,23 +209,15 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
     Box box = Box.createHorizontalBox();
     box.setAlignmentX(0.5F);
     JButton b = new JButton(Resources.getString(Resources.OK));
-    b.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        AvailableDeck selection = (AvailableDeck) list.getSelectedValue();
-        if (selection != null)
-          deck = selection.pile;
-        d.dispose();
-      }
+    b.addActionListener(e -> {
+      AvailableDeck selection = (AvailableDeck) list.getSelectedValue();
+      if (selection != null)
+        deck = selection.pile;
+      d.dispose();
     });
     box.add(b);
     b = new JButton(Resources.getString(Resources.CANCEL));
-    b.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        d.dispose();
-      }
-    });
+    b.addActionListener(e -> d.dispose());
     box.add(b);
     d.add(box);
     d.pack();
@@ -288,16 +280,13 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
       JButton select = new JButton("Select Deck");
       tf.setEditable(false);
       updateDeckName();
-      select.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          VASSAL.configure.ChooseComponentDialog d = new VASSAL.configure.ChooseComponentDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, controls), DrawPile.class);
-          d.setTitle("Select Deck");
-          d.setVisible(true);
-          if (d.getTarget() != null) {
-            deckId = UniqueIdManager.getIdentifier((UniqueIdManager.Identifyable)d.getTarget());
-            updateDeckName();
-          }
+      select.addActionListener(e -> {
+        VASSAL.configure.ChooseComponentDialog d = new VASSAL.configure.ChooseComponentDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, controls), DrawPile.class);
+        d.setTitle("Select Deck");
+        d.setVisible(true);
+        if (d.getTarget() != null) {
+          deckId = UniqueIdManager.getIdentifier((UniqueIdManager.Identifyable)d.getTarget());
+          updateDeckName();
         }
       });
       final Box box = Box.createHorizontalBox();
@@ -310,12 +299,9 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
       controls.add(promptText.getControls());
       promptText.getControls().setVisible(p.deckId == null || p.deckId.length() == 0);
       box.setVisible(p.deckId != null && p.deckId.length() > 0);
-      prompt.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          box.setVisible(!prompt.isSelected());
-          promptText.getControls().setVisible(prompt.isSelected());
-        }
+      prompt.addActionListener(e -> {
+        box.setVisible(!prompt.isSelected());
+        promptText.getControls().setVisible(prompt.isSelected());
       });
       prompt.setSelected(p.deckId == null || p.deckId.length() == 0);
     }

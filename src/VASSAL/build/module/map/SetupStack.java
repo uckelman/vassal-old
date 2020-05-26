@@ -136,32 +136,19 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (USE_GRID_LOCATION.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          Board b = getConfigureBoard();
-          if (b == null)
-            return false;
-          else
-            return b.getGrid() != null;
-        }
+      return () -> {
+        Board b = getConfigureBoard();
+        if (b == null)
+          return false;
+        else
+          return b.getGrid() != null;
       };
     }
     else if (LOCATION.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return isUseGridLocation();
-        }
-      };
+      return () -> isUseGridLocation();
     }
     else if (X_POSITION.equals(name) || Y_POSITION.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return !isUseGridLocation();
-        }
-      };
+      return () -> !isUseGridLocation();
     }
     else
       return super.getAttributeVisibility(name);
@@ -520,12 +507,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   protected void updateConfigureButton() {
     if (configureButton == null) {
       configureButton = new JButton("Reposition Stack");
-      configureButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          configureStack();
-        }
-      });
+      configureButton.addActionListener(e -> configureStack());
     }
     configureButton.setEnabled(getConfigureBoard() != null && buildComponents.size() > 0);
   }
@@ -641,39 +623,30 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
 
       Box buttonPanel = Box.createHorizontalBox();
       JButton snapButton = new JButton("Snap to grid");
-      snapButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          snap();
-          view.grabFocus();
-        }
+      snapButton.addActionListener(e -> {
+        snap();
+        view.grabFocus();
       });
       buttonPanel.add(snapButton);
 
       JButton okButton = new JButton("Ok");
-      okButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          StackConfigurer.this.setVisible(false);
-          // Update the Component configurer to reflect the change
-          xConfig.setValue(String.valueOf(myStack.pos.x));
-          yConfig.setValue(String.valueOf(myStack.pos.y));
-          if (locationConfig != null) { // DrawPile's do not have a location
-            updateLocation();
-            locationConfig.setValue(location);
-          }
+      okButton.addActionListener(e -> {
+        StackConfigurer.this.setVisible(false);
+        // Update the Component configurer to reflect the change
+        xConfig.setValue(String.valueOf(myStack.pos.x));
+        yConfig.setValue(String.valueOf(myStack.pos.y));
+        if (locationConfig != null) { // DrawPile's do not have a location
+          updateLocation();
+          locationConfig.setValue(location);
         }
       });
       JPanel okPanel = new JPanel();
       okPanel.add(okButton);
 
       JButton canButton = new JButton("Cancel");
-      canButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          cancel();
-          StackConfigurer.this.setVisible(false);
-        }
+      canButton.addActionListener(e -> {
+        cancel();
+        StackConfigurer.this.setVisible(false);
       });
       okPanel.add(canButton);
 

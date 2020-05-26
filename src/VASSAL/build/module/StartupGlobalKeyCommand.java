@@ -70,10 +70,7 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
   public VisibilityCondition getAttributeVisibility(String key) {
     if (BUTTON_TEXT.equals(key) || TOOLTIP.equals(key) ||
         ICON.equals(key)        || HOTKEY.equals(key)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {  return false; }
-      };
+      return () -> false;
     }
     else {
       return super.getAttributeVisibility(key);
@@ -85,11 +82,8 @@ public class StartupGlobalKeyCommand extends GlobalKeyCommand implements GameCom
 
   @Override
   public void setup(boolean gameStarting) {
-    if (gameStarting && !hasStarted){
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() { apply(); }
-      });
+    if (gameStarting && !hasStarted) {
+      SwingUtilities.invokeLater(() -> apply());
     }
     hasStarted = gameStarting;
   }

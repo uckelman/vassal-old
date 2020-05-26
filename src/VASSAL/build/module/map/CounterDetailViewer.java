@@ -178,11 +178,8 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   public CounterDetailViewer() {
     // Set up the timer; this isn't the real delay---we always check the
     // preferences for that.
-    delayTimer = new Timer(delay, new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        if (mouseInView) showDetails();
-      }
+    delayTimer = new Timer(delay, e -> {
+      if (mouseInView) showDetails();
     });
 
     delayTimer.setRepeats(false);
@@ -1190,72 +1187,32 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (BORDER_WIDTH.equals(name) || DRAW_PIECES_AT_ZOOM.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return drawPieces;
-        }
-      };
+      return () -> drawPieces;
     }
     else if (FONT_SIZE.equals(name) || SUMMARY_REPORT_FORMAT.equals(name) || COUNTER_REPORT_FORMAT.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return showText;
-        }
-      };
+      return () -> showText;
     }
     else if (DRAW_PIECES.equals(name) || SHOW_TEXT.equals(name) || SHOW_NOSTACK.equals(name) || SHOW_DECK.equals(name) || DISPLAY.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return true;
-        }
-      };
+      return () -> true;
     }
     else if (LAYER_LIST.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return (displayWhat.equals(INC_LAYERS) || displayWhat.equals(EXC_LAYERS));
-        }
-      };
+      return () -> (displayWhat.equals(INC_LAYERS) || displayWhat.equals(EXC_LAYERS));
     }
     else if (PROPERTY_FILTER.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return displayWhat.equals(FILTER);
-        }
-      };
+      return () -> displayWhat.equals(FILTER);
     }
     else if (EMPTY_HEX_REPORT_FORMAT.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return showText && minimumDisplayablePieces == 0;
-        }
-      };
+      return () -> showText && minimumDisplayablePieces == 0;
     }
     else if (SHOW_MOVE_SELECTED.equals(name) || SHOW_NON_MOVABLE.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return showNoStack;
-        }
-      };
+      return () -> showNoStack;
     }
     /*
      * The following fields are not to be displayed. They are either obsolete
      * or maintained for backward compatibility
      */
     else if (VERSION.equals(name) || SHOW_TEXT_SINGLE_DEPRECATED.equals(name) || GRAPH_SINGLE_DEPRECATED.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return false;
-        }
-      };
+      return () -> false;
     }
     return null;
   }

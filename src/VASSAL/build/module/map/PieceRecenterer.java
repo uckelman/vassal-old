@@ -58,12 +58,7 @@ public class PieceRecenterer extends AbstractConfigurable implements DeckVisitor
   protected DeckVisitorDispatcher dispatcher;
 
   public PieceRecenterer() {
-    ActionListener al = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        GameModule.getGameModule().sendAndLog(recenter(map));
-      }
-    };
+    ActionListener al = e -> GameModule.getGameModule().sendAndLog(recenter(map));
     launch = new LaunchButton("Recenter",TOOLTIP,BUTTON_TEXT,HOTKEY,ICON,al);
     dispatcher = new DeckVisitorDispatcher(this);
   }

@@ -179,19 +179,16 @@ public class LayoutConfigurer extends Configurer {
         table.getSelectionModel().setSelectionInterval(0, 0);
       }
       ListSelectionModel rowSM = table.getSelectionModel();
-      rowSM.addListSelectionListener(new ListSelectionListener() {
-        @Override
-        public void valueChanged(ListSelectionEvent e) {
-          if (e.getValueIsAdjusting()) return;
+      rowSM.addListSelectionListener(e -> {
+        if (e.getValueIsAdjusting()) return;
 
-          ListSelectionModel lsm = (ListSelectionModel) e.getSource();
-          if (lsm.isSelectionEmpty()) {
-            showItem(NO_CURRENT_ITEM);
-          }
-          else {
-            int selectedRow = lsm.getMinSelectionIndex();
-            showItem(selectedRow);
-          }
+        ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+        if (lsm.isSelectionEmpty()) {
+          showItem(NO_CURRENT_ITEM);
+        }
+        else {
+          int selectedRow = lsm.getMinSelectionIndex();
+          showItem(selectedRow);
         }
       });
 

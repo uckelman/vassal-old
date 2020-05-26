@@ -150,12 +150,9 @@ public class RoomInteractionControlsInitializer implements ChatControlsInitializ
       }
     };
     controls.getRoomTree().addMouseListener(roomPopupBuilder);
-    roomCreator = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        createRoom(controls.getNewRoom().getText());
-        controls.getNewRoom().setText(""); //$NON-NLS-1$
-      }
+    roomCreator = e -> {
+      createRoom(controls.getNewRoom().getText());
+      controls.getNewRoom().setText(""); //$NON-NLS-1$
     };
     controls.getNewRoom().addActionListener(roomCreator);
   }

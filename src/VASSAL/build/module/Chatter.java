@@ -109,12 +109,9 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     });
     input = new JTextField(80);
     input.setFocusTraversalKeysEnabled(false);
-    input.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        send(formatChat(e.getActionCommand()));
-        input.setText(""); //$NON-NLS-1$
-      }
+    input.addActionListener(e -> {
+      send(formatChat(e.getActionCommand()));
+      input.setText(""); //$NON-NLS-1$
     });
     input.setMaximumSize(new Dimension(input.getMaximumSize().width,
                                        input.getPreferredSize().height));
@@ -190,12 +187,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
     final FontConfigurer chatFont = new FontConfigurer(
       "ChatFont", Resources.getString("Chatter.chat_font_preference")
     );
-    chatFont.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        setFont((Font) evt.getNewValue());
-      }
-    });
+    chatFont.addPropertyChangeListener(evt -> setFont((Font) evt.getNewValue()));
 
     mod.getControlPanel().add(this, BorderLayout.CENTER);
 
@@ -214,12 +206,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       Color.magenta
     );
 
-    gameMsgColor.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent e) {
-        gameMsg = (Color) e.getNewValue();
-      }
-    });
+    gameMsgColor.addPropertyChangeListener(e -> gameMsg = (Color) e.getNewValue());
 
     globalPrefs.addOption(
       Resources.getString("Chatter.chat_window"), gameMsgColor
@@ -236,12 +223,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       new Color(160, 160, 160)
     );
 
-    systemMsgColor.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent e) {
-        systemMsg = (Color) e.getNewValue();
-      }
-    });
+    systemMsgColor.addPropertyChangeListener(e -> systemMsg = (Color) e.getNewValue());
 
     globalPrefs.addOption(
       Resources.getString("Chatter.chat_window"), systemMsgColor
@@ -258,12 +240,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       Color.gray
     );
 
-    myChatColor.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent e) {
-        myChat = (Color) e.getNewValue();
-      }
-    });
+    myChatColor.addPropertyChangeListener(e -> myChat = (Color) e.getNewValue());
 
     globalPrefs.addOption(
       Resources.getString("Chatter.chat_window"), myChatColor
@@ -280,12 +257,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable {
       Color.black
     );
 
-    otherChatColor.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent e) {
-        otherChat = (Color) e.getNewValue();
-      }
-    });
+    otherChatColor.addPropertyChangeListener(e -> otherChat = (Color) e.getNewValue());
 
     globalPrefs.addOption(
       Resources.getString("Chatter.chat_window"), otherChatColor

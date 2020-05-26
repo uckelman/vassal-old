@@ -85,21 +85,11 @@ public class SavedGameUpdaterDialog extends JDialog {
     versionField.setMaximumSize(new Dimension(versionField.getMaximumSize().width, versionField.getPreferredSize().height));
     versionBox.add(versionField);
     JButton importButton = new JButton("Import GamePiece info");
-    importButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        importPieceInfo();
-      }
-    });
+    importButton.addActionListener(e -> importPieceInfo());
     versionBox.add(importButton);
     add(versionBox);
     JButton exportButton = new JButton("Export GamePiece info");
-    exportButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        exportPieceInfo();
-      }
-    });
+    exportButton.addActionListener(e -> exportPieceInfo());
     Box importExportBox = Box.createHorizontalBox();
     importExportBox.add(importButton);
     importExportBox.add(exportButton);
@@ -109,12 +99,7 @@ public class SavedGameUpdaterDialog extends JDialog {
     Box left = Box.createVerticalBox();
     left.add(new JLabel("Saved Games:"));
     JButton chooseGamesButton = new JButton("Choose");
-    chooseGamesButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        chooseSavedGames();
-      }
-    });
+    chooseGamesButton.addActionListener(e -> chooseSavedGames());
     left.add(chooseGamesButton);
     savedGamesBox.add(left);
     savedGamesModel = new DefaultListModel();
@@ -140,12 +125,7 @@ public class SavedGameUpdaterDialog extends JDialog {
 
     Box buttonsBox = Box.createHorizontalBox();
     updateButton = new JButton("Update games");
-    updateButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        updateGames();
-      }
-    });
+    updateButton.addActionListener(e -> updateGames());
     updateButton.setEnabled(false);
     buttonsBox.add(updateButton);
     JButton helpButton = new JButton("Help");
@@ -163,12 +143,7 @@ public class SavedGameUpdaterDialog extends JDialog {
     helpButton.addActionListener(new ShowHelpAction(hf.getContents(), null));
     buttonsBox.add(helpButton);
     JButton closeButton = new JButton("Close");
-    closeButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        dispose();
-      }
-    });
+    closeButton.addActionListener(e -> dispose());
     buttonsBox.add(closeButton);
     add(buttonsBox);
     pack();
@@ -177,33 +152,25 @@ public class SavedGameUpdaterDialog extends JDialog {
 
   private void updateGames() {
     updateButton.setEnabled(false);
-    Runnable runnable = new Runnable() {
-      @Override
-      public void run() {
-        for (int i=0,n=savedGamesModel.size();i<n;++i) {
+    Runnable runnable = () -> {
+      for (int i=0,n=savedGamesModel.size();i<n;++i) {
+        try {
+          File savedGame = (File)savedGamesModel.getElementAt(i);
+          updater.updateSavedGame(oldPieceInfo,savedGame);
+          GameModule.getGameModule().warn("Updated "+savedGame.getName()+" from version "+versionField.getText()+" to "+GameModule.getGameModule().getGameVersion());
+        }
+        // FIXME: review error message
+        catch (final IOException e) {
+          Runnable showError = () -> showErrorMessage(e, "Update failed", "Unable to save file");
           try {
-            File savedGame = (File)savedGamesModel.getElementAt(i);
-            updater.updateSavedGame(oldPieceInfo,savedGame);
-            GameModule.getGameModule().warn("Updated "+savedGame.getName()+" from version "+versionField.getText()+" to "+GameModule.getGameModule().getGameVersion());
+            SwingUtilities.invokeAndWait(showError);
           }
           // FIXME: review error message
-          catch (final IOException e) {
-            Runnable showError = new Runnable() {
-              @Override
-              public void run() {
-                showErrorMessage(e,"Update failed","Unable to save file");
-              }
-            };
-            try {
-              SwingUtilities.invokeAndWait(showError);
-            }
-            // FIXME: review error message
-            catch (InterruptedException | InvocationTargetException e1) {
-            }
+          catch (InterruptedException | InvocationTargetException e1) {
           }
         }
-        updateButton.setEnabled(true);
       }
+      updateButton.setEnabled(true);
     };
     new Thread(runnable).start();
   }

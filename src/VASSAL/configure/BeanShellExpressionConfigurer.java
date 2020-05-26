@@ -103,11 +103,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     up = IconFactory.getIcon("go-up", IconFamily.XSMALL);
     down = IconFactory.getIcon("go-down", IconFamily.XSMALL);
     extraDetails = new JButton("Insert");
-    extraDetails.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        doPopup();
-      }});
+    extraDetails.addActionListener(e -> doPopup());
   }
 
   protected void strip() {
@@ -208,20 +204,12 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     final JMenu constantMenu = new JMenu("Constant");
     final JMenuItem integerItem = new JMenuItem("Number");
     integerItem.setToolTipText("A number");
-    integerItem.addActionListener(new ActionListener(){
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        buildInteger();
-      }});
+    integerItem.addActionListener(e -> buildInteger());
     constantMenu.add(integerItem);
 
     final JMenuItem stringItem = new JMenuItem("String");
     stringItem.setToolTipText("A character string");
-    stringItem.addActionListener(new ActionListener(){
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        buildString();
-      }});
+    stringItem.addActionListener(e -> buildString());
     constantMenu.add(stringItem);
     popup.add(constantMenu);
 
@@ -289,11 +277,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   protected void addFunction(JMenu menu, final String op, final String desc, final String[] parms) {
     final JMenuItem item = new JMenuItem(op);
     item.setToolTipText(desc);
-    item.addActionListener(new ActionListener(){
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        buildFunction(op, desc, parms);
-      }});
+    item.addActionListener(e -> buildFunction(op, desc, parms));
     menu.add(item);
   }
 
@@ -324,11 +308,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   protected void addOperator(JMenu menu, final String op, String desc) {
     final JMenuItem item = new JMenuItem(op);
     item.setToolTipText(desc);
-    item.addActionListener(new ActionListener(){
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        insertName(op);
-      }});
+    item.addActionListener(e -> insertName(op));
     menu.add(item);
   }
   /**
@@ -347,11 +327,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
     }
 
     final JMenuItem item = new JMenuItem(propName);
-    item.addActionListener(new ActionListener(){
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        insertPropertyName(propName);
-      }});
+    item.addActionListener(e -> insertPropertyName(propName));
     if (sort) {
       int pos = -1;
       for (int i = 0; i < menu.getItemCount() && pos < 0; i++) {
@@ -387,11 +363,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
           pieceMenu.setText(piece.getDescription());
         }
         final JMenuItem item = new JMenuItem(propName);
-        item.addActionListener(new ActionListener(){
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            insertPropertyName(((JMenuItem) e.getSource()).getText());
-          }});
+        item.addActionListener(e -> insertPropertyName(((JMenuItem) e.getSource()).getText()));
         pieceMenu.add(item);
       }
 

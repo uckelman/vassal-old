@@ -222,12 +222,7 @@ public class Tailer {
   public static void main(String[] args) throws IOException {
     final Tailer t = new Tailer(new File(args[0]));
 
-    t.addEventListener(new EventListener<>() {
-      @Override
-      public void receive(Object src, String s) {
-        System.out.print(s);
-      }
-    });
+    t.addEventListener((src, s) -> System.out.print(s));
 
     t.start();
   }

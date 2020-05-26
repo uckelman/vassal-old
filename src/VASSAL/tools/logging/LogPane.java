@@ -45,12 +45,9 @@ public class LogPane extends JTextArea {
 
     tailer = new Tailer(file);
 
-    tailer.addEventListener(new EventListener<>() {
-      @Override
-      public void receive(Object src, String s) {
-        // NB: JTextArea.append() is thread-safe; it can be called off-EDT.
-        append(s);
-      }
+    tailer.addEventListener((src, s) -> {
+      // NB: JTextArea.append() is thread-safe; it can be called off-EDT.
+      append(s);
     });
 
     // tail the file only when the pane is visible

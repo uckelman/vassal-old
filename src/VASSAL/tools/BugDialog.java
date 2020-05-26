@@ -458,12 +458,7 @@ public class BugDialog extends JDialog {
       // Wait 3 seconds before counting down the latch to ensure
       // that the user has sufficient time to read the message on
       // the first pane.
-      timer = new Timer(2000, new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          latch.countDown();
-        }
-      });
+      timer = new Timer(2000, e -> latch.countDown());
       timer.start();
 
       // Make the request to the server and wait for the latch.
@@ -538,12 +533,7 @@ public class BugDialog extends JDialog {
       // Wait 3 seconds before counting down the latch to ensure
       // that the user has sufficient time to read the message on
       // the first pane.
-      timer = new Timer(2000, new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          latch.countDown();
-        }
-      });
+      timer = new Timer(2000, e -> latch.countDown());
       timer.start();
 
       // Make the request to the server and wait for the latch.
@@ -593,12 +583,9 @@ public class BugDialog extends JDialog {
   }
 
   public static void main(String[] args) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        final BugDialog bd = new BugDialog(null, null);
-        bd.setVisible(true);
-      }
+    SwingUtilities.invokeLater(() -> {
+      final BugDialog bd = new BugDialog(null, null);
+      bd.setVisible(true);
     });
   }
 }

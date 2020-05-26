@@ -897,21 +897,18 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
         // end random layer
 
         box = Box.createVerticalBox();
-        alwaysActive.addItemListener(new ItemListener() {
-          @Override
-          public void itemStateChanged(ItemEvent evt) {
-            if (alwaysActive.isSelected()) {
-              activateCommand.setText("");
-              activateKeyInput.setText("");
-              activateCommand.setEnabled(false);
-              activateKeyInput.setEnabled(false);
-            }
-            else {
-              activateCommand.setText("Activate");
-              activateKeyInput.setText("A");
-              activateCommand.setEnabled(true);
-              activateKeyInput.setEnabled(true);
-            }
+        alwaysActive.addItemListener(evt -> {
+          if (alwaysActive.isSelected()) {
+            activateCommand.setText("");
+            activateKeyInput.setText("");
+            activateCommand.setEnabled(false);
+            activateKeyInput.setEnabled(false);
+          }
+          else {
+            activateCommand.setText("Activate");
+            activateKeyInput.setText("A");
+            activateCommand.setEnabled(true);
+            activateKeyInput.setEnabled(true);
           }
         });
 
@@ -943,12 +940,7 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
         firstLevelConfig = new IntConfigurer(null, " Level 1 = ", e.firstLevelValue);
         levelBox.add(firstLevelConfig.getControls());
         checkBoxes.add(levelBox);
-        followConfig.addPropertyChangeListener(new PropertyChangeListener() {
-          @Override
-          public void propertyChange(PropertyChangeEvent e) {
-            showHideFields();
-          }
-        });
+        followConfig.addPropertyChangeListener(e1 -> showHideFields());
 
         controls.add(box);
 
@@ -971,60 +963,43 @@ public class Embellishment0 extends Decorator implements TranslatablePiece {
         p2.add(box);
 
         box = Box.createHorizontalBox();
-        prefix.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent evt) {
-            if (prefix.isSelected()) {
-              suffix.setSelected(false);
-            }
-            changeLevelName();
+        prefix.addActionListener(evt -> {
+          if (prefix.isSelected()) {
+            suffix.setSelected(false);
           }
+          changeLevelName();
         });
-        suffix.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent evt) {
-            if (suffix.isSelected()) {
-              prefix.setSelected(false);
-            }
-            changeLevelName();
+        suffix.addActionListener(evt -> {
+          if (suffix.isSelected()) {
+            prefix.setSelected(false);
           }
+          changeLevelName();
         });
         box.add(prefix);
         box.add(suffix);
         p2.add(box);
 
         JButton b = new JButton("Add Level");
-        b.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent evt) {
-            names.add(null);
-            isPrefix.add(null);
-            images.addEntry();
-          }
+        b.addActionListener(evt -> {
+          names.add(null);
+          isPrefix.add(null);
+          images.addEntry();
         });
         p2.add(b);
         b = new JButton("Remove Level");
-        b.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent evt) {
-            final int index = images.getList().getSelectedIndex();
-            if (index >= 0) {
-              names.remove(index);
-              isPrefix.remove(index);
-              images.removeEntryAt(index);
-            }
+        b.addActionListener(evt -> {
+          final int index = images.getList().getSelectedIndex();
+          if (index >= 0) {
+            names.remove(index);
+            isPrefix.remove(index);
+            images.removeEntryAt(index);
           }
         });
         p2.add(b);
 
         controls.add(p2);
 
-        images.getList().addListSelectionListener(new ListSelectionListener() {
-          @Override
-          public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-            updateLevelName();
-          }
-        });
+        images.getList().addListSelectionListener(evt -> updateLevelName());
 
         reset(e);
       }

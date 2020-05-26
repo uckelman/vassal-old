@@ -231,21 +231,18 @@ public class CounterGlobalKeyCommand extends Decorator
 
     public Ed(CounterGlobalKeyCommand p) {
 
-      PropertyChangeListener pl = new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
+      PropertyChangeListener pl = evt -> {
 
-          boolean isRange = Boolean.TRUE.equals(restrictRange.getValue());
-          boolean isFixed = Boolean.TRUE.equals(fixedRange.getValue());
+        boolean isRange = Boolean.TRUE.equals(restrictRange.getValue());
+        boolean isFixed = Boolean.TRUE.equals(fixedRange.getValue());
 
-          range.getControls().setVisible(isRange && isFixed);
-          fixedRange.getControls().setVisible(isRange);
-          rangeProperty.getControls().setVisible(isRange && !isFixed);
+        range.getControls().setVisible(isRange && isFixed);
+        fixedRange.getControls().setVisible(isRange);
+        rangeProperty.getControls().setVisible(isRange && !isFixed);
 
-          Window w = SwingUtilities.getWindowAncestor(range.getControls());
-          if (w != null) {
-            w.pack();
-          }
+        Window w = SwingUtilities.getWindowAncestor(range.getControls());
+        if (w != null) {
+          w.pack();
         }
       };
 

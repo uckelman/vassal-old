@@ -64,12 +64,7 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
   protected Deck myDeck;
   protected PropertySource source;
 
-  private VisibilityCondition colorVisibleCondition = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return dummy.isDrawOutline();
-    }
-  };
+  private VisibilityCondition colorVisibleCondition = () -> dummy.isDrawOutline();
 
   private VisibilityCondition reshuffleVisibleCondition = new VisibilityCondition() {
     @Override
@@ -78,54 +73,19 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     }
   };
 
-  private VisibilityCondition faceDownFormatVisibleCondition = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return dummy.getFaceDownOption().equals(USE_MENU);
-    }
-  };
+  private VisibilityCondition faceDownFormatVisibleCondition = () -> dummy.getFaceDownOption().equals(USE_MENU);
 
-  private VisibilityCondition reverseFormatVisibleCondition = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return dummy.isReversible();
-    }
-  };
+  private VisibilityCondition reverseFormatVisibleCondition = () -> dummy.isReversible();
 
-  private VisibilityCondition shuffleFormatVisibleCondition = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return dummy.getShuffleOption().equals(USE_MENU);
-    }
-  };
+  private VisibilityCondition shuffleFormatVisibleCondition = () -> dummy.getShuffleOption().equals(USE_MENU);
 
-  private VisibilityCondition expressionCountingVisibleCondition = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return dummy.doesExpressionCounting();
-    }
-  };
+  private VisibilityCondition expressionCountingVisibleCondition = () -> dummy.doesExpressionCounting();
 
-  private VisibilityCondition hotkeyOnEmptyVisibleCondition = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return dummy.isHotkeyOnEmpty();
-    }
-  };
+  private VisibilityCondition hotkeyOnEmptyVisibleCondition = () -> dummy.isHotkeyOnEmpty();
 
-  private VisibilityCondition selectionAllowedVisibleCondition = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return dummy.isAllowSelectDraw();
-    }
-  };
+  private VisibilityCondition selectionAllowedVisibleCondition = () -> dummy.isAllowSelectDraw();
 
-  private VisibilityCondition restrictExpressionVisibleCondition = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return dummy.isRestrictOption();
-    }
-  };
+  private VisibilityCondition restrictExpressionVisibleCondition = () -> dummy.isRestrictOption();
 
   protected static UniqueIdManager idMgr = new UniqueIdManager("Deck");
 

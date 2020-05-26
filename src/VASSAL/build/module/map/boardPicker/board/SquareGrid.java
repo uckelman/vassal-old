@@ -206,20 +206,10 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (COLOR.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return visible;
-        }
-      };
+      return () -> visible;
     }
     else if (EDGES.equals(name) || CORNERS.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return snapTo;
-        }
-      };
+      return () -> snapTo;
     }
     else {
       return super.getAttributeVisibility(name);
@@ -590,12 +580,7 @@ public class SquareGrid extends AbstractConfigurable implements GeometricGrid, G
     Configurer c = super.getConfigurer();
     if (!buttonExists) {
       JButton b = new JButton(Resources.getString("Editor.Grid.edit_grid")); //$NON-NLS-1$
-      b.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          editGrid();
-        }
-      });
+      b.addActionListener(e -> editGrid());
       ((Container) c.getControls()).add(b);
     }
     return c;

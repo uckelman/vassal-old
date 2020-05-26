@@ -83,13 +83,10 @@ public class NewColorConfigurer extends Configurer {
       box.add(new JLabel("Use Named Colors?"));
       bc = new BooleanConfigurer(null, "", Boolean.FALSE); //$NON-NLS-1$
       box.add(bc.getControls());
-      bc.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          colorBox.setVisible(!bc.booleanValue());
-          swatchBox.setVisible(bc.booleanValue());
-          SwingUtilities.getWindowAncestor(bc.getControls()).pack();
-        }
+      bc.addPropertyChangeListener(e -> {
+        colorBox.setVisible(!bc.booleanValue());
+        swatchBox.setVisible(bc.booleanValue());
+        SwingUtilities.getWindowAncestor(bc.getControls()).pack();
       });
       p.add(box);
 
@@ -105,24 +102,15 @@ public class NewColorConfigurer extends Configurer {
       p.add(colorBox);
 
       b.addActionListener
-          (new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed
-                (java.awt.event.ActionEvent e) {
-              setValue(JColorChooser.showDialog
-                       (null, getName(), colorValue()));
-              csc.setValue(new ColorSwatch("", (Color) getValue())); //$NON-NLS-1$
-            }
+          (e -> {
+            setValue(JColorChooser.showDialog
+                     (null, getName(), colorValue()));
+            csc.setValue(new ColorSwatch("", (Color) getValue())); //$NON-NLS-1$
           });
 
       swatchBox = Box.createHorizontalBox();
       csc = new ColorSwatchConfigurer(null, "Select Color:", "WHITE"); //$NON-NLS-2$
-      csc.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          setValue(csc.getValueColor());
-        }
-      });
+      csc.addPropertyChangeListener(e -> setValue(csc.getValueColor()));
       swatchBox.add(csc.getControls());
       swatchBox.setVisible(false);
       p.add(swatchBox);

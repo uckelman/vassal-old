@@ -178,12 +178,7 @@ public class TextItem extends Item {
     }
   }
 
-  private VisibilityCondition fixedCond = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return textSource.equals(SRC_FIXED);
-    }
-  };
+  private VisibilityCondition fixedCond = () -> textSource.equals(SRC_FIXED);
 
   @Override
   public void draw(Graphics g, GamePieceImage defn) {

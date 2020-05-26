@@ -91,23 +91,15 @@ public class BasicChatControlsInitializer implements ChatControlsInitializer {
     connectButton = toolbar.add(connectAction);
     disconnectButton = toolbar.add(disconnectAction);
 
-    connectionListener = new PropertyChangeListener() {
-      @Override
-      public void propertyChange(final PropertyChangeEvent evt) {
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            boolean connected = Boolean.TRUE.equals(evt.getNewValue());
-            connectAction.setEnabled(!connected);
-            disconnectAction.setEnabled(connected);
-            if (!connected) {
-              controls.getRoomTree().setRooms(new VASSAL.chat.Room[0]);
-              controls.getCurrentRoom().setRooms(new VASSAL.chat.Room[0]);
-            }
-          }
-        });
+    connectionListener = evt -> SwingUtilities.invokeLater(() -> {
+      boolean connected = Boolean.TRUE.equals(evt.getNewValue());
+      connectAction.setEnabled(!connected);
+      disconnectAction.setEnabled(connected);
+      if (!connected) {
+        controls.getRoomTree().setRooms(new VASSAL.chat.Room[0]);
+        controls.getCurrentRoom().setRooms(new VASSAL.chat.Room[0]);
       }
-    };
+    });
 
     client.addPropertyChangeListener(
       ServerConnection.CONNECTED, connectionListener);

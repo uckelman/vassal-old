@@ -109,12 +109,7 @@ public class MassKeyCommand extends AbstractConfigurable
   protected boolean singleMap = true;
 
   public MassKeyCommand() {
-    ActionListener al = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        apply();
-      }
-    };
+    ActionListener al = e -> apply();
     launch = new LaunchButton("CTRL", TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, al);
   }
 
@@ -285,22 +280,14 @@ public class MassKeyCommand extends AbstractConfigurable
       controls.add(prompt);
       controls.add(typeConfig.getControls());
       controls.add(intConfig.getControls());
-      PropertyChangeListener l = new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          intConfig.getControls().setVisible(FIXED.equals(typeConfig.getValueString()));
-          Window w = SwingUtilities.getWindowAncestor(intConfig.getControls());
-          if (w != null) {
-            w.pack();
-          }
+      PropertyChangeListener l = evt -> {
+        intConfig.getControls().setVisible(FIXED.equals(typeConfig.getValueString()));
+        Window w = SwingUtilities.getWindowAncestor(intConfig.getControls());
+        if (w != null) {
+          w.pack();
         }
       };
-      PropertyChangeListener l2 = new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          setValue(getIntValue());
-        }
-      };
+      PropertyChangeListener l2 = evt -> setValue(getIntValue());
       typeConfig.addPropertyChangeListener(l);
       typeConfig.addPropertyChangeListener(l2);
       intConfig.addPropertyChangeListener(l2);
@@ -451,21 +438,18 @@ public class MassKeyCommand extends AbstractConfigurable
       filter = propertiesFilter.getFilter(propertySource);
     }
     if (filter != null && condition != null) {
-      filter = new BooleanAndPieceFilter(filter, new PieceFilter() {
-        @Override
-        public boolean accept(GamePiece piece) {
-          boolean valid = false;
-          if (ALWAYS.equals(condition)) {
-            valid = true;
-          }
-          else if (IF_ACTIVE.equals(condition)) {
-            valid = Embellishment.getLayerWithMatchingActivateCommand(piece, stroke, true) != null;
-          }
-          else if (IF_INACTIVE.equals(condition)) {
-            valid = Embellishment.getLayerWithMatchingActivateCommand(piece, stroke, false) != null;
-          }
-          return valid;
+      filter = new BooleanAndPieceFilter(filter, piece -> {
+        boolean valid = false;
+        if (ALWAYS.equals(condition)) {
+          valid = true;
         }
+        else if (IF_ACTIVE.equals(condition)) {
+          valid = Embellishment.getLayerWithMatchingActivateCommand(piece, stroke, true) != null;
+        }
+        else if (IF_INACTIVE.equals(condition)) {
+          valid = Embellishment.getLayerWithMatchingActivateCommand(piece, stroke, false) != null;
+        }
+        return valid;
       });
     }
   }
@@ -498,16 +482,13 @@ public class MassKeyCommand extends AbstractConfigurable
         names = null;
       }
       else {
-        filter = new PieceFilter() {
-          @Override
-          public boolean accept(GamePiece piece) {
-            for (String s : names) {
-              if (Decorator.getInnermost(piece).getName().equals(s)) {
-                return true;
-              }
+        filter = piece -> {
+          for (String s : names) {
+            if (Decorator.getInnermost(piece).getName().equals(s)) {
+              return true;
             }
-            return false;
           }
+          return false;
         };
       }
     }

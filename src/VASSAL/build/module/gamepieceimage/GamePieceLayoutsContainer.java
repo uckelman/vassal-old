@@ -93,14 +93,11 @@ public class GamePieceLayoutsContainer extends AbstractConfigurable {
     if (b instanceof GamePieceLayout) {
       GamePieceLayout def = (GamePieceLayout) b;
       definitions.put(def.getConfigureName(), def);
-      def.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
-            definitions.remove(evt.getOldValue());
-            definitions.put((String) evt.getNewValue(),
-                            (GamePieceLayout) evt.getSource());
-          }
+      def.addPropertyChangeListener(evt -> {
+        if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
+          definitions.remove(evt.getOldValue());
+          definitions.put((String) evt.getNewValue(),
+                          (GamePieceLayout) evt.getSource());
         }
       });
     }

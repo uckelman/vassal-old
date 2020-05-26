@@ -87,12 +87,7 @@ public class Immobilized extends Decorator implements EditablePiece {
     }
   }
 
-  protected static EventFilter NEVER = new EventFilter() {
-    @Override
-    public boolean rejectEvent(InputEvent evt) {
-      return true;
-    }
-  };
+  protected static EventFilter NEVER = evt -> true;
 
   public Immobilized() {
     this(null, Immobilized.ID);

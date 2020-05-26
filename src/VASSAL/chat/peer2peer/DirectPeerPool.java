@@ -80,12 +80,7 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     params.putAll(param);
     serverMode = P2PClientFactory.P2P_SERVER_MODE.equals(params.getProperty(P2PClientFactory.P2P_MODE_KEY));
     inviteButton = new JButton(Resources.getString("Peer2Peer.connect")); //$NON-NLS-1$
-    inviteButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        frame.setVisible(true);
-      }
-    });
+    inviteButton.addActionListener(e -> frame.setVisible(true));
     inviteButton.setEnabled(false);
     inviteButton.setVisible(P2PClientFactory.P2P_SERVER_MODE.equals(params.getProperty(P2PClientFactory.P2P_MODE_KEY)));
   }
@@ -166,38 +161,22 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
 
     invitePeerButton = new JButton(Resources.getString("Peer2Peer.connect")); //$NON-NLS-1$
     invitePeerButton.setToolTipText(Resources.getString("Peer2Peer.invite_button_tooltip")); //$NON-NLS-1$))
-    invitePeerButton.addActionListener(new ActionListener(){
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        invite(ppm);
-      }});
+    invitePeerButton.addActionListener(e -> invite(ppm));
     frame.add(invitePeerButton, "growx, push"); //$NON-NLS-1$
 
     addButton = new JButton(Resources.getString("General.add")); //$NON-NLS-1$
     addButton.setToolTipText(Resources.getString("Peer2Peer.add_button_tooltip")); //$NON-NLS-1$))
-    addButton.addActionListener(new ActionListener(){
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        addEntry();
-      }});
+    addButton.addActionListener(e -> addEntry());
     frame.add(addButton, "growx, push"); //$NON-NLS-1$
 
     editButton = new JButton(Resources.getString("General.edit")); //$NON-NLS-1$
     editButton.setToolTipText(Resources.getString("Peer2Peer.edit_button_tooltip")); //$NON-NLS-1$))
-    editButton.addActionListener(new ActionListener(){
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        editEntry();
-      }});
+    editButton.addActionListener(e -> editEntry());
     frame.add(editButton, "growx, push"); //$NON-NLS-1$
 
     removeButton = new JButton(Resources.getString("General.remove")); //$NON-NLS-1$
     removeButton.setToolTipText(Resources.getString("Peer2Peer.remove_button_tooltip")); //$NON-NLS-1$))
-    removeButton.addActionListener(new ActionListener(){
-      @Override
-      public void actionPerformed(ActionEvent arg0) {
-        removeEntries();
-      }});
+    removeButton.addActionListener(arg0 -> removeEntries());
     frame.add(removeButton, "growx, push, wrap"); //$NON-NLS-1$
 
 

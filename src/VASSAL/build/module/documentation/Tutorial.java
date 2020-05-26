@@ -152,12 +152,7 @@ public class Tutorial extends AbstractConfigurable {
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (name.equals(PROMPT_MESSAGE)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return launchOnFirstStartup;
-        }
-      };
+      return () -> launchOnFirstStartup;
     }
     return null;
   }

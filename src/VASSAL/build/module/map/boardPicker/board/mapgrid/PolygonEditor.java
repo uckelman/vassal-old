@@ -102,18 +102,15 @@ public class PolygonEditor extends JPanel {
     ModifyPolygon mp = new ModifyPolygon();
     addMouseListener(mp);
     addMouseMotionListener(mp);
-    ActionListener l = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        if (selected >= 0) {
-          for (int i = selected; i < polygon.npoints - 1; ++i) {
-            polygon.xpoints[i] = polygon.xpoints[i + 1];
-            polygon.ypoints[i] = polygon.ypoints[i + 1];
-          }
-          polygon.npoints--;
-          selected = -1;
-          repaint();
+    ActionListener l = e -> {
+      if (selected >= 0) {
+        for (int i = selected; i < polygon.npoints - 1; ++i) {
+          polygon.xpoints[i] = polygon.xpoints[i + 1];
+          polygon.ypoints[i] = polygon.ypoints[i + 1];
         }
+        polygon.npoints--;
+        selected = -1;
+        repaint();
       }
     };
     registerKeyboardAction(l, KeyStroke.getKeyStroke(KeyEvent.VK_DELETE,0), WHEN_IN_FOCUSED_WINDOW);

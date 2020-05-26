@@ -119,13 +119,10 @@ public abstract class ListConfigurer extends Configurer implements
       configControls = Box.createVerticalBox();
 
       JButton addButton = new JButton("New");
-      addButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          Configurer c = buildChildConfigurer();
-          getListValue().add(c.getValue());
-          updateControls();
-        }
+      addButton.addActionListener(e -> {
+        Configurer c = buildChildConfigurer();
+        getListValue().add(c.getValue());
+        updateControls();
       });
       controls.add(addButton);
       controls.add(configControls);
@@ -167,13 +164,10 @@ public abstract class ListConfigurer extends Configurer implements
         configurers.add(c);
         final Box b = Box.createHorizontalBox();
         JButton delButton = new JButton("Remove");
-        delButton.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            getListValue().remove(c.getValue());
-            updateControls();
-            repack();
-          }
+        delButton.addActionListener(e -> {
+          getListValue().remove(c.getValue());
+          updateControls();
+          repack();
         });
         b.add(delButton);
         b.add(c.getControls());

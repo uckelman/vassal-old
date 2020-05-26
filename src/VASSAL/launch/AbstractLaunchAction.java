@@ -692,13 +692,10 @@ e.printStackTrace();
                                  implements EventListener<NotifyOpenModuleOk> {
     @Override
     public void receive(Object src, final NotifyOpenModuleOk msg) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          final ModuleManagerWindow mmw = ModuleManagerWindow.getInstance();
-          mmw.addModule(msg.lr.module);
-          mmw.setWaitCursor(false);
-        }
+      SwingUtilities.invokeLater(() -> {
+        final ModuleManagerWindow mmw = ModuleManagerWindow.getInstance();
+        mmw.addModule(msg.lr.module);
+        mmw.setWaitCursor(false);
       });
     }
   }
@@ -707,12 +704,7 @@ e.printStackTrace();
                                  implements EventListener<NotifyNewModuleOk> {
     @Override
     public void receive(Object src, NotifyNewModuleOk msg) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          ModuleManagerWindow.getInstance().setWaitCursor(false);
-        }
-      });
+      SwingUtilities.invokeLater(() -> ModuleManagerWindow.getInstance().setWaitCursor(false));
     }
   }
 
@@ -720,12 +712,7 @@ e.printStackTrace();
                                implements EventListener<NotifyImportModuleOk> {
     @Override
     public void receive(Object src, NotifyImportModuleOk msg) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          ModuleManagerWindow.getInstance().setWaitCursor(false);
-        }
-      });
+      SwingUtilities.invokeLater(() -> ModuleManagerWindow.getInstance().setWaitCursor(false));
     }
   }
 
@@ -733,12 +720,7 @@ e.printStackTrace();
                              implements EventListener<NotifyOpenModuleFailed> {
     @Override
     public void receive(Object src, NotifyOpenModuleFailed msg) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          ModuleManagerWindow.getInstance().setWaitCursor(false);
-        }
-      });
+      SwingUtilities.invokeLater(() -> ModuleManagerWindow.getInstance().setWaitCursor(false));
 
       ErrorDialog.showDetails(
         msg.thrown,
@@ -753,12 +735,7 @@ e.printStackTrace();
                                    implements EventListener<NotifySaveFileOk> {
     @Override
     public void receive(Object rc, final NotifySaveFileOk msg) {
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          ModuleManagerWindow.getInstance().update(msg.file);
-        }
-      });
+      SwingUtilities.invokeLater(() -> ModuleManagerWindow.getInstance().update(msg.file));
     }
   }
 }

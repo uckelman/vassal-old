@@ -115,20 +115,9 @@ public class FontConfigurer extends Configurer {
 
       updateValue();
 
-      ItemListener l = new ItemListener() {
-        @Override
-        public void itemStateChanged(ItemEvent evt) {
-          updateValue();
-        }
-      };
-      family.addItemListener(l);
+      family.addItemListener(evt -> updateValue());
 
-      PropertyChangeListener pc = new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          updateValue();
-        }
-      };
+      PropertyChangeListener pc = evt -> updateValue();
       size.addPropertyChangeListener(pc);
       bold.addPropertyChangeListener(pc);
       italic.addPropertyChangeListener(pc);

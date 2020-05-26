@@ -353,17 +353,14 @@ public class PieceMover extends AbstractBuildable
 
     if (!GlobalOptions.NEVER.equals(value)) {
       if (markUnmovedButton == null) {
-        final ActionListener al = new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            final GamePiece[] p = map.getAllPieces();
-            final Command c = new NullCommand();
-            for (GamePiece gamePiece : p) {
-              c.append(markMoved(gamePiece, false));
-            }
-            GameModule.getGameModule().sendAndLog(c);
-            map.repaint();
+        final ActionListener al = e -> {
+          final GamePiece[] p = map.getAllPieces();
+          final Command c = new NullCommand();
+          for (GamePiece gamePiece : p) {
+            c.append(markMoved(gamePiece, false));
           }
+          GameModule.getGameModule().sendAndLog(c);
+          map.repaint();
         };
 
         markUnmovedButton =

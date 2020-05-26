@@ -89,12 +89,7 @@ public class FirstTimeDialog extends JDialog {
       new JButton(Resources.getString("Main.jump_right_in"));  //$NON-NLS-1$
     final JButton help = new JButton(Resources.getString(Resources.HELP));
 
-    final ActionListener closer = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent evt) {
-        FirstTimeDialog.this.dispose();
-      }
-    };
+    final ActionListener closer = evt -> FirstTimeDialog.this.dispose();
 
     tour.addActionListener(closer);
     jump.addActionListener(closer);
@@ -123,20 +118,17 @@ public class FirstTimeDialog extends JDialog {
     });
 
     langbox.setSelectedItem(Resources.getLocale());
-    langbox.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        Resources.setLocale((Locale) langbox.getSelectedItem());
+    langbox.addActionListener(e -> {
+      Resources.setLocale((Locale) langbox.getSelectedItem());
 
-        // update the text for the new locale
-        welcome.setText(Resources.getString("Main.welcome"));  //$NON-NLS-1$
-        tour.setText(Resources.getString("Main.tour"));  //$NON-NLS-1$
-        jump.setText(Resources.getString("Main.jump_right_in"));  //$NON-NLS-1$
-        help.setText(Resources.getString(Resources.HELP));
-        lang.setText(Resources.getString("Prefs.language") + ":");
-        FirstTimeDialog.this.pack();
-        // langbox picks up the new locale automatically from getDisplayName()
-      }
+      // update the text for the new locale
+      welcome.setText(Resources.getString("Main.welcome"));  //$NON-NLS-1$
+      tour.setText(Resources.getString("Main.tour"));  //$NON-NLS-1$
+      jump.setText(Resources.getString("Main.jump_right_in"));  //$NON-NLS-1$
+      help.setText(Resources.getString(Resources.HELP));
+      lang.setText(Resources.getString("Prefs.language") + ":");
+      FirstTimeDialog.this.pack();
+      // langbox picks up the new locale automatically from getDisplayName()
     });
 
     final JPanel panel = new JPanel();

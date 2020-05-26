@@ -538,31 +538,17 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
           destInput.setValue(destOption);
         }
       }
-      destInput.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent arg0) {
-          updateVisibility();
-        }});
+      destInput.addPropertyChangeListener(arg0 -> updateVisibility());
       controls.add(destInput.getControls());
 
       mapControls = Box.createHorizontalBox();
       mapIdInput = new FormattedExpressionConfigurer(null, "Map:  ", p.mapId.getFormat(), p);
       mapControls.add(mapIdInput.getControls());
       JButton select = new JButton("Select");
-      select.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          selectMap();
-        }
-      });
+      select.addActionListener(e -> selectMap());
       mapControls.add(select);
       JButton clear = new JButton("Clear");
-      clear.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          clearMap();
-        }
-      });
+      clear.addActionListener(e -> clearMap());
       mapControls.add(clear);
       controls.add(mapControls);
 
@@ -570,19 +556,9 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       boardNameInput = new FormattedExpressionConfigurer(null, "Board:  ", p.boardName.getFormat(), p);
       boardControls.add(boardNameInput.getControls());
       select = new JButton("Select");
-      select.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          selectBoard();
-        }
-      });
+      select.addActionListener(e -> selectBoard());
       clear = new JButton("Clear");
-      clear.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          clearBoard();
-        }
-      });
+      clear.addActionListener(e -> clearBoard());
       boardControls.add(select);
       boardControls.add(clear);
       controls.add(boardControls);
@@ -607,11 +583,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
       controls.add(gridLocationInput.getControls());
 
       advancedInput = new BooleanConfigurer(null, "Advanced Options", false);
-      advancedInput.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent arg0) {
-          updateVisibility();
-        }});
+      advancedInput.addPropertyChangeListener(arg0 -> updateVisibility());
       controls.add(advancedInput.getControls());
 
       advancedControls = Box.createHorizontalBox();

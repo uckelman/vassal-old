@@ -62,11 +62,6 @@ public class PrivateMessageAction extends AbstractAction {
   }
 
     public static PlayerActionFactory factory(final ChatServerConnection client, final PrivateChatManager chatMgr) {
-      return new PlayerActionFactory() {
-        @Override
-        public Action getAction(SimplePlayer p, JTree tree) {
-          return new PrivateMessageAction(p, client, chatMgr);
-        }
-      };
+      return (p, tree) -> new PrivateMessageAction(p, client, chatMgr);
     }
 }

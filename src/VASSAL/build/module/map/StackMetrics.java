@@ -239,20 +239,10 @@ public class StackMetrics extends AbstractConfigurable {
     unexSepX = unexSx;
     unexSepY = unexSy;
 
-    unselectedVisible = new PieceFilter() {
-      @Override
-      public boolean accept(GamePiece piece) {
-        return !Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))
-            && !Boolean.TRUE.equals(piece.getProperty(Properties.SELECTED));
-      }
-    };
-    selectedVisible = new PieceFilter() {
-      @Override
-      public boolean accept(GamePiece piece) {
-        return !Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))
-            && Boolean.TRUE.equals(piece.getProperty(Properties.SELECTED));
-      }
-    };
+    unselectedVisible = piece -> !Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))
+        && !Boolean.TRUE.equals(piece.getProperty(Properties.SELECTED));
+    selectedVisible = piece -> !Boolean.TRUE.equals(piece.getProperty(Properties.INVISIBLE_TO_ME))
+        && Boolean.TRUE.equals(piece.getProperty(Properties.SELECTED));
   }
 
   /**
@@ -571,12 +561,7 @@ public class StackMetrics extends AbstractConfigurable {
     };
   }
 
-  private VisibilityCondition cond = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return !disabled;
-    }
-  };
+  private VisibilityCondition cond = () -> !disabled;
 
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {

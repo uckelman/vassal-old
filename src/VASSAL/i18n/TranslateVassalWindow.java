@@ -133,38 +133,25 @@ public class TranslateVassalWindow extends TranslateWindow {
     helpButton.addActionListener(new ShowHelpAction(HelpFile.getReferenceManualPage("Translations.htm","application").getContents(),null));
 
     final JButton loadButton = new JButton(Resources.getString(Resources.LOAD));
-    loadButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        loadTranslation();
-      }
-    });
+    loadButton.addActionListener(e -> loadTranslation());
     buttonBox.add(helpButton);
     buttonBox.add(loadButton);
 
     final JButton okButton = new JButton(Resources.getString(Resources.SAVE));
-    okButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        try {
+    okButton.addActionListener(e -> {
+      try {
 // FIXME: can this ever throw?
-          save();
-        }
-        catch (IOException e1) {
+        save();
+      }
+      catch (IOException e1) {
 // FIXME: error dialog
-        }
       }
     });
     buttonBox.add(okButton);
 
     final JButton cancelButton =
       new JButton(Resources.getString(Resources.CANCEL));
-    cancelButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        cancel();
-      }
-    });
+    cancelButton.addActionListener(e -> cancel());
     buttonBox.add(cancelButton);
     return buttonBox;
   }
@@ -256,12 +243,9 @@ public class TranslateVassalWindow extends TranslateWindow {
   }
 
   public static void main(String[] args) {
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        final TranslateVassalWindow w = new TranslateVassalWindow(null);
-        w.setVisible(true);
-      }
+    SwingUtilities.invokeLater(() -> {
+      final TranslateVassalWindow w = new TranslateVassalWindow(null);
+      w.setVisible(true);
     });
   }
 }

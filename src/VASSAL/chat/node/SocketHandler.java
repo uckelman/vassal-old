@@ -51,36 +51,33 @@ public abstract class SocketHandler {
   }
 
   private Thread startReadThread() {
-    Runnable runnable = new Runnable() {
-      @Override
-      public void run() {
-        String line;
-        try {
-          while ((line = readNext()) != null) {
-            if (SIGN_OFF.equals(line)) {
-              break;
+    Runnable runnable = () -> {
+      String line;
+      try {
+        while ((line = readNext()) != null) {
+          if (SIGN_OFF.equals(line)) {
+            break;
+          }
+          else if (line.length() > 0) {
+            try {
+              handler.handleMessage(line);
             }
-            else if (line.length() > 0) {
-              try {
-                handler.handleMessage(line);
-              }
-              // FIXME: review error message
-              catch (Exception e) {
-                // Handler threw an exception.  Keep reading.
-                System.err.println("Caught " + e.getClass().getName() + " handling " + line); //$NON-NLS-1$ //$NON-NLS-2$
-                e.printStackTrace();
-              }
+            // FIXME: review error message
+            catch (Exception e) {
+              // Handler threw an exception.  Keep reading.
+              System.err.println("Caught " + e.getClass().getName() + " handling " + line); //$NON-NLS-1$ //$NON-NLS-2$
+              e.printStackTrace();
             }
           }
         }
-        // FIXME: review error message
-        catch (IOException ignore) {
-          String msg = ignore.getClass().getName();
-          msg = msg.substring(msg.lastIndexOf('.') + 1);
-//          System.err.println("Caught " + msg + "(" + ignore.getMessage() + ") reading socket.");
-        }
-        closeSocket();
       }
+      // FIXME: review error message
+      catch (IOException ignore) {
+        String msg = ignore.getClass().getName();
+        msg = msg.substring(msg.lastIndexOf('.') + 1);
+//          System.err.println("Caught " + msg + "(" + ignore.getMessage() + ") reading socket.");
+      }
+      closeSocket();
     };
     Thread t = new Thread(runnable, "read " + sock.getInetAddress());
     t.start();
@@ -88,26 +85,23 @@ public abstract class SocketHandler {
   }
 
   private Thread startWriteThread() {
-    Runnable runnable = new Runnable() {
-      @Override
-      public void run() {
-        String line;
-        try {
-          while (true) {
-            if ((line = getLine()) != null) {
-              writeNext(line);
-              if (SIGN_OFF.equals(line)) break;
-            }
+    Runnable runnable = () -> {
+      String line;
+      try {
+        while (true) {
+          if ((line = getLine()) != null) {
+            writeNext(line);
+            if (SIGN_OFF.equals(line)) break;
           }
         }
-        // FIXME: review error message
-        catch (IOException ignore) {
-          String msg = ignore.getClass().getName();
-          msg = msg.substring(msg.lastIndexOf('.') + 1);
-//          System.err.println("Caught " + msg + "(" + ignore.getMessage() + ") writing to socket.");
-        }
-        closeSocket();
       }
+      // FIXME: review error message
+      catch (IOException ignore) {
+        String msg = ignore.getClass().getName();
+        msg = msg.substring(msg.lastIndexOf('.') + 1);
+//          System.err.println("Caught " + msg + "(" + ignore.getMessage() + ") writing to socket.");
+      }
+      closeSocket();
     };
     Thread t = new Thread(runnable, "write " + sock.getInetAddress());
     t.start();

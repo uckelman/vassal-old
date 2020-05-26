@@ -66,32 +66,19 @@ public class MacOSXMenuManager extends MenuManager {
 
     if ("General.quit".equals(key)) {
       final Desktop app = Desktop.getDesktop();
-      app.setQuitHandler(new QuitHandler() {
-        @Override
-        public void handleQuitRequestWith(QuitEvent e, QuitResponse resp) {
-          action.actionPerformed(null);
-          // the action handles exiting; if we're here, it was cancelled
-          resp.cancelQuit();
-        }
+      app.setQuitHandler((e, resp) -> {
+        action.actionPerformed(null);
+        // the action handles exiting; if we're here, it was cancelled
+        resp.cancelQuit();
       });
     }
     else if ("Prefs.edit_preferences".equals(key)) {
       final Desktop app = Desktop.getDesktop();
-      app.setPreferencesHandler(new PreferencesHandler() {
-        @Override
-        public void handlePreferences(PreferencesEvent e) {
-          action.actionPerformed(null);
-        }
-      });
+      app.setPreferencesHandler(e -> action.actionPerformed(null));
     }
     else if ("AboutScreen.about_vassal".equals(key)) {
       final Desktop app = Desktop.getDesktop();
-      app.setAboutHandler(new AboutHandler() {
-        @Override
-        public void handleAbout(AboutEvent e) {
-          action.actionPerformed(null);
-        }
-      });
+      app.setAboutHandler(e -> action.actionPerformed(null));
     }
     else {
       // this is not one of the special actions

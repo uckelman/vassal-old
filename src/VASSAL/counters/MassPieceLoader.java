@@ -136,39 +136,30 @@ public class MassPieceLoader {
       setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
       setPreferredSize(new Dimension(800, 600));
 
-      dirConfig.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          if (e.getNewValue() != null) {
-            buildTree((File) e.getNewValue());
-          }
+      dirConfig.addPropertyChangeListener(e -> {
+        if (e.getNewValue() != null) {
+          buildTree((File) e.getNewValue());
         }
       });
       add(dirConfig.getControls());
 
-      basicConfig.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          if (e.getNewValue() != null) {
-            buildTree(dirConfig.getFileValue());
-          }
+      basicConfig.addPropertyChangeListener(e -> {
+        if (e.getNewValue() != null) {
+          buildTree(dirConfig.getFileValue());
         }
       });
       add(basicConfig.getControls());
 
       defineDialog = new DefineDialog(this);
       final JButton defineButton = new JButton("Edit Piece Template");
-      defineButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          final GamePiece savePiece = definer.getPiece();
-          defineDialog.setVisible(true);
-          if (defineDialog.isCancelled()) {
-            definer.setPiece(savePiece);
-          }
-          else {
-            buildTree(dirConfig.getFileValue());
-          }
+      defineButton.addActionListener(e -> {
+        final GamePiece savePiece = definer.getPiece();
+        defineDialog.setVisible(true);
+        if (defineDialog.isCancelled()) {
+          definer.setPiece(savePiece);
+        }
+        else {
+          buildTree(dirConfig.getFileValue());
         }
       });
       add(defineButton);
@@ -180,32 +171,19 @@ public class MassPieceLoader {
 
       final Box buttonBox = Box.createHorizontalBox();
       final JButton okButton = new JButton(Resources.getString(Resources.OK));
-      okButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          save();
-        }
-      });
+      okButton.addActionListener(e -> save());
       buttonBox.add(okButton);
 
       final JButton cancelButton = new JButton(Resources
           .getString(Resources.CANCEL));
-      cancelButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          cancel();
-        }
-      });
+      cancelButton.addActionListener(e -> cancel());
       buttonBox.add(cancelButton);
 
       final JButton helpButton = new JButton(Resources
           .getString(Resources.HELP));
-      helpButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          final HelpFile h = HelpFile.getReferenceManualPage("MassPieceLoader.htm");
-          BrowserSupport.openURL(h.getContents().toString());
-        }
+      helpButton.addActionListener(e -> {
+        final HelpFile h = HelpFile.getReferenceManualPage("MassPieceLoader.htm");
+        BrowserSupport.openURL(h.getContents().toString());
       });
       buttonBox.add(helpButton);
 
@@ -645,21 +623,11 @@ public class MassPieceLoader {
 
       final JButton saveButton = new JButton(Resources
           .getString(Resources.SAVE));
-      saveButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          save();
-        }
-      });
+      saveButton.addActionListener(e -> save());
 
       final JButton canButton = new JButton(Resources
           .getString(Resources.CANCEL));
-      canButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          cancel();
-        }
-      });
+      canButton.addActionListener(e -> cancel());
 
       final Box bbox = Box.createHorizontalBox();
       bbox.add(saveButton);
@@ -1229,19 +1197,9 @@ public class MassPieceLoader {
       warning.setVisible(false);
       add(warning);
 
-      typeConfig.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          updateVisibility();
-        }
-      });
+      typeConfig.addPropertyChangeListener(e -> updateVisibility());
 
-      nameConfig.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          updateVisibility();
-        }
-      });
+      nameConfig.addPropertyChangeListener(e -> updateVisibility());
     }
 
     protected void updateVisibility() {

@@ -71,30 +71,16 @@ public class FunctionBuilder extends JDialog {
 
     JPanel buttonBox = new JPanel(new MigLayout("", "[]rel[]rel[]"));
     JButton okButton = ButtonFactory.getOkButton();
-    okButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        save();
-      }
-    });
+    okButton.addActionListener(e -> save());
     buttonBox.add(okButton);
 
     JButton cancelButton = ButtonFactory.getCancelButton();
-    cancelButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        cancel();
-      }
-    });
+    cancelButton.addActionListener(e -> cancel());
     buttonBox.add(cancelButton);
 
     JButton helpButton = ButtonFactory.getHelpButton();
-    helpButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        BrowserSupport.openURL(HelpFile.getReferenceManualPage("ExpressionBuilder.htm").getContents().toString());
-      }
-    });
+    helpButton.addActionListener(e -> BrowserSupport.openURL(
+      HelpFile.getReferenceManualPage("ExpressionBuilder.htm").getContents().toString()));
     buttonBox.add(helpButton);
 
     p.add(buttonBox, "align center");

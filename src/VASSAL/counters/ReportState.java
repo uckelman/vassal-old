@@ -358,16 +358,13 @@ public class ReportState extends Decorator implements TranslatablePiece {
       box.add(cycleFormat.getControls());
       cycleDownKeys = new NamedKeyStrokeArrayConfigurer(null, "Report previous message on these keystrokes:  ", piece.cycleDownKeys);
       box.add(cycleDownKeys.getControls());
-      ItemListener l = new ItemListener() {
-        @Override
-        public void itemStateChanged(ItemEvent e) {
-          format.getControls().setVisible(!cycle.isSelected());
-          cycleFormat.getControls().setVisible(cycle.isSelected());
-          cycleDownKeys.getControls().setVisible(cycle.isSelected());
-          Window w = SwingUtilities.getWindowAncestor(box);
-          if (w != null) {
-            w.pack();
-          }
+      ItemListener l = e -> {
+        format.getControls().setVisible(!cycle.isSelected());
+        cycleFormat.getControls().setVisible(cycle.isSelected());
+        cycleDownKeys.getControls().setVisible(cycle.isSelected());
+        Window w = SwingUtilities.getWindowAncestor(box);
+        if (w != null) {
+          w.pack();
         }
       };
       l.itemStateChanged(null);

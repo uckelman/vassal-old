@@ -226,12 +226,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   protected PropertyChangeListener globalPropertyListener;
   protected String tooltip = ""; //$NON-NLS-1$
   protected MutablePropertiesContainer propsContainer = new MutablePropertiesContainer.Impl();
-  protected PropertyChangeListener repaintOnPropertyChange = new PropertyChangeListener() {
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-      repaint();
-    }
-  };
+  protected PropertyChangeListener repaintOnPropertyChange = evt -> repaint();
   protected PieceMover pieceMover;
   protected KeyListener[] saveKeyListeners = null;
 
@@ -483,12 +478,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
 
   @Override
   public void build(Element e) {
-    ActionListener al = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        if (mainWindowDock == null && launchButton.isEnabled() && theMap.getTopLevelAncestor() != null) {
-          theMap.getTopLevelAncestor().setVisible(!theMap.getTopLevelAncestor().isVisible());
-        }
+    ActionListener al = e1 -> {
+      if (mainWindowDock == null && launchButton.isEnabled() && theMap.getTopLevelAncestor() != null) {
+        theMap.getTopLevelAncestor().setVisible(!theMap.getTopLevelAncestor().isVisible());
       }
     };
     launchButton = new LaunchButton(Resources.getString("Editor.Map.map"), TOOLTIP, BUTTON_NAME, HOTKEY, ICON, al);
@@ -656,12 +648,9 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
       new MandatoryComponent(this, BoardPicker.class),
       new MandatoryComponent(this, StackMetrics.class)).append(idMgr);
 
-    final DragGestureListener dgl = new DragGestureListener() {
-      @Override
-      public void dragGestureRecognized(DragGestureEvent dge) {
-        if (mouseListenerStack.isEmpty() && dragGestureListener != null) {
-          dragGestureListener.dragGestureRecognized(dge);
-        }
+    final DragGestureListener dgl = dge -> {
+      if (mouseListenerStack.isEmpty() && dragGestureListener != null) {
+        dragGestureListener.dragGestureRecognized(dge);
       }
     };
 
@@ -2461,23 +2450,13 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (visibilityCondition == null) {
-      visibilityCondition = new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return useLaunchButton;
-        }
-      };
+      visibilityCondition = () -> useLaunchButton;
     }
     if (HOTKEY.equals(name) || BUTTON_NAME.equals(name) || TOOLTIP.equals(name) || ICON.equals(name)) {
       return visibilityCondition;
     }
     else if (MARK_UNMOVED_TEXT.equals(name) || MARK_UNMOVED_ICON.equals(name) || MARK_UNMOVED_TOOLTIP.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return !GlobalOptions.NEVER.equals(markMovedOption);
-        }
-      };
+      return () -> !GlobalOptions.NEVER.equals(markMovedOption);
     }
     else {
       return super.getAttributeVisibility(name);

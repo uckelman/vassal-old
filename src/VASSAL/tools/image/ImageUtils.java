@@ -242,12 +242,7 @@ public class ImageUtils {
     return getImageSize("", in);
   }
 
-  private static final TemporaryFileFactory tfac = new TemporaryFileFactory() {
-    @Override
-    public File create() throws IOException {
-      return File.createTempFile("img", null, Info.getTempDir());
-    }
-  };
+  private static final TemporaryFileFactory tfac = () -> File.createTempFile("img", null, Info.getTempDir());
 
   private static final ImageLoader loader =
     new ImageIOImageLoader(new FallbackImageTypeConverter(tfac));

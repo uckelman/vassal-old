@@ -109,11 +109,7 @@ public class EnumPreference extends BasicPreference {
     if (config == null) {
       config = new StringEnumConfigurer(getVariableName(), getDescription(), options);
       config.setValue(defaultValue);
-      config.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          updateGlobalProperty(config.getValueString());
-        }});
+      config.addPropertyChangeListener(e -> updateGlobalProperty(config.getValueString()));
     }
     return config;
   }

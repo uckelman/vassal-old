@@ -237,12 +237,9 @@ public abstract class Launcher {
       final GameModule module = GameModule.getGameModule();
       if (module != null) {
         try {
-          SwingUtilities.invokeAndWait(new Runnable() {
-            @Override
-            public void run() {
-              module.getFrame().toFront();
-              shutdown = module.shutDown();
-            }
+          SwingUtilities.invokeAndWait(() -> {
+            module.getFrame().toFront();
+            shutdown = module.shutDown();
           });
         }
         catch (InterruptedException e) {

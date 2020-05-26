@@ -176,20 +176,10 @@ public class Board extends AbstractConfigurable implements GridContainer {
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (REVERSIBLE.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return imageFile != null;
-        }
-      };
+      return () -> imageFile != null;
     }
     else if (WIDTH.equals(name) || HEIGHT.equals(name) || COLOR.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return imageFile == null;
-        }
-      };
+      return () -> imageFile == null;
     }
     else {
       return null;
@@ -311,13 +301,10 @@ public class Board extends AbstractConfigurable implements GridContainer {
   private ConcurrentMap<Point,Future<BufferedImage>> o_requested =
     new ConcurrentHashMap<>();
 
-  private static Comparator<Point> tileOrdering = new Comparator<>() {
-    @Override
-    public int compare(Point t1, Point t2) {
-      if (t1.y < t2.y) return -1;
-      if (t1.y > t2.y) return 1;
-      return t1.x - t2.x;
-    }
+  private static Comparator<Point> tileOrdering = (t1, t2) -> {
+    if (t1.y < t2.y) return -1;
+    if (t1.y > t2.y) return 1;
+    return t1.x - t2.x;
   };
 
   protected void drawTile(Graphics g, Future<BufferedImage> fim,

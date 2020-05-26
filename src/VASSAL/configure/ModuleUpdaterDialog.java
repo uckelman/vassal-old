@@ -55,47 +55,34 @@ public class ModuleUpdaterDialog extends JDialog {
 
     final JButton saveButton = new JButton("Create Updater");
     saveButton.setEnabled(false);
-    fileConfig.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        saveButton.setEnabled(fileConfig.getValue() != null);
-      }
-    });
-    saveButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        final FileChooser fc = GameModule.getGameModule().getFileChooser();
-        if (fc.showSaveDialog(getOwner()) != FileChooser.APPROVE_OPTION)
-          return;
+    fileConfig.addPropertyChangeListener(evt -> saveButton.setEnabled(fileConfig.getValue() != null));
+    saveButton.addActionListener(e -> {
+      final FileChooser fc = GameModule.getGameModule().getFileChooser();
+      if (fc.showSaveDialog(getOwner()) != FileChooser.APPROVE_OPTION)
+        return;
 
-        final File output = fc.getSelectedFile();
-        ZipUpdater updater = null;
-        try {
-          updater = new ZipUpdater((File) fileConfig.getValue());
-          updater.createUpdater(
-            new File(GameModule.getGameModule().getArchiveWriter().getName()),
-            output
-          );
+      final File output = fc.getSelectedFile();
+      ZipUpdater updater = null;
+      try {
+        updater = new ZipUpdater((File) fileConfig.getValue());
+        updater.createUpdater(
+          new File(GameModule.getGameModule().getArchiveWriter().getName()),
+          output
+        );
+      }
+      // FIXME: review error message
+      catch (IOException e1) {
+        String msg = e1.getMessage();
+        if (msg == null) {
+          msg = "Unable to create updater.";
         }
-        // FIXME: review error message
-        catch (IOException e1) {
-          String msg = e1.getMessage();
-          if (msg == null) {
-            msg = "Unable to create updater.";
-          }
-          JOptionPane.showMessageDialog(ModuleUpdaterDialog.this, msg,
-            "Error writing updater", JOptionPane.ERROR_MESSAGE);
-        }
+        JOptionPane.showMessageDialog(ModuleUpdaterDialog.this, msg,
+          "Error writing updater", JOptionPane.ERROR_MESSAGE);
       }
     });
 
     JButton cancelButton = new JButton("Close");
-    cancelButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        dispose();
-      }
-    });
+    cancelButton.addActionListener(e -> dispose());
     JButton helpButton = new JButton("Help");
     add(b);
     HelpFile hf = null;

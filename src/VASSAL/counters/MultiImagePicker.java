@@ -48,12 +48,7 @@ public class MultiImagePicker extends JPanel {
     setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
     imageList = new JList(imageListElements);
-    imageList.addListSelectionListener(new ListSelectionListener() {
-      @Override
-      public void valueChanged(javax.swing.event.ListSelectionEvent e) {
-        showSelected();
-      }
-    });
+    imageList.addListSelectionListener(e -> showSelected());
     imageList.addKeyListener(new KeyAdapter() {
       @Override
       public void keyReleased(KeyEvent evt) {

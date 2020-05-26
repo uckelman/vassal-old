@@ -475,23 +475,13 @@ public class ComponentSplitter {
         ((BasicSplitPaneUI) getUI()).getDivider().setVisible(true);
 
         final double divPos = div;
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            setDividerLocation(divPos);
-          }
-        });
+        SwingUtilities.invokeLater(() -> setDividerLocation(divPos));
       }
       else {
         getHideableComponent().setVisible(true);
         ((BasicSplitPaneUI) getUI()).getDivider().setVisible(true);
 
-        SwingUtilities.invokeLater(new Runnable() {
-          @Override
-          public void run() {
-            setDividerLocation(getPreferredDividerLocation());
-          }
-        });
+        SwingUtilities.invokeLater(() -> setDividerLocation(getPreferredDividerLocation()));
 
         final SplitPane split = getTransverseSplit();
         if (split != null) {

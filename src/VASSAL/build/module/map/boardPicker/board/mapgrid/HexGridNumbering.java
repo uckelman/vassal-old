@@ -447,21 +447,15 @@ public class HexGridNumbering extends RegularGridNumbering {
           }
         });
         final JCheckBox reverseBox = new JCheckBox("Reversed");
-        reverseBox.addItemListener(new ItemListener() {
-          @Override
-          public void itemStateChanged(ItemEvent e) {
-            reversed = reverseBox.isSelected();
-            repaint();
-          }
+        reverseBox.addItemListener(e -> {
+          reversed = reverseBox.isSelected();
+          repaint();
         });
         b.add(reverseBox);
         final JCheckBox sidewaysBox = new JCheckBox("Sideways");
-        sidewaysBox.addItemListener(new ItemListener() {
-          @Override
-          public void itemStateChanged(ItemEvent e) {
-            grid.setAttribute(HexGrid.SIDEWAYS, sidewaysBox.isSelected() ? Boolean.TRUE : Boolean.FALSE);
-            repaint();
-          }
+        sidewaysBox.addItemListener(e -> {
+          grid.setAttribute(HexGrid.SIDEWAYS, sidewaysBox.isSelected() ? Boolean.TRUE : Boolean.FALSE);
+          repaint();
         });
         b.add(sidewaysBox);
         add(BorderLayout.NORTH, b);

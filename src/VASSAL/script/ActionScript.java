@@ -131,12 +131,9 @@ public class ActionScript extends AbstractScript
       super(null, s.getConfigureName());
       script = s;
       setValue(script);
-      script.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(final PropertyChangeEvent evt) {
-          if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
-            setName((String) evt.getNewValue());
-          }
+      script.addPropertyChangeListener(evt -> {
+        if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
+          setName((String) evt.getNewValue());
         }
       });
 
@@ -145,28 +142,18 @@ public class ActionScript extends AbstractScript
       panel.setPreferredSize(new Dimension(800, 600));
 
       nameConfig = new JavaNameConfigurer(NAME, "Name:  ", script.getConfigureName());
-      nameConfig.addPropertyChangeListener(new PropertyChangeListener(){
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          script.setAttribute(NAME, e.getNewValue());
-          updateHeader();
-        }});
+      nameConfig.addPropertyChangeListener(e -> {
+        script.setAttribute(NAME, e.getNewValue());
+        updateHeader();
+      });
 
       descConfig = new StringConfigurer(DESC, "Description:  ", script.getDescription());
-      descConfig.addPropertyChangeListener(new PropertyChangeListener(){
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          script.setAttribute(DESC, e.getNewValue());
-        }});
+      descConfig.addPropertyChangeListener(e -> script.setAttribute(DESC, e.getNewValue()));
 
       headerLine.setText(buildHeaderLine());
 
       scriptConfig = new TextConfigurer(SCRIPT, "Script:  ", script.getScript());
-      scriptConfig.addPropertyChangeListener(new PropertyChangeListener(){
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          script.setAttribute(SCRIPT, e.getNewValue());
-        }});
+      scriptConfig.addPropertyChangeListener(e -> script.setAttribute(SCRIPT, e.getNewValue()));
 
       panel.add(nameConfig.getControls());
       panel.add(descConfig.getControls());

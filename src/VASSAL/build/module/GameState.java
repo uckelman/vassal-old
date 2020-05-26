@@ -356,12 +356,7 @@ public class GameState implements CommandEncoder {
         if (c instanceof ComponentSplitter.SplitPane) {
           final ComponentSplitter.SplitPane sp = (ComponentSplitter.SplitPane) c;
 
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              sp.setDividerLocation(g.getChatter().getPreferredSize().height);
-            }
-          });
+          SwingUtilities.invokeLater(() -> sp.setDividerLocation(g.getChatter().getPreferredSize().height));
         }
         return;
       }

@@ -80,20 +80,10 @@ public class PrefsEditor {
       });
 
       final JButton ok = new JButton(Resources.getString(Resources.OK));
-      ok.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          save();
-        }
-      });
+      ok.addActionListener(e -> save());
 
       final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
-      cancel.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          cancel();
-        }
-      });
+      cancel.addActionListener(e -> cancel());
 
       dialog.setLayout(new MigLayout("insets dialog"));
       dialog.add(optionsTab, "push, grow, wrap unrelated");
@@ -129,12 +119,7 @@ public class PrefsEditor {
       setupDialog.add(p);
       setupDialog.add(c.getControls());
       JButton b = new JButton(Resources.getString(Resources.OK));
-      b.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent evt) {
-          setupDialog.setVisible(false);
-        }
-      });
+      b.addActionListener(evt -> setupDialog.setVisible(false));
       p = new JPanel();
       p.add(b);
       setupDialog.add(p);

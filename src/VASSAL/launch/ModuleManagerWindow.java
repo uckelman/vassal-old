@@ -434,11 +434,9 @@ public class ModuleManagerWindow extends JFrame {
     }
 
     setDividerLocation(getPreferredDividerLocation());
-    serverStatusView.addPropertyChangeListener("dividerLocation", new PropertyChangeListener(){
-      @Override
-      public void propertyChange(PropertyChangeEvent e) {
-        setPreferredDividerLocation((Integer) e.getNewValue());
-      }});
+    serverStatusView.addPropertyChangeListener(
+      "dividerLocation",
+      e -> setPreferredDividerLocation((Integer) e.getNewValue()));
 
     final Rectangle r = Info.getScreenBounds(this);
     serverStatusControls.setPreferredSize(
@@ -460,12 +458,7 @@ public class ModuleManagerWindow extends JFrame {
 
   protected void setDividerLocation(int i) {
     final int loc = i;
-    final Runnable r = new Runnable() {
-      @Override
-      public void run() {
-        serverStatusView.setDividerLocation(loc);
-      }
-    };
+    final Runnable r = () -> serverStatusView.setDividerLocation(loc);
     SwingUtilities.invokeLater(r);
   }
 
@@ -498,12 +491,7 @@ public class ModuleManagerWindow extends JFrame {
       recentModuleConfig.removeValue(s);
     }
 
-    Collections.sort(moduleList, new Comparator<>() {
-      @Override
-      public int compare(ModuleInfo f1, ModuleInfo f2) {
-        return f1.compareTo(f2);
-      }
-    });
+    Collections.sort(moduleList, (f1, f2) -> f1.compareTo(f2));
 
     rootNode = new MyTreeNode(new RootInfo());
 
@@ -664,18 +652,15 @@ public class ModuleManagerWindow extends JFrame {
     tree.setToggleClickCount(3);
 
     tree.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    tree.addTreeSelectionListener(new TreeSelectionListener() {
-      @Override
-      public void valueChanged(TreeSelectionEvent e) {
-        final MyTreeNode node = (MyTreeNode) e.getPath().getLastPathComponent();
-        final AbstractInfo target = node.getNodeInfo();
-        if (target instanceof ModuleInfo) {
-          setSelectedModule(target.getFile());
-        }
-        else {
-          if (node.getParent() != null) {
-            setSelectedModule(node.getParentModuleFile());
-          }
+    tree.addTreeSelectionListener(e -> {
+      final MyTreeNode node = (MyTreeNode) e.getPath().getLastPathComponent();
+      final AbstractInfo target = node.getNodeInfo();
+      if (target instanceof ModuleInfo) {
+        setSelectedModule(target.getFile());
+      }
+      else {
+        if (node.getParent() != null) {
+          setSelectedModule(node.getParentModuleFile());
         }
       }
     });

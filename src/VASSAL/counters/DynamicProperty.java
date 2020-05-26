@@ -353,15 +353,12 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       };
       keyCommandListConfig.setValue(
         new ArrayList<>(Arrays.asList(m.keyCommands)));
-      PropertyChangeListener l = new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          boolean isNumeric = numericConfig.booleanValue();
-          minConfig.getControls().setVisible(isNumeric);
-          maxConfig.getControls().setVisible(isNumeric);
-          wrapConfig.getControls().setVisible(isNumeric);
-          keyCommandListConfig.repack();
-        }
+      PropertyChangeListener l = evt -> {
+        boolean isNumeric = numericConfig.booleanValue();
+        minConfig.getControls().setVisible(isNumeric);
+        maxConfig.getControls().setVisible(isNumeric);
+        wrapConfig.getControls().setVisible(isNumeric);
+        keyCommandListConfig.repack();
       };
       controls = Box.createVerticalBox();
       nameConfig = new StringConfigurer(null, "Name:  ", m.getKey());
@@ -448,12 +445,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       propChangeConfig = new PropertyChangerConfigurer(null, target.getKey(), target);
       propChangeConfig.setValue(new PropertyPrompt(target, " Change value of " + target.getKey()));
 
-      PropertyChangeListener pl = new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          updateValue();
-        }
-      };
+      PropertyChangeListener pl = e -> updateValue();
       commandConfig.addPropertyChangeListener(pl);
       keyConfig.addPropertyChangeListener(pl);
       propChangeConfig.addPropertyChangeListener(pl);
