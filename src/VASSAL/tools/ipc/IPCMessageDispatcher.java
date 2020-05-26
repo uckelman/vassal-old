@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.ObjectOutput;
 import java.util.concurrent.BlockingQueue;
 
-import VASSAL.tools.io.IOUtils;
-
 public class IPCMessageDispatcher implements Runnable {
 
   protected final BlockingQueue<IPCMessage> queue;
@@ -21,21 +19,16 @@ public class IPCMessageDispatcher implements Runnable {
   public void run() {
     IPCMessage msg;
 
-    try {
+    try (out) {
       do {
         msg = queue.take();
         out.writeObject(msg);
         out.flush();
       } while (!(msg instanceof Fin));
-
-      out.close();
     }
     catch (IOException | InterruptedException e) {
 // FIXME
       e.printStackTrace();
-    }
-    finally {
-      IOUtils.closeQuietly(out);
     }
   }
 }

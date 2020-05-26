@@ -205,92 +205,23 @@ public class TilingHandler {
     );
 
     // write the image paths to child's stdin, one per line
-    PrintWriter stdin = null;
-    try {
-      stdin = new PrintWriter(proc.stdin);
+    try (PrintWriter stdin = new PrintWriter(proc.stdin)) {
       for (String m : multi) {
         stdin.println(m);
       }
     }
-    finally {
-      IOUtils.closeQuietly(stdin);
-    }
 
-    Socket csock = null;
-    DataInputStream in = null;
-    try {
-      csock = ssock.accept();
+    try (ssock;
+         Socket csock = ssock.accept()) {
+
       csock.shutdownOutput();
 
-      in = new DataInputStream(csock.getInputStream());
-
-      final Progressor progressor = new Progressor(0, tcount) {
-        @Override
-        protected void run(Pair<Integer,Integer> prog) {
-          pd.setProgress((100*prog.second)/max);
-        }
-      };
-
-      // setup the cancel button in the progress dialog
-      EDT.execute(new Runnable() {
-        @Override
-        public void run() {
-          pd.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-              pd.setVisible(false);
-              proc.future.cancel(true);
-            }
-          });
-        }
-      });
-
-      boolean done = false;
-      byte type;
-      while (!done) {
-        type = in.readByte();
-
-        switch (type) {
-        case STARTING_IMAGE:
-          final String ipath = in.readUTF();
-
-          EDT.execute(new Runnable() {
-            @Override
-            public void run() {
-              pd.setLabel("Tiling " + ipath);
-              if (!pd.isVisible()) pd.setVisible(true);
-            }
-          });
-          break;
-
-        case TILE_WRITTEN:
-          progressor.increment();
-
-          if (progressor.get() >= tcount) {
-            pd.setVisible(false);
-          }
-          break;
-
-        case TILING_FINISHED:
-          done = true;
-          break;
-
-        default:
-          throw new IllegalStateException("bad type: " + type);
-        }
+      try (DataInputStream in = new DataInputStream(csock.getInputStream())) {
+        doRunSlicer(tcount, pd, proc, in);
       }
-
-      in.close();
-      csock.close();
-      ssock.close();
     }
     catch (IOException e) {
 
-    }
-    finally {
-      IOUtils.closeQuietly(in);
-      IOUtils.closeQuietly(csock);
-      IOUtils.closeQuietly(ssock);
     }
 
     // wait for the tiling process to end
@@ -303,6 +234,64 @@ public class TilingHandler {
     catch (ExecutionException | InterruptedException e) {
       // should never happen
       throw new IllegalStateException(e);
+    }
+  }
+
+  private void doRunSlicer(int tcount, ProgressDialog pd, ProcessWrapper proc, DataInputStream in) throws IOException {
+    final Progressor progressor = new Progressor(0, tcount) {
+      @Override
+      protected void run(Pair<Integer,Integer> prog) {
+        pd.setProgress((100*prog.second)/max);
+      }
+    };
+
+    // setup the cancel button in the progress dialog
+    EDT.execute(new Runnable() {
+      @Override
+      public void run() {
+        pd.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            pd.setVisible(false);
+            proc.future.cancel(true);
+          }
+        });
+      }
+    });
+
+    boolean done = false;
+    byte type;
+    while (!done) {
+      type = in.readByte();
+
+      switch (type) {
+      case STARTING_IMAGE:
+        final String ipath = in.readUTF();
+
+        EDT.execute(new Runnable() {
+          @Override
+          public void run() {
+            pd.setLabel("Tiling " + ipath);
+            if (!pd.isVisible()) pd.setVisible(true);
+          }
+        });
+        break;
+
+      case TILE_WRITTEN:
+        progressor.increment();
+
+        if (progressor.get() >= tcount) {
+          pd.setVisible(false);
+        }
+        break;
+
+      case TILING_FINISHED:
+        done = true;
+        break;
+
+      default:
+        throw new IllegalStateException("bad type: " + type);
+      }
     }
   }
 

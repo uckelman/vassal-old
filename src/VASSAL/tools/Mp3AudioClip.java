@@ -29,8 +29,6 @@ import javazoom.jl.player.Player;
 import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
-import VASSAL.tools.AudioClip;
-import VASSAL.tools.io.IOUtils;
 
 public class Mp3AudioClip implements AudioClip {
 
@@ -78,7 +76,11 @@ public class Mp3AudioClip implements AudioClip {
       if (player == null) {
         // close the stream if player ctor fails
         // otherwise, keep it open for the thread to close
-        IOUtils.closeQuietly(stream);
+        try {
+          stream.close();
+        }
+        catch (IOException e) {
+        }
       }
     }
 

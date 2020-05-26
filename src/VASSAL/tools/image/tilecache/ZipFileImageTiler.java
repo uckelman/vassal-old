@@ -85,9 +85,7 @@ public class ZipFileImageTiler {
 
       // Get the image paths from stdin, one per line
       final List<String> pl = new ArrayList<>();
-      BufferedReader stdin = null;
-      try {
-        stdin = new BufferedReader(new InputStreamReader(System.in));
+      try (BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in))) {
         String s;
         while ((s = stdin.readLine()) != null) {
           pl.add(s);
@@ -95,9 +93,6 @@ public class ZipFileImageTiler {
       }
       catch (IOException e) {
         logger.error("", e);
-      }
-      finally {
-        IOUtils.closeQuietly(stdin);
       }
 
       final String[] ipaths = pl.toArray(new String[0]);
@@ -180,17 +175,28 @@ public class ZipFileImageTiler {
           logger.error("", e);
         }
 
-        dout.close();
-        if (sock != null) {
-          sock.close();
-        }
       }
       catch (IOException e) {
         logger.error("", e);
       }
       finally {
-        IOUtils.closeQuietly(dout);
-        IOUtils.closeQuietly(sock);
+        if (dout != null) {
+          try {
+              dout.close();
+          }
+          catch (IOException e) {
+            logger.error("Exception while closing stream", e);
+          }
+        }
+
+        if (sock != null) {
+          try {
+            sock.close();
+          }
+          catch (IOException e) {
+            logger.error("Exception while closing socket", e);
+          }
+        }
       }
     }
     finally {

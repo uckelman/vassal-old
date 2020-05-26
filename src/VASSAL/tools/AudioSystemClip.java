@@ -29,9 +29,6 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import VASSAL.tools.AudioClip;
-import VASSAL.tools.io.IOUtils;
-
 public class AudioSystemClip implements AudioClip {
   protected Clip the_clip;
 
@@ -82,7 +79,9 @@ public class AudioSystemClip implements AudioClip {
       }
     }
     catch (Exception e) {
-      IOUtils.closeQuietly(clip);
+      if (clip != null) {
+        clip.close();
+      }
       throw e;
     }
   }
