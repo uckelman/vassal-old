@@ -41,7 +41,7 @@ public interface ImageTileSource {
    *
    * @throws IOException if the tile can't be read
    */
-  public BufferedImage getTile(
+  BufferedImage getTile(
     String name,
     int tileX,
     int tileY,
@@ -58,7 +58,7 @@ public interface ImageTileSource {
    *
    * @throws IOException if the tile can't be read
    */
-  public Dimension getTileSize(
+  Dimension getTileSize(
     String name,
     int tileX,
     int tileY,
@@ -74,7 +74,7 @@ public interface ImageTileSource {
    *
    * @throws IOException if the image can't be read
    */
-  public boolean tileExists(
+  boolean tileExists(
     String name,
     int tileX,
     int tileY,

@@ -23,7 +23,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -48,8 +47,10 @@ public class HttpRequestWrapper {
   }
 
   private List<String> readLines(InputStream is) throws IOException {
-    try (InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
-         BufferedReader in = new BufferedReader(isr)) {
+    try (BufferedReader in = new BufferedReader(
+      new InputStreamReader(is, StandardCharsets.UTF_8))) {
+      //$NON-NLS-1$
+
       final ArrayList<String> l = new ArrayList<>();
       String line;
       while ((line = in.readLine()) != null) l.add(line);
@@ -82,9 +83,7 @@ public class HttpRequestWrapper {
 
     final URLConnection conn = new URL(url).openConnection();
     conn.setUseCaches(false);
-    try (InputStream in = conn.getInputStream()) {
-      return readLines(in);
-    } 
+    return readLines(conn.getInputStream());
   }
 
   public List<String> doPost(Properties p) throws IOException {
@@ -112,13 +111,10 @@ public class HttpRequestWrapper {
     conn.setUseCaches(false);
     //      conn.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
 
-    try (OutputStream co = conn.getOutputStream();
-         DataOutputStream out = new DataOutputStream(co)) {
+    try (DataOutputStream out = new DataOutputStream(conn.getOutputStream())) {
       out.writeBytes(content);
     }
 
-    try (InputStream in = conn.getInputStream()) {
-      return readLines(in);
-    } 
+    return readLines(conn.getInputStream());
   }
 }

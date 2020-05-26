@@ -30,5 +30,5 @@ import VASSAL.build.AutoConfigurable;
  * @see AutoConfigurable
  */
 public interface ConfigurerFactory {
-  public Configurer getConfigurer(AutoConfigurable c, String key, String name);
+  Configurer getConfigurer(AutoConfigurable c, String key, String name);
 }

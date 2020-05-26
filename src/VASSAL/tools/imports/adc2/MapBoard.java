@@ -36,7 +36,6 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -2264,9 +2263,7 @@ public class MapBoard extends Importer {
    */
   protected void readScannedMapLayoutFile(File f, Graphics2D g) throws IOException {
 
-    try (InputStream fin = new FileInputStream(f);
-         InputStream bin = new BufferedInputStream(fin);
-         DataInputStream in = new DataInputStream(bin)) {
+    try (DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(f)))) {
       // how many image sections
       int nSheets = ADC2Utils.readBase250Word(in);
       for (int i = 0; i < nSheets; ++i) {
@@ -2715,9 +2712,7 @@ public class MapBoard extends Importer {
   protected void load(File f) throws IOException {
     super.load(f);
 
-    try (InputStream fin = new FileInputStream(f);
-         InputStream bin = new BufferedInputStream(fin);
-         DataInputStream in = new DataInputStream(bin)) {
+    try (DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(f)))) {
       baseName = stripExtension(f.getName());
       path = f.getPath();
       int header = in.readByte();
@@ -3094,9 +3089,9 @@ public class MapBoard extends Importer {
 
   @Override
   public boolean isValidImportFile(File f) throws IOException {
-    try (InputStream fin = new FileInputStream(f);
-         DataInputStream in = new DataInputStream(fin)) {
-      return in.readByte() == -3;
+    try (DataInputStream in = new DataInputStream(new FileInputStream(f))) {
+      boolean valid = in.readByte() == -3;
+      return valid;
     }
   }
 }

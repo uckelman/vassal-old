@@ -64,7 +64,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import VASSAL.build.GameModule;
-import VASSAL.tools.DataArchive;
 import VASSAL.tools.image.ImageUtils;
 
 /**
@@ -190,10 +189,13 @@ public class SVGRenderer {
     public Document loadDocument(String uri)
         throws MalformedURLException, IOException {
       final String file = new File((new URL(uri)).getPath()).getName();
-      final DataArchive mda = GameModule.getGameModule().getDataArchive();
-      try (InputStream inner = mda.getInputStream(file);
-           BufferedInputStream in = new BufferedInputStream(inner)) {
-        return loadDocument(uri, in);
+
+      try (BufferedInputStream in = new BufferedInputStream(
+        GameModule.getGameModule()
+                  .getDataArchive()
+                  .getInputStream(file))) {
+        final Document doc = loadDocument(uri, in);
+        return doc;
       }
       catch (DOMException e) {
         throw new IOException(e);

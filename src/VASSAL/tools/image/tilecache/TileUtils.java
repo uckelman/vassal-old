@@ -29,8 +29,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -81,9 +81,9 @@ public class TileUtils {
    * @throws ImageNotFoundException if the file isn't found
    */
   public static BufferedImage read(File src) throws ImageIOException {
-    try (InputStream fin = new FileInputStream(src);
-         InputStream in = new BufferedInputStream(fin)) {
-      return read(in);
+    try (InputStream in = new BufferedInputStream(new FileInputStream(src))) {
+      final BufferedImage img = read(in);
+      return img;
     }
     catch (FileNotFoundException e) {
       throw new ImageNotFoundException(src, e);
@@ -122,8 +122,7 @@ public class TileUtils {
     final byte[] cdata = IOUtils.toByteArray(in);
 
     // decompress the image data
-    try (InputStream bin = new ByteArrayInputStream(cdata);
-         InputStream zin = new GZIPInputStream(bin)) {
+    try (InputStream zin = new GZIPInputStream(new ByteArrayInputStream(cdata))) {
       bb = ByteBuffer.wrap(IOUtils.toByteArray(zin));
     }
 
@@ -265,8 +264,7 @@ public class TileUtils {
    */
   public static void write(BufferedImage tile, File dst)
                                                       throws ImageIOException {
-    try (OutputStream fout = new FileOutputStream(dst);
-         OutputStream out = new BufferedOutputStream(fout)) {
+    try (OutputStream out = new BufferedOutputStream(new FileOutputStream(dst))) {
       write(tile, out);
     }
     catch (IOException e) {
@@ -393,7 +391,7 @@ public class TileUtils {
    * @return the name of the tile file
    */
   public static String tileName(String iname, int tileX, int tileY, int div) {
-    final String sha = DigestUtils.sha1Hex(
+    final String sha = DigestUtils.shaHex(
       iname + "(" + tileX + "," + tileY + "@1:" + div
     );
 

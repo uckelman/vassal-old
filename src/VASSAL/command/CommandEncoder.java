@@ -25,12 +25,8 @@ package VASSAL.command;
  */
 public interface CommandEncoder  {
 
-    /** Translate a String into a {@link Command} */
-    public Command decode(String command);
-    /** Translate a {@link Command} into a String */
-    public String encode(Command c);
+  /** Translate a String into a {@link Command} */
+  Command decode(String command);
+  /** Translate a {@link Command} into a String */
+  String encode(Command c);
 }
-
-
-
-

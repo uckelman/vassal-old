@@ -27,8 +27,8 @@ import VASSAL.build.Buildable;
 
 public interface Translatable extends Buildable {
 
-  public ComponentI18nData getI18nData();
-  public String getAttributeValueString(String attr);
-  public void setAttribute(String attr, Object value);
+  ComponentI18nData getI18nData();
+  String getAttributeValueString(String attr);
+  void setAttribute(String attr, Object value);
 
 }

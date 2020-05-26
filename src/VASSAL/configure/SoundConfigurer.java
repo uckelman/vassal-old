@@ -157,23 +157,23 @@ public class SoundConfigurer extends Configurer {
   }
 
   protected interface AudioClipFactory {
-    public AudioClip getAudioClip(URL url) throws IOException;
+    AudioClip getAudioClip(URL url) throws IOException;
   }
 
   protected AudioClipFactory createAudioClipFactory() {
     return new AudioClipFactory() {
       @Override
       public AudioClip getAudioClip(URL url) {
-        if (url.toString().toLowerCase().endsWith(".mp3")) {
-          return new Mp3AudioClip(url);
-        }
-        else {
-          try (InputStream in = url.openStream()) {
+        try (InputStream in = url.openStream()) {
+          if (url.toString().toLowerCase().endsWith(".mp3")) {
+            return new Mp3AudioClip(url);
+          }
+          else {
             return new AudioSystemClip(in);
           }
-          catch (IOException e) {
-            return null;
-          }
+        }
+        catch (IOException e) {
+          return null;
         }
       }
     };

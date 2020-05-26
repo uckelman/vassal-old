@@ -155,6 +155,8 @@ public class SourceOpBitmapImpl extends AbstractTiledOpImpl
       }
     }
     catch (IOException e) {
+      // TODO: outer try-catch simply catches either of the 3 IOExceptions thrown in the inner try-catch,
+      // possibly remove the outer try-catch and replace the 3 inner catch blocks with one multi-catch
       if (!Op.handleException(e)) ErrorDialog.bug(e);
     }
 

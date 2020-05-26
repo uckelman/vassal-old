@@ -34,7 +34,7 @@ public interface PropertyContainer {
    *
    * @return a set of known {@link Property}s
    */
-  public Set<Property<?>> getProperties();
+  Set<Property<?>> getProperties();
 
   /**
    * Sets the value of a {@link Property}.
@@ -42,7 +42,7 @@ public interface PropertyContainer {
    * @param prop the {@link Property}
    * @param value the value
    */
-  public <T> void setValue(Property<T> prop, T value);
+  <T> void setValue(Property<T> prop, T value);
 
   /**
    * Gets the value of a {@link Property}.
@@ -50,21 +50,21 @@ public interface PropertyContainer {
    * @param prop the {@link Property}
    * @return the value
    */
-  public <T> T getValue(Property<T> prop);
+  <T> T getValue(Property<T> prop);
 
   /**
    * Adds a listener for all changes to this container.
    *
    * @param listener the listener to add
    */
-  public void addPropertyListener(PropertyListener<Object> listener);
+  void addPropertyListener(PropertyListener<Object> listener);
 
   /**
    * Removes a listner for all changes to this container.
    *
    * @param listener the listener to remove
    */
-  public void removePropertyListener(PropertyListener<Object> listener);
+  void removePropertyListener(PropertyListener<Object> listener);
 
   /**
    * Checks whether there are {@link PropertyListener}s for all changes
@@ -72,7 +72,7 @@ public interface PropertyContainer {
    *
    * @return {@code true} if there are listeners
    */
-  public boolean hasListeners();
+  boolean hasListeners();
 
   /**
    * Returns a list of {@link PropertyListener}s listening to all changes
@@ -80,7 +80,7 @@ public interface PropertyContainer {
    *
    * @return a list of listeners
    */
-  public List<PropertyListener<Object>> getPropertyListeners();
+  List<PropertyListener<Object>> getPropertyListeners();
 
   /**
    * Adds a listener for a specific {@link Property}.
@@ -88,8 +88,8 @@ public interface PropertyContainer {
    * @param prop the {@link Property} to listen on
    * @param listener the listener to add
    */
-  public <T> void addPropertyListener(Property<T> prop,
-                                      PropertyListener<? super T> listener);
+  <T> void addPropertyListener(Property<T> prop,
+                               PropertyListener<? super T> listener);
 
   /**
    * Removes a listener for a specific {@link Property}.
@@ -97,8 +97,8 @@ public interface PropertyContainer {
    * @param prop the {@link Property} listened on
    * @param listener the listener to remove
    */
-  public <T> void removePropertyListener(Property<T> prop,
-                                         PropertyListener<? super T> listener);
+  <T> void removePropertyListener(Property<T> prop,
+                                  PropertyListener<? super T> listener);
 
   /**
    * Returns a list of {@link PropertyListener}s listening to a given
@@ -107,7 +107,7 @@ public interface PropertyContainer {
    * @param prop the {@link Property} listened on
    * @return a list of listeners
    */
-  public <T> List<PropertyListener<? super T>>
+  <T> List<PropertyListener<? super T>>
                                         getPropertyListeners(Property<T> prop);
 
   /**
@@ -116,5 +116,5 @@ public interface PropertyContainer {
    *
    * @return {@code true} if there are listeners for the given property
    */
-  public <T> boolean hasListeners(Property<T> prop);
+  <T> boolean hasListeners(Property<T> prop);
 }

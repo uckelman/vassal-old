@@ -89,7 +89,7 @@ public class IncrementProperty implements PropertyChanger {
     return format.getFormat();
   }
 
-  public static interface Constraints extends PropertySource {
+  public interface Constraints extends PropertySource {
     int getMinimumValue();
     int getMaximumValue();
     boolean isWrap();

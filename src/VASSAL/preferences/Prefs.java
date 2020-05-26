@@ -185,8 +185,7 @@ public class Prefs implements Closeable {
   }
 
   protected void read() {
-    try (InputStream fin = new FileInputStream(file);
-         InputStream in = new BufferedInputStream(fin)) {
+    try (InputStream in = new BufferedInputStream(new FileInputStream(file))) {
       storedValues.clear();
       storedValues.load(in);
     }

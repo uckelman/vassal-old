@@ -19,9 +19,8 @@ package VASSAL.build.module.metadata;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -83,16 +82,17 @@ public class MetaDataFactory {
       }
 
       // read the first few lines of the buildFile
-      try (InputStream zin = zip.getInputStream(buildFileEntry);
-           InputStreamReader isr = new InputStreamReader(zin);
-           BufferedReader br = new BufferedReader(isr)) {
+      try (BufferedReader br = new BufferedReader(new InputStreamReader(zip
+        .getInputStream(buildFileEntry)))) {
         for (int i = 0; i < 10; i++) {
           final String s = br.readLine();
           if (s.indexOf(BUILDFILE_MODULE_ELEMENT1) > 0
               || s.indexOf(BUILDFILE_MODULE_ELEMENT2) > 0) {
+            br.close();
             return new ModuleMetaData(zip);
           }
           else if (s.indexOf(BUILDFILE_EXTENSION_ELEMENT) > 0) {
+            br.close();
             return new ExtensionMetaData(zip);
           }
         }

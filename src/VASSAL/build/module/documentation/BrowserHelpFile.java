@@ -322,8 +322,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
       File packed = null;
       try {
         packed = File.createTempFile("VASSALhelp", ".zip"); //$NON-NLS-1$ //$NON-NLS-2$
-        try (FileOutputStream fout = new FileOutputStream(packed);
-             ZipOutputStream out = new ZipOutputStream(fout)) {
+        try (ZipOutputStream out = new ZipOutputStream(new FileOutputStream(packed))) {
           for (File f : dir.listFiles()) {
             packFile(f, "", out); //$NON-NLS-1$
           }

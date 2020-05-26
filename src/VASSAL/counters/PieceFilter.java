@@ -24,5 +24,5 @@ package VASSAL.counters;
  * A filter for GamePieces
  */
 public interface PieceFilter {
-  public abstract boolean accept(GamePiece piece);
+  boolean accept(GamePiece piece);
 }

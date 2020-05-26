@@ -657,15 +657,18 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
    * @return encoded text
    */
   protected String encodeMessage(String clearText) {
+    final String encodedText;
     try (FastByteArrayOutputStream ba = new FastByteArrayOutputStream();
          ObfuscatingOutputStream out = new ObfuscatingOutputStream(ba)) {
       out.write(clearText.getBytes(StandardCharsets.UTF_8)); //$NON-NLS-1$
-      return new String(ba.toByteArray());
+      encodedText = new String(ba.toByteArray());
+      return encodedText;
     }
     catch (IOException e) {
       e.printStackTrace();
-      return "";
     }
+
+    return "";
   }
 
   /**
@@ -675,14 +678,16 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
    * @return decoded text
    */
   protected String decodeMessage(String encodedMessage) {
+    String clearText = "";
     try (ByteArrayInputStream ba = new ByteArrayInputStream(encodedMessage.getBytes());
          DeobfuscatingInputStream in = new DeobfuscatingInputStream(ba)) {
-      return IOUtils.toString(in, StandardCharsets.UTF_8); //$NON-NLS-1$
+      clearText = IOUtils.toString(in, StandardCharsets.UTF_8); //$NON-NLS-1$
     }
     catch (IOException e) {
       e.printStackTrace();
-      return "";
     }
+
+    return clearText;
   }
 
   /**

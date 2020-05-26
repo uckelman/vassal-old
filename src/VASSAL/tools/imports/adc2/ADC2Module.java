@@ -42,9 +42,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.InputStream;
 import java.io.IOException;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -120,6 +118,7 @@ import VASSAL.tools.filechooser.ExtensionFileFilter;
 import VASSAL.tools.imports.FileFormatException;
 import VASSAL.tools.imports.Importer;
 import VASSAL.tools.imports.adc2.SymbolSet.SymbolData;
+import VASSAL.tools.io.IOUtils;
 
 public class ADC2Module extends Importer {
 
@@ -1641,9 +1640,7 @@ private PieceWindow pieceWin;
   protected void load(File f) throws IOException {
     super.load(f);
 
-    try (InputStream fin = new FileInputStream(f);
-         InputStream bin = new BufferedInputStream(fin);
-         DataInputStream in = new DataInputStream(bin)) {
+    try (DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(f)))) {
       name = stripExtension(f.getName());
 
       int header = in.readByte();
@@ -1758,9 +1755,7 @@ private PieceWindow pieceWin;
           new ExtensionFileFilter("Info page file (*.ipx;*.IPX)", new String[] {".ipx"}));
       if (ipx != null) {
 
-        try (InputStream fin = new FileInputStream(ipx);
-             InputStream bin = new BufferedInputStream(fin);
-             DataInputStream input = new DataInputStream(bin)) {
+        try (DataInputStream input = new DataInputStream(new BufferedInputStream(new FileInputStream(ipx)))) {
           try {
             while (true) { // loop until EOF
               while (input.readUnsignedByte() != 0x3b) { }
@@ -2394,9 +2389,10 @@ private void configureMainMap(GameModule gameModule) throws IOException {
 
             StringBuilder sb = new StringBuilder();
             sb.append("<html><body>");
+            BufferedReader input = null;
+            try {
+              input = new BufferedReader(new FileReader(f));
 
-            try (Reader fr = new FileReader(f);
-                 BufferedReader input = new BufferedReader(fr)) {
               String line = null;
               do {
                 line = input.readLine();
@@ -2412,6 +2408,11 @@ private void configureMainMap(GameModule gameModule) throws IOException {
               sb.append("</body></html>");
               gameModule.getArchiveWriter().addFile(f.getName(), sb.toString().getBytes());
               w.setAttribute(HtmlChart.FILE, f.getName());
+
+              input.close();
+            }
+            finally {
+              IOUtils.closeQuietly(input);
             }
           }
           tab.propertyChange(new PropertyChangeEvent(w, Configurable.NAME_PROPERTY, "", infoPages[i]));
@@ -2873,8 +2874,7 @@ private void configureMainMap(GameModule gameModule) throws IOException {
 
   @Override
   public boolean isValidImportFile(File f) throws IOException {
-    try (InputStream fin = new FileInputStream(f);
-         DataInputStream in = new DataInputStream(fin)) {
+    try (DataInputStream in = new DataInputStream(new FileInputStream(f))) {
       int header = in.readByte();
       boolean valid = header == -3 || header == -2;
       return valid;

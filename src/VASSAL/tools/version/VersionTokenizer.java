@@ -40,7 +40,7 @@ public interface VersionTokenizer {
    * @return <code>true</code> if {@link #next()} will return more
    * integers
    */
-  public boolean hasNext();
+  boolean hasNext();
 
   /**
    * Returns an integer representing the next token.
@@ -51,5 +51,5 @@ public interface VersionTokenizer {
    * @throws NoSuchElementException if this method is called when
    * {@link hasNext()} would return <code>false</code>.
    */
-  public int next() throws VersionFormatException;
+  int next() throws VersionFormatException;
 }

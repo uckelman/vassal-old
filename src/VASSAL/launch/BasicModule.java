@@ -24,7 +24,6 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.InputStream;
 import java.io.IOException;
 
 import org.slf4j.Logger;
@@ -94,15 +93,11 @@ public class BasicModule extends GameModule {
     }
     else {
       // existing module
-      try (InputStream inner = darch.getInputStream(BUILDFILE);
-           BufferedInputStream in = new BufferedInputStream(inner)) {
+      try (BufferedInputStream in = new BufferedInputStream(darch.getInputStream(BUILDFILE))) {
         final Document doc = Builder.createDocument(in);
         build(doc.getDocumentElement());
       }
       catch (IOException e) {
-        // FIXME: review error message
-        // FIXME: this should be more specific, to separate the case where
-        // we have failed I/O from when we read ok but have no module
         throw new IOException(
           Resources.getString("BasicModule.not_a_module"), //$NON-NLS-1$
           e);

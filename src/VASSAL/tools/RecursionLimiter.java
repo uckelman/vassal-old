@@ -59,8 +59,8 @@ public class RecursionLimiter {
     return reporting;
   }
 
-  public static interface Loopable {
-    public String getComponentTypeName();
-    public String getComponentName();
+  public interface Loopable {
+    String getComponentTypeName();
+    String getComponentName();
   }
 }

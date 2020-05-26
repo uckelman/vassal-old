@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 
 import VASSAL.Info;
 import VASSAL.tools.io.IOUtils;
@@ -39,7 +38,7 @@ public class BugUtils {
     */
 
     try (InputStream in = pb.post(url)) {
-      final String result = IOUtils.toString(in, StandardCharsets.UTF_8);
+      final String result = IOUtils.toString(in);
 
       // script should return zero on success, otherwise it failed
       try {
@@ -81,13 +80,16 @@ public class BugUtils {
 // FIXME: move this somewhere else?
   public static String getErrorLog() {
     String log = null;
-    final File f = new File(Info.getConfDir(), "errorLog");
-    try (FileReader r = new FileReader(f)) {
+    FileReader r = null;
+    try {
+      r = new FileReader(new File(Info.getConfDir(), "errorLog"));
       log = IOUtils.toString(r);
+      r.close();
     }
     catch (IOException e) {
       // Don't bother logging this---if we can't read the errorLog,
       // then we probably can't write to it either.
+      IOUtils.closeQuietly(r);
     }
 
     return log;

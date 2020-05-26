@@ -29,9 +29,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.util.Properties;
@@ -228,8 +226,8 @@ public class SavedGameUpdaterDialog extends JDialog {
       p.put(MODULE_NAME_KEY, GameModule.getGameModule().getGameName());
       p.put(VERSION_KEY, GameModule.getGameModule().getGameVersion());
 
-      try (OutputStream fout = new FileOutputStream(fc.getSelectedFile());
-           BufferedOutputStream out = new BufferedOutputStream(fout)) {
+      try (BufferedOutputStream out = new BufferedOutputStream(
+        new FileOutputStream(fc.getSelectedFile()))) {
         p.store(out, null);
       }
       catch (IOException e) {
@@ -243,8 +241,7 @@ public class SavedGameUpdaterDialog extends JDialog {
     if (JFileChooser.CANCEL_OPTION != fc.showOpenDialog(this)) {
       oldPieceInfo = new Properties();
 
-      try (InputStream fin = new FileInputStream(fc.getSelectedFile());
-           BufferedInputStream in = new BufferedInputStream(fin)) {
+      try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(fc.getSelectedFile()))) {
         oldPieceInfo.load(in);
 
         String moduleVersion = oldPieceInfo.getProperty(VERSION_KEY);

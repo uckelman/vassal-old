@@ -229,6 +229,6 @@ public class PropertyChangerConfigurer extends Configurer {
     }
     setValue(p);
   }
-  public static interface Constraints extends PropertyPrompt.Constraints, IncrementProperty.Constraints, PropertySource {
+  public interface Constraints extends PropertyPrompt.Constraints, IncrementProperty.Constraints, PropertySource {
   }
 }

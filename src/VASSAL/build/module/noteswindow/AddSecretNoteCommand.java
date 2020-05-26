@@ -47,7 +47,7 @@ public class AddSecretNoteCommand extends Command {
     return null;
   }
 
-  public static interface Interface {
+  public interface Interface {
     void addSecretNote(SecretNote note);
   }
 }

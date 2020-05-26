@@ -32,7 +32,7 @@ public interface Buildable {
    * Build the object
    * @param e the XML element containing the object data
    */
-  public void build(Element e);
+  void build(Element e);
 
   /**
    * Adds this component to its parent.
@@ -41,17 +41,17 @@ public interface Buildable {
    * Buildable subcomponents can be defined in an extension package
    * without needing to modify the containing class.
    */
-  public void addTo(Buildable parent);
+  void addTo(Buildable parent);
 
   /**
    * Adds a child component.  Both this method and {@link #addTo} are
    * invoked when adding a child to a parent
    */
-  public void add(Buildable child);
+  void add(Buildable child);
 
   /**
    * @return an XML element from which
    * this component can be built
    */
-  public Element getBuildElement(Document doc);
+  Element getBuildElement(Document doc);
 }

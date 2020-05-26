@@ -19,7 +19,6 @@
 package VASSAL.build.module.metadata;
 
 import java.io.BufferedInputStream;
-import java.io.InputStream;
 import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -144,8 +143,7 @@ public class SaveMetaData extends AbstractMetaData {
       final XMLHandler handler = new XMLHandler();
 
       // parse! parse!
-      try (InputStream zin = zip.getInputStream(data);
-           BufferedInputStream in = new BufferedInputStream(zin)) {
+      try (BufferedInputStream in = new BufferedInputStream(zip.getInputStream(data))) {
         synchronized (parser) {
           parser.setContentHandler(handler);
           parser.setDTDHandler(handler);

@@ -21,7 +21,6 @@ package VASSAL.tools.image;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.io.IOException;
 
 /**
@@ -107,8 +106,8 @@ class JPEGDecoder {
   }
 
   public static void main(String[] args) throws IOException {
-    try (InputStream fin = new FileInputStream(args[0]);
-         DataInputStream in = new DataInputStream(fin)) {
+    try (DataInputStream in = new DataInputStream(new FileInputStream(args[0]))) {
+
       if (!JPEGDecoder.decodeSignature(in)) {
         System.out.println("Not a JPEG");
       }

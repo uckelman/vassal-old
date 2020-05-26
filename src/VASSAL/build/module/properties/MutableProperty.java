@@ -42,7 +42,7 @@ public interface MutableProperty {
 
   MutablePropertiesContainer getParent();
 
-  public static class Util {
+  class Util {
     /**
      * Look for a {@link MutableProperty} in the list of {@link MutablePropertiesContainer}. Return the first one
      * found, searching the lists in order. The list may contain null references, which are skipped
@@ -69,7 +69,7 @@ public interface MutableProperty {
    * @author rkinney
    *
    */
-  public static class Impl implements MutableProperty {
+  class Impl implements MutableProperty {
     private PropertyChangeSupport propSupport;
     private String value="";
     private String propertyName;

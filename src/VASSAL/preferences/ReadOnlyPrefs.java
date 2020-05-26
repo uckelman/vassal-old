@@ -23,7 +23,6 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -47,8 +46,7 @@ public class ReadOnlyPrefs {
   }
 
   protected ReadOnlyPrefs(File file) {
-    try (InputStream fin = new FileInputStream(file);
-         BufferedInputStream in = new BufferedInputStream(fin)) {
+    try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(file))) {
       storedValues.load(in);
     }
     catch (FileNotFoundException e) {

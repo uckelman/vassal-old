@@ -34,20 +34,19 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.InputStream;
 import java.io.IOException;
-import java.io.Reader;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
 
 import VASSAL.build.GameModule;
+import VASSAL.tools.ArrayUtils;
 import VASSAL.tools.filechooser.BMPFileFilter;
 import VASSAL.tools.imports.FileFormatException;
 import VASSAL.tools.imports.ImportAction;
 import VASSAL.tools.imports.Importer;
+import VASSAL.tools.io.IOUtils;
 
 /**
  * ADC2 game piece and terrain symbols.
@@ -485,9 +484,7 @@ public class SymbolSet extends Importer{
   protected void load(File f) throws IOException {
     super.load(f);
 
-    try (InputStream fin = new FileInputStream(f);
-         InputStream bin = new BufferedInputStream(fin);
-         DataInputStream in = new DataInputStream(bin)) {
+    try (DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(f)))) {
       // if header is 0xFD, then mask indeces are one-byte long. Otherwise, if
       // the header is anything else greater than 0xFA, then mask indeces are base-250
       // two-byte words.
@@ -571,6 +568,8 @@ public class SymbolSet extends Importer{
           maskData[i] = new SymbolData(maskImages, true).read(in);
       }
 
+      in.close();
+
       /* See if there is a single-image underlay for the map. */
       underlay = loadSymbolImage(baseName, 'z', false);
     }
@@ -593,11 +592,12 @@ public class SymbolSet extends Importer{
     File sdx = new File(forceExtension(f.getPath(), "sdx"));
     sdx = action.getCaseInsensitiveFile(sdx, f, false, null);
     if (sdx != null) { // must reorder image indeces
+      BufferedReader input = null;
 
-      try (Reader fr = new FileReader(sdx);
-           BufferedReader input = new BufferedReader(fr)) {
+      try {
+        input = new BufferedReader(new FileReader(sdx));
 
-        final SymbolData[] pieces = Arrays.copyOf(gamePieceData, gamePieceData.length);
+        final SymbolData[] pieces = ArrayUtils.copyOf(gamePieceData);
 
         String line = null;
         try {
@@ -620,6 +620,11 @@ public class SymbolSet extends Importer{
         finally {
           gamePieceData = pieces;
         }
+
+        input.close();
+      }
+      finally {
+        IOUtils.closeQuietly(input);
       }
     }
   }
@@ -639,9 +644,9 @@ public class SymbolSet extends Importer{
 
   @Override
   public boolean isValidImportFile(File f) throws IOException {
-    try (InputStream fin = new FileInputStream(f);
-         DataInputStream in = new DataInputStream(fin)) {
-      return in.readUnsignedByte() >= 0xFA;
+    try (DataInputStream in = new DataInputStream(new FileInputStream(f))) {
+      boolean valid = in.readUnsignedByte() >= 0xFA;
+      return valid;
     }
   }
 }
