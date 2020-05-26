@@ -375,22 +375,14 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
     final Box b = Box.createVerticalBox();
     final Box buttons = Box.createHorizontalBox();
     final JButton ok = new JButton(Resources.getString(Resources.OK));
-    ok.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        final List<Board> l = getBoardsFromControls();
-        defaultSetup = l.isEmpty() ? null : encode(new SetBoards(BoardPicker.this, l));
-        d.dispose();
-      }
+    ok.addActionListener(e -> {
+      final List<Board> l = getBoardsFromControls();
+      defaultSetup = l.isEmpty() ? null : encode(new SetBoards(BoardPicker.this, l));
+      d.dispose();
     });
     buttons.add(ok);
     final JButton cancel = new JButton(Resources.getString(Resources.CANCEL));
-    cancel.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        d.dispose();
-      }
-    });
+    cancel.addActionListener(e -> d.dispose());
     buttons.add(cancel);
     b.add(controls);
     b.add(buttons);
@@ -803,62 +795,42 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
       controls = new JPanel();
       controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
       title = new StringConfigurer(null, Resources.getString("Editor.BoardPicker.dialog_title"), BoardPicker.this.title); //$NON-NLS-1$
-      title.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          if (evt.getNewValue() != null) {
-            BoardPicker.this.title = (String) evt.getNewValue();
-          }
+      title.addPropertyChangeListener(evt -> {
+        if (evt.getNewValue() != null) {
+          BoardPicker.this.title = (String) evt.getNewValue();
         }
       });
       controls.add(title.getControls());
       prompt = new StringConfigurer(null, Resources.getString("Editor.BoardPicker.board_prompt"), BoardPicker.this.boardPrompt); //$NON-NLS-1$
-      prompt.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          if (evt.getNewValue() != null) {
-            BoardPicker.this.boardPrompt = (String) evt.getNewValue();
-          }
+      prompt.addPropertyChangeListener(evt -> {
+        if (evt.getNewValue() != null) {
+          BoardPicker.this.boardPrompt = (String) evt.getNewValue();
         }
       });
       controls.add(prompt.getControls());
       scale = new DoubleConfigurer(null, Resources.getString("Editor.BoardPicker.cell_scale_factor"), slotScale); //$NON-NLS-1$
-      scale.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          if (evt.getNewValue() != null) {
-            slotScale = (Double) evt.getNewValue();
-          }
+      scale.addPropertyChangeListener(evt -> {
+        if (evt.getNewValue() != null) {
+          slotScale = (Double) evt.getNewValue();
         }
       });
       controls.add(scale.getControls());
       width = new IntConfigurer(null, Resources.getString("Editor.BoardPicker.cell_width"), psize.width); //$NON-NLS-1$
-      width.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          if (evt.getNewValue() != null) {
-            psize.width = (Integer) evt.getNewValue();
-          }
+      width.addPropertyChangeListener(evt -> {
+        if (evt.getNewValue() != null) {
+          psize.width = (Integer) evt.getNewValue();
         }
       });
       controls.add(width.getControls());
       height = new IntConfigurer(null, Resources.getString("Editor.BoardPicker.cell_height"), psize.height); //$NON-NLS-1$
-      height.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          if (evt.getNewValue() != null) {
-            psize.height = (Integer) evt.getNewValue();
-          }
+      height.addPropertyChangeListener(evt -> {
+        if (evt.getNewValue() != null) {
+          psize.height = (Integer) evt.getNewValue();
         }
       });
       controls.add(height.getControls());
       selectButton = new JButton(Resources.getString("BoardPicker.select_default")); //$NON-NLS-1$
-      selectButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          selectBoards(e.getSource() instanceof Component ? (Component) e.getSource() : null);
-        }
-      });
+      selectButton.addActionListener(e -> selectBoards(e.getSource() instanceof Component ? (Component) e.getSource() : null));
       controls.add(selectButton);
     }
 

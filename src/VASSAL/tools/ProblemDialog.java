@@ -92,18 +92,13 @@ public class ProblemDialog {
   {
     if (thrown != null) logger.error("", thrown);
 
-    return DialogUtils.enqueue(new Runnable() {
-      @Override
-      public void run() {
-        Dialogs.showMessageDialog(
-          parent,
-          title,
-          heading,
-          message,
-          messageType
-        );
-      }
-    });
+    return DialogUtils.enqueue(() -> Dialogs.showMessageDialog(
+      parent,
+      title,
+      heading,
+      message,
+      messageType
+    ));
   }
 
   public static Future<?> showDisableable(
@@ -166,20 +161,15 @@ public class ProblemDialog {
   {
     if (thrown != null) logger.error("", thrown);
 
-    return DialogUtils.enqueue(new Runnable() {
-      @Override
-      public void run() {
-        Dialogs.showMessageDialog(
-          parent,
-          title,
-          heading,
-          message,
-          messageType,
-          key,
-          Resources.getString("Dialogs.disable")
-        );
-      }
-    });
+    return DialogUtils.enqueue(() -> Dialogs.showMessageDialog(
+      parent,
+      title,
+      heading,
+      message,
+      messageType,
+      key,
+      Resources.getString("Dialogs.disable")
+    ));
   }
 
   public static Future<?> showDisableableNoI18N(
@@ -192,20 +182,15 @@ public class ProblemDialog {
   {
     if (thrown != null) logger.error("", thrown);
 
-    return DialogUtils.enqueue(new Runnable() {
-      @Override
-      public void run() {
-        Dialogs.showMessageDialog(
-          getFrame(),
-          title,
-          heading,
-          message,
-          messageType,
-          key,
-          "Don't show this again"
-        );
-      }
-    });
+    return DialogUtils.enqueue(() -> Dialogs.showMessageDialog(
+      getFrame(),
+      title,
+      heading,
+      message,
+      messageType,
+      key,
+      "Don't show this again"
+    ));
   }
 
   public static Future<?> showDetails(
@@ -268,23 +253,18 @@ public class ProblemDialog {
   {
     if (thrown != null) logger.error("", thrown);
 
-    return DialogUtils.enqueue(new Runnable() {
-      @Override
-      public void run() {
-        DetailsDialog.showDialog(
-          parent,
-          title,
-          heading,
-          message,
-          details,
-          Resources.getString("Dialogs.disable"),
-          Resources.getString("Dialogs.show_details"),
-          Resources.getString("Dialogs.hide_details"),
-          messageType,
-          null
-        );
-      }
-    });
+    return DialogUtils.enqueue(() -> DetailsDialog.showDialog(
+      parent,
+      title,
+      heading,
+      message,
+      details,
+      Resources.getString("Dialogs.disable"),
+      Resources.getString("Dialogs.show_details"),
+      Resources.getString("Dialogs.hide_details"),
+      messageType,
+      null
+    ));
   }
 
   public static Future<?> showDetailsDisableable(
@@ -354,23 +334,18 @@ public class ProblemDialog {
   {
     if (thrown != null) logger.error("", thrown);
 
-    return DialogUtils.enqueue(new Runnable() {
-      @Override
-      public void run() {
-        DetailsDialog.showDialog(
-          parent,
-          title,
-          heading,
-          message,
-          details,
-          Resources.getString("Dialogs.disable"),
-          Resources.getString("Dialogs.show_details"),
-          Resources.getString("Dialogs.hide_details"),
-          messageType,
-          key
-        );
-      }
-    });
+    return DialogUtils.enqueue(() -> DetailsDialog.showDialog(
+      parent,
+      title,
+      heading,
+      message,
+      details,
+      Resources.getString("Dialogs.disable"),
+      Resources.getString("Dialogs.show_details"),
+      Resources.getString("Dialogs.hide_details"),
+      messageType,
+      key
+    ));
   }
 
   private static Frame getFrame() {

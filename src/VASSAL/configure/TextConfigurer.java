@@ -165,22 +165,14 @@ public class TextConfigurer extends Configurer implements ConfigurerFactory {
     }
     else if (!updateQueued) {
       updateQueued = true;
-      Runnable delayedUpdate = new Runnable() {
-        @Override
-        public void run() {
-          try {
-            Thread.sleep(updateFrequencey);
-          }
-          catch (InterruptedException e) {
-          }
-
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              executeUpdate();
-            }
-          });
+      Runnable delayedUpdate = () -> {
+        try {
+          Thread.sleep(updateFrequencey);
         }
+        catch (InterruptedException e) {
+        }
+
+        SwingUtilities.invokeLater(() -> executeUpdate());
       };
       new Thread(delayedUpdate).start();
     }

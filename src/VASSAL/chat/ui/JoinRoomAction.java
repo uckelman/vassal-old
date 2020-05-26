@@ -49,11 +49,6 @@ public class JoinRoomAction extends AbstractAction {
   }
 
   public static RoomActionFactory factory(final ChatServerConnection chatClient) {
-    return new RoomActionFactory() {
-      @Override
-      public Action getAction(Room p, JTree tree) {
-        return new JoinRoomAction(p, chatClient);
-      }
-    };
+    return (p, tree) -> new JoinRoomAction(p, chatClient);
   }
 }

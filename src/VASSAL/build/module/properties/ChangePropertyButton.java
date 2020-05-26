@@ -64,12 +64,7 @@ public class ChangePropertyButton extends AbstractConfigurable implements Proper
   protected FormattedString format = new FormattedString();
 
   public ChangePropertyButton() {
-    launch = new LaunchButton("Change", BUTTON_TOOLTIP, BUTTON_TEXT, HOTKEY, BUTTON_ICON, new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        launch();
-      }
-    });
+    launch = new LaunchButton("Change", BUTTON_TOOLTIP, BUTTON_TEXT, HOTKEY, BUTTON_ICON, e -> launch());
   }
 
   public void launch() {

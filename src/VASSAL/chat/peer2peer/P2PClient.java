@@ -99,13 +99,10 @@ public class P2PClient implements ChatServerConnection, ChatControlsInitializer,
     roomControls.addPlayerActionFactory(SynchAction.factory(this));
     synchEncoder = new SynchEncoder(this, this);
     soundEncoder = new SoundEncoder(this);
-    nameChangeListener = new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        SimplePlayer p = (SimplePlayer) getUserInfo();
-        p.setName((String) evt.getNewValue());
-        setUserInfo(p);
-      }
+    nameChangeListener = evt -> {
+      SimplePlayer p = (SimplePlayer) getUserInfo();
+      p.setName((String) evt.getNewValue());
+      setUserInfo(p);
     };
   }
 

@@ -430,11 +430,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
 
       add(new JLabel(Resources.getString("Chat.vassal_versions_allowed")));     //$NON-NLS-1$
       vassalVersionConfig = new JComboBox(new String[] {ANY_VERSION, THIS_VERSION, MINIMUM_VERSION}); //$NON-NLS-1$
-      vassalVersionConfig.addItemListener(new ItemListener() {
-        @Override
-        public void itemStateChanged(ItemEvent arg0) {
-          updateVisibility();
-        }});
+      vassalVersionConfig.addItemListener(arg0 -> updateVisibility());
       add(vassalVersionConfig);
       minimumVassalVersionConfig = new JTextField(12);
       minimumVassalVersionConfig.setText(vassalVersion);
@@ -442,11 +438,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
 
       add(new JLabel(Resources.getString("Chat.module_versions_allowed"))); //$NON-NLS-1$
       moduleVersionConfig = new JComboBox(new String[] {ANY_VERSION, THIS_VERSION, MINIMUM_VERSION});
-      moduleVersionConfig.addItemListener(new ItemListener() {
-        @Override
-        public void itemStateChanged(ItemEvent arg0) {
-          updateVisibility();
-        }});
+      moduleVersionConfig.addItemListener(arg0 -> updateVisibility());
 
       add(moduleVersionConfig);
       minimumModuleVersionConfig = new JTextField(12);
@@ -455,11 +447,7 @@ public class JabberRoom extends SimpleRoom implements LockableRoom {
 
       add(new JLabel(Resources.getString("Chat.crc_match"))); //$NON-NLS-1$
       matchCrcConfig = new JCheckBox();
-      matchCrcConfig.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          updateVisibility();
-        }});
+      matchCrcConfig.addActionListener(e -> updateVisibility());
       add(matchCrcConfig);
       crcConfig = new JTextField(12);
       crcConfig.setText(Long.toHexString(GameModule.getGameModule().getCrc()));

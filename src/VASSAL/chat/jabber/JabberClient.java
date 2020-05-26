@@ -163,19 +163,16 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     privateChatEncoder = new PrivateChatEncoder(this, privateChatManager);
 
     // Listen for changes to our name via VASSAL preferences
-    idChangeListener = new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        if (me != null) {
-          final SimpleStatus s = (SimpleStatus) me.getStatus();
-          s.updateStatus();
-          me.setStatus(s);
-          me.setName((String) GameModule.getGameModule().getPrefs().getValue(
-              GameModule.REAL_NAME));
-        }
-        if (monitor != null) {
-          monitor.sendStatus(me);
-        }
+    idChangeListener = evt -> {
+      if (me != null) {
+        final SimpleStatus s = (SimpleStatus) me.getStatus();
+        s.updateStatus();
+        me.setStatus(s);
+        me.setName((String) GameModule.getGameModule().getPrefs().getValue(
+            GameModule.REAL_NAME));
+      }
+      if (monitor != null) {
+        monitor.sendStatus(me);
       }
     };
 
@@ -189,30 +186,27 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
     };
 
     // Listen for someone inviting us to another room
-    inviteListener = new InvitationListener() {
-      @Override
-      public void invitationReceived(XMPPConnection conn, String room,
-          String inviter, String reason, String password, Message mess) {
-        if (INVITE.equals(reason)) {
-          final String playerLogin = inviter.split("@")[0]; //$NON-NLS-1$
-          final Player player = playerMgr.getPlayer(inviter+JID_RESOURCE);
-          final String playerName = player.getName() + "(" + playerLogin + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-          final String roomName = roomMgr.getRoomByJID(JabberClient.this, room).getName();
-          final int i = Dialogs.showConfirmDialog(GameModule
-            .getGameModule().getFrame(), Resources.getString("Chat.invite_heading"), //$NON-NLS-1$
-            Resources.getString("Chat.invite_heading"), Resources.getString( //$NON-NLS-1$
-                "Chat.invitation", playerName, roomName), //$NON-NLS-1$
-            JOptionPane.QUESTION_MESSAGE, null,
-            JOptionPane.YES_NO_OPTION, "Invite" + inviter, Resources //$NON-NLS-1$
-                .getString("Chat.ignore_invitation")); //$NON-NLS-1$
-          if (i == 0) {
-            doInvite(inviter, roomName);
-          }
-          else {
-            MultiUserChat.decline(conn, room, inviter, "");                 //$NON-NLS-1$
-          }
+    inviteListener = (conn, room, inviter, reason, password, mess) -> {
+      if (INVITE.equals(reason)) {
+        final String playerLogin = inviter.split("@")[0]; //$NON-NLS-1$
+        final Player player = playerMgr.getPlayer(inviter+JID_RESOURCE);
+        final String playerName = player.getName() + "(" + playerLogin + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+        final String roomName = roomMgr.getRoomByJID(JabberClient.this, room).getName();
+        final int i = Dialogs.showConfirmDialog(GameModule
+          .getGameModule().getFrame(), Resources.getString("Chat.invite_heading"), //$NON-NLS-1$
+          Resources.getString("Chat.invite_heading"), Resources.getString( //$NON-NLS-1$
+              "Chat.invitation", playerName, roomName), //$NON-NLS-1$
+          JOptionPane.QUESTION_MESSAGE, null,
+          JOptionPane.YES_NO_OPTION, "Invite" + inviter, Resources //$NON-NLS-1$
+              .getString("Chat.ignore_invitation")); //$NON-NLS-1$
+        if (i == 0) {
+          doInvite(inviter, roomName);
         }
-      }};
+        else {
+          MultiUserChat.decline(conn, room, inviter, "");                 //$NON-NLS-1$
+        }
+      }
+    };
 
     // Listen for other clients leaving a room I own and revoke their membership
     userListener = new DefaultParticipantStatusListener() {
@@ -1191,11 +1185,8 @@ public class JabberClient implements LockableChatServerConnection, PacketListene
       }
     };
     JabberClient client = new JabberClient(c, "localhost", 5222, account); //$NON-NLS-1$
-    client.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        System.err.println(evt.getPropertyName() + "=" + evt.getNewValue()); //$NON-NLS-1$
-      }
+    client.addPropertyChangeListener(evt -> {
+      System.err.println(evt.getPropertyName() + "=" + evt.getNewValue()); //$NON-NLS-1$
     });
     ChatServerControls controls = new ChatServerControls();
     controls.setClient(client);

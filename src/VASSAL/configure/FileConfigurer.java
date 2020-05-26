@@ -159,12 +159,7 @@ public class FileConfigurer extends Configurer {
         }
       });
       p.add(tf);
-      b.addActionListener(new java.awt.event.ActionListener() {
-        @Override
-        public void actionPerformed(java.awt.event.ActionEvent e) {
-          chooseNewValue();
-        }
-      });
+      b.addActionListener(e -> chooseNewValue());
     }
     return p;
   }
@@ -186,12 +181,7 @@ public class FileConfigurer extends Configurer {
     final JFrame f = new JFrame();
     final FileConfigurer c =
       new ImageConfigurer(null, "Test file", new ArchiveWriter("testArchive"));
-    c.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        System.err.println(evt.getNewValue());
-      }
-    });
+    c.addPropertyChangeListener(evt -> System.err.println(evt.getNewValue()));
     f.getContentPane().add(c.getControls());
     f.pack();
     f.setVisible(true);

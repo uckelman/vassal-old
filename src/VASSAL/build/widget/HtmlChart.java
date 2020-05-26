@@ -215,13 +215,8 @@ public class HtmlChart extends Widget implements MouseListener {
       final JPopupMenu popup = new JPopupMenu();
       final JMenuItem item = new JMenuItem("Return to default page");
 
-      item.addActionListener(new ActionListener() {
-        // Return to default page
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          setFile(fileName);
-        }
-      });
+      // Return to default page
+      item.addActionListener(e -> setFile(fileName));
 
       popup.add(item);
       if (event.getComponent().isShowing()) {

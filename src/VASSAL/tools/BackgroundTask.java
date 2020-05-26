@@ -35,24 +35,16 @@ public abstract class BackgroundTask {
     public abstract void doLater();
 
     public Thread start() {
-        final Runnable later = new Runnable() {
-            @Override
-            public void run() {
-                doLater();
+        final Runnable later = () -> doLater();
+        Runnable first = () -> {
+            try {
+                doFirst();
             }
-        };
-        Runnable first = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    doFirst();
-                }
-                catch (Throwable t) {
-                  t.printStackTrace();
-                }
-                finally {
-                    SwingUtilities.invokeLater(later);
-                }
+            catch (Throwable t) {
+              t.printStackTrace();
+            }
+            finally {
+                SwingUtilities.invokeLater(later);
             }
         };
         Thread t = new Thread(first);

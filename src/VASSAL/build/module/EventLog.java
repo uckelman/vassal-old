@@ -107,31 +107,26 @@ public class EventLog extends AbstractBuildable
    * @return the events represented by the string
    */
   public static Iterable<Event> decodedEvents(final String s) {
-    return new Iterable<>() {
+    return () -> new Iterator<>() {
+      private final SequenceEncoder.Decoder se =
+        new SequenceEncoder.Decoder(s, '|');
+
       @Override
-      public Iterator<Event> iterator() {
-        return new Iterator<>() {
-          private final SequenceEncoder.Decoder se =
-            new SequenceEncoder.Decoder(s, '|');
+      public boolean hasNext() {
+        return se.hasMoreTokens();
+      }
 
-          @Override
-          public boolean hasNext() {
-            return se.hasMoreTokens();
-          }
+      @Override
+      public Event next() {
+        final SequenceEncoder.Decoder sub =
+          new SequenceEncoder.Decoder(se.nextToken(), ',');
+        return new Event(Long.parseLong(sub.nextToken()),
+                         sub.nextToken(), sub.nextToken());
+      }
 
-          @Override
-          public Event next() {
-            final SequenceEncoder.Decoder sub =
-              new SequenceEncoder.Decoder(se.nextToken(), ',');
-            return new Event(Long.parseLong(sub.nextToken()),
-                             sub.nextToken(), sub.nextToken());
-          }
-
-          @Override
-          public void remove() {
-            throw new UnsupportedOperationException();
-          }
-        };
+      @Override
+      public void remove() {
+        throw new UnsupportedOperationException();
       }
     };
   }

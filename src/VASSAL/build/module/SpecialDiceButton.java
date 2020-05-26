@@ -122,12 +122,7 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
     dialogLabel = new JLabel();
     dialogLabel.setIcon(resultsIcon);
     dialog.add(dialogLabel);
-    final ActionListener rollAction = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        DR();
-      }
-    };
+    final ActionListener rollAction = e -> DR();
     launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, rollAction);
     final String desc = Resources.getString("Editor.SpecialDiceButton.symbols"); //$NON-NLS-1$
     setAttribute(NAME, desc);
@@ -316,28 +311,13 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
   public VisibilityCondition getAttributeVisibility(String name) {
     // get size only when output in window or on button
     if (WINDOW_X.equals(name) || WINDOW_Y.equals(name) || BACKGROUND_COLOR.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return reportResultInWindow || reportResultInButton;
-        }
-      };
+      return () -> reportResultInWindow || reportResultInButton;
     }
     else if (CHAT_RESULT_FORMAT.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return reportResultAsText;
-        }
-      };
+      return () -> reportResultAsText;
     }
     else if (WINDOW_TITLE_RESULT_FORMAT.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return reportResultInWindow;
-        }
-      };
+      return () -> reportResultInWindow;
     }
     else
       return null;

@@ -134,14 +134,11 @@ public class FontManager extends AbstractConfigurable {
     if (b instanceof FontStyle) {
       FontStyle def = (FontStyle) b;
       fontStyles.put(def.getConfigureName(), def);
-      def.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
-            fontStyles.remove(evt.getOldValue());
-            fontStyles.put((String) evt.getNewValue(),
-                           (FontStyle) evt.getSource());
-          }
+      def.addPropertyChangeListener(evt -> {
+        if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
+          fontStyles.remove(evt.getOldValue());
+          fontStyles.put((String) evt.getNewValue(),
+                         (FontStyle) evt.getSource());
         }
       });
     }

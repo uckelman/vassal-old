@@ -56,11 +56,7 @@ public class TextPreference extends BasicPreference {
   public Configurer getPreferenceConfigurer() {
     if (config == null) {
       config = new TextConfigurer(getVariableName(), getDescription(), defaultValue);
-      config.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          updateGlobalProperty(config.getValueString());
-        }});
+      config.addPropertyChangeListener(e -> updateGlobalProperty(config.getValueString()));
     }
     return config;
   }

@@ -81,30 +81,24 @@ public class ExtensionEditorWindow extends EditorWindow {
 
   @Override
   protected void save() {
-    ExtensionEditorWindow.this.saver(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          extension.save();
-        }
-        catch (IOException e) {
-          WriteErrorDialog.error(e, extension.getDataArchive().getName());
-        }
+    ExtensionEditorWindow.this.saver(() -> {
+      try {
+        extension.save();
+      }
+      catch (IOException e) {
+        WriteErrorDialog.error(e, extension.getDataArchive().getName());
       }
     });
   }
 
   @Override
   protected void saveAs() {
-    ExtensionEditorWindow.this.saver(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          extension.saveAs();
-        }
-        catch (IOException e) {
-          WriteErrorDialog.error(e, extension.getDataArchive().getName());
-        }
+    ExtensionEditorWindow.this.saver(() -> {
+      try {
+        extension.saveAs();
+      }
+      catch (IOException e) {
+        WriteErrorDialog.error(e, extension.getDataArchive().getName());
       }
     });
   }

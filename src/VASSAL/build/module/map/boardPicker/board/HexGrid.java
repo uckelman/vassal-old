@@ -154,20 +154,10 @@ public class HexGrid extends AbstractConfigurable
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (COLOR.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return visible;
-        }
-      };
+      return () -> visible;
     }
     else if (EDGES.equals(name) || CORNERS.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return snapTo;
-        }
-      };
+      return () -> snapTo;
     }
     else {
       return super.getAttributeVisibility(name);
@@ -181,24 +171,16 @@ public class HexGrid extends AbstractConfigurable
 
     AutoConfigurer c = (AutoConfigurer) super.getConfigurer();
     final Configurer dxConfig = c.getConfigurer(DX);
-    c.getConfigurer(DY).addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-      @Override
-      public void propertyChange(java.beans.PropertyChangeEvent evt) {
-        if (evt.getNewValue() != null) {
-          double hgt = (Double) evt.getNewValue();
-          dxConfig.setValue(Double.valueOf(sqrt3_2 * hgt).toString());
-        }
+    c.getConfigurer(DY).addPropertyChangeListener(evt -> {
+      if (evt.getNewValue() != null) {
+        double hgt = (Double) evt.getNewValue();
+        dxConfig.setValue(Double.valueOf(sqrt3_2 * hgt).toString());
       }
     });
 
     if (!buttonExists) {
       JButton b = new JButton(Resources.getString("Editor.Grid.edit_grid")); //$NON-NLS-1$
-      b.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          editGrid();
-        }
-      });
+      b.addActionListener(e -> editGrid());
       ((Container) c.getControls()).add(b);
     }
 

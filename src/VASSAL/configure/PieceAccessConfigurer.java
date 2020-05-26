@@ -79,25 +79,17 @@ public class PieceAccessConfigurer extends Configurer {
       Box box = Box.createHorizontalBox();
       box.add(new JLabel(getName()));
       selectType = new JComboBox(getPrompts());
-      selectType.addItemListener(new ItemListener() {
-        @Override
-        public void itemStateChanged(ItemEvent e) {
-          updateValue();
-          sideConfig.getControls().setVisible(getValue() instanceof SpecifiedSideAccess);
-          if (controls.getTopLevelAncestor() instanceof Window) {
-            ((Window)controls.getTopLevelAncestor()).pack();
-          }
+      selectType.addItemListener(e -> {
+        updateValue();
+        sideConfig.getControls().setVisible(getValue() instanceof SpecifiedSideAccess);
+        if (controls.getTopLevelAncestor() instanceof Window) {
+          ((Window)controls.getTopLevelAncestor()).pack();
         }
       });
       box.add(selectType);
       controls.add(box);
       sideConfig = new StringArrayConfigurer(null, null);
-      sideConfig.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          updateValue();
-        }
-      });
+      sideConfig.addPropertyChangeListener(evt -> updateValue());
       controls.add(sideConfig.getControls());
       updateControls();
     }

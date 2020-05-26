@@ -403,12 +403,9 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   public void addTo(Buildable parent) {
     panel.setDropTarget(AbstractDragHandler.makeDropTarget(panel, DnDConstants.ACTION_MOVE, null));
 
-    DragGestureListener dragGestureListener = new DragGestureListener() {
-      @Override
-      public void dragGestureRecognized(DragGestureEvent dge) {
-        startDrag();
-        AbstractDragHandler.getTheDragHandler().dragGestureRecognized(dge);
-      }
+    DragGestureListener dragGestureListener = dge -> {
+      startDrag();
+      AbstractDragHandler.getTheDragHandler().dragGestureRecognized(dge);
     };
     DragSource.getDefaultDragSource().createDefaultDragGestureRecognizer(panel, DnDConstants.ACTION_MOVE, dragGestureListener);
   }

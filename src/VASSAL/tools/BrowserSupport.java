@@ -61,12 +61,9 @@ public class BrowserSupport {
     }
   }
 
-  private static final HyperlinkListener listener = new HyperlinkListener() {
-    @Override
-    public void hyperlinkUpdate(HyperlinkEvent e) {
-      if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-        openURL(e.getURL().toString());
-      }
+  private static final HyperlinkListener listener = e -> {
+    if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+      openURL(e.getURL().toString());
     }
   };
 

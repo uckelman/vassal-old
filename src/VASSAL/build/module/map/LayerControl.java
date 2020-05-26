@@ -50,12 +50,7 @@ public class LayerControl extends AbstractConfigurable {
   protected CompoundPieceCollection pieceCollection;
 
   public LayerControl() {
-    launch = new LaunchButton("Reset Layers", TOOLTIP, BUTTON_TEXT, BUTTON_HOTKEY, BUTTON_ICON, new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        launch();
-      }
-    });
+    launch = new LaunchButton("Reset Layers", TOOLTIP, BUTTON_TEXT, BUTTON_HOTKEY, BUTTON_ICON, e -> launch());
   }
 
   public void launch() {
@@ -202,20 +197,10 @@ public class LayerControl extends AbstractConfigurable {
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (SKIP.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return command.equals(CMD_ROTATE_UP) || command.equals(CMD_ROTATE_DN);
-        }
-      };
+      return () -> command.equals(CMD_ROTATE_UP) || command.equals(CMD_ROTATE_DN);
     }
     else if (LAYERS.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return command.equals(CMD_ENABLE) || command.equals(CMD_DISABLE) || command.equals(CMD_TOGGLE);
-        }
-      };
+      return () -> command.equals(CMD_ENABLE) || command.equals(CMD_DISABLE) || command.equals(CMD_TOGGLE);
     }
     else {
       return null;

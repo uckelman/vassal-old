@@ -153,17 +153,12 @@ public class GlobalOptions extends AbstractConfigurable {
         );
       }
 
-      bug10295Conf.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          PieceMover.AbstractDragHandler.setTheDragHandler(
-            (Boolean.TRUE.equals(e.getNewValue()) ||
-             !DragSource.isDragImageSupported()) ?
-             new PieceMover.DragHandlerNoImage() :
-             new PieceMover.DragHandler()
-          );
-        }
-      });
+      bug10295Conf.addPropertyChangeListener(e -> PieceMover.AbstractDragHandler.setTheDragHandler(
+        (Boolean.TRUE.equals(e.getNewValue()) ||
+         !DragSource.isDragImageSupported()) ?
+         new PieceMover.DragHandlerNoImage() :
+         new PieceMover.DragHandler()
+      ));
 
       prefs.addOption(bug10295Conf);
     }

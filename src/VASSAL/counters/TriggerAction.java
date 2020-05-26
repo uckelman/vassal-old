@@ -487,12 +487,7 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
 
     public Ed(TriggerAction piece) {
 
-      final PropertyChangeListener updateListener = new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent arg0) {
-          updateVisibility();
-        }
-      };
+      final PropertyChangeListener updateListener = arg0 -> updateVisibility();
 
       box = new JPanel();
       box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));

@@ -198,12 +198,7 @@ public class Inventory extends AbstractConfigurable
   protected JDialog frame;
 
   public Inventory() {
-    ActionListener al = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        launch();
-      }
-    };
+    ActionListener al = e -> launch();
     launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON, al);
     setAttribute(NAME, Resources.getString("Inventory.inventory")); //$NON-NLS-1$
     setAttribute(BUTTON_TEXT, Resources.getString("Inventory.inventory")); //$NON-NLS-1$
@@ -245,14 +240,11 @@ public class Inventory extends AbstractConfigurable
     tree.setCellRenderer(initTreeCellRenderer());
     tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
     // If wanted center on a selected counter
-    tree.addTreeSelectionListener(new TreeSelectionListener() {
-      @Override
-      public void valueChanged(TreeSelectionEvent e) {
-        if (centerOnPiece) {
-          GamePiece piece = getSelectedCounter();
-          if (piece != null && piece.getMap() != null)
-            piece.getMap().centerAt(piece.getPosition());
-        }
+    tree.addTreeSelectionListener(e -> {
+      if (centerOnPiece) {
+        GamePiece piece = getSelectedCounter();
+        if (piece != null && piece.getMap() != null)
+          piece.getMap().centerAt(piece.getPosition());
       }
     });
     tree.addMouseListener(new MouseAdapter() {
@@ -275,17 +267,10 @@ public class Inventory extends AbstractConfigurable
               final GamePiece piece = node.getCounter().getPiece();
               if (piece != null) {
                 JPopupMenu menu = MenuDisplayer.createPopup(piece);
-                menu.addPropertyChangeListener("visible", new PropertyChangeListener() { //$NON-NLS-1$
-                  @Override
-                  public void propertyChange(PropertyChangeEvent evt) {
-                    if (Boolean.FALSE.equals(evt.getNewValue())) {
-                      SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                          refresh();
-                        }
-                      });
-                    }
+                //$NON-NLS-1$
+                menu.addPropertyChangeListener("visible", evt -> {
+                  if (Boolean.FALSE.equals(evt.getNewValue())) {
+                    SwingUtilities.invokeLater(() -> refresh());
                   }
                 });
                 menu.show(tree, e.getX(), e.getY());
@@ -357,28 +342,13 @@ public class Inventory extends AbstractConfigurable
     Box buttonBox = Box.createHorizontalBox();
     // Written by Scot McConnachie.
     JButton writeButton = new JButton(Resources.getString(Resources.SAVE));
-    writeButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        inventoryToText();
-      }
-    });
+    writeButton.addActionListener(e -> inventoryToText());
     buttonBox.add(writeButton);
     JButton refreshButton = new JButton(Resources.getString(Resources.REFRESH));
-    refreshButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        refresh();
-      }
-    });
+    refreshButton.addActionListener(e -> refresh());
     buttonBox.add(refreshButton);
     JButton closeButton = new JButton(Resources.getString(Resources.CLOSE));
-    closeButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        frame.setVisible(false);
-      }
-    });
+    closeButton.addActionListener(e -> frame.setVisible(false));
     buttonBox.add(closeButton);
     return buttonBox;
   }
@@ -711,22 +681,12 @@ public class Inventory extends AbstractConfigurable
     }
   }
 
-  private VisibilityCondition piecesVisible = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return !foldersOnly;
-    }
-  };
+  private VisibilityCondition piecesVisible = () -> !foldersOnly;
 
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (PIECE_ZOOM.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return drawPieces && !foldersOnly;
-        }
-      };
+      return () -> drawPieces && !foldersOnly;
     }
     else if (LEAF_FORMAT.equals(name) || CENTERONPIECE.equals(name) || FORWARD_KEYSTROKE.equals(name) || SHOW_MENU.equals(name) || DRAW_PIECES.equals(name)) {
       return piecesVisible;

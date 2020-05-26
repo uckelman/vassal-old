@@ -24,24 +24,9 @@ public class TextClient {
 
   public TextClient(ChatServerConnection client) {
     this.client = client;
-    client.addPropertyChangeListener(ChatServerConnection.AVAILABLE_ROOMS, new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        availableRoomsChanged(evt);
-      }
-    });
-    client.addPropertyChangeListener(ChatServerConnection.INCOMING_MSG, new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        incomingMessageReceived(evt);
-      }
-    });
-    client.addPropertyChangeListener(ChatServerConnection.STATUS, new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        statusReceived(evt);
-      }
-    });
+    client.addPropertyChangeListener(ChatServerConnection.AVAILABLE_ROOMS, evt -> availableRoomsChanged(evt));
+    client.addPropertyChangeListener(ChatServerConnection.INCOMING_MSG, evt -> incomingMessageReceived(evt));
+    client.addPropertyChangeListener(ChatServerConnection.STATUS, evt -> statusReceived(evt));
     client.setConnected(true);
   }
 

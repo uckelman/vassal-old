@@ -65,12 +65,7 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
       b.add(l);
       JButton button = new JButton("Add");
       b.add(button);
-      button.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          addKey(null);
-        }
-      });
+      button.addActionListener(e -> addKey(null));
 
       panel.add(scroll, BorderLayout.CENTER);
 

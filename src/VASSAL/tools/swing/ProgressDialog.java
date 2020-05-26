@@ -96,12 +96,7 @@ public class ProgressDialog extends JDialog {
     });
 
     // forward clicks on the close button to the cancellation listeners
-    cancel.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        fireCancelledEvent(e);
-      }
-    });
+    cancel.addActionListener(e -> fireCancelledEvent(e));
 
     // create the layout
     final JPanel panel = new JPanel(new MigLayout(
@@ -250,12 +245,7 @@ public class ProgressDialog extends JDialog {
   public static ProgressDialog createOnEDT(final Frame parent,
                                            final String title,
                                            final String text) {
-    final Future<ProgressDialog> f = EDT.submit(new Callable<>() {
-      @Override
-      public ProgressDialog call() {
-        return new ProgressDialog(parent, title, text);
-      }
-    });
+    final Future<ProgressDialog> f = EDT.submit(() -> new ProgressDialog(parent, title, text));
 
     try {
       return f.get();

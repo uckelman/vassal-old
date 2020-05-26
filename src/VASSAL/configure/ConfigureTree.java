@@ -311,18 +311,15 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           select.setSelectedIndex(currentIndex);
           box.add(select);
           JButton ok = new JButton(Resources.getString(Resources.OK));
-          ok.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-              int index = select.getSelectedIndex();
-              if (currentIndex != index) {
-                Configurable parent = getParent(targetNode);
-                if (remove(parent, target)) {
-                  insert(parent, target, index);
-                }
+          ok.addActionListener(e1 -> {
+            int index = select.getSelectedIndex();
+            if (currentIndex != index) {
+              Configurable parent = getParent(targetNode);
+              if (remove(parent, target)) {
+                insert(parent, target, index);
               }
-              d.dispose();
             }
+            d.dispose();
           });
           d.add(box);
           d.add(ok);

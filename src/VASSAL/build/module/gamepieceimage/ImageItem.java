@@ -153,19 +153,9 @@ public class ImageItem extends Item {
      }
    }
 
-  private VisibilityCondition falseCond = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return false;
-    }
-  };
+  private VisibilityCondition falseCond = () -> false;
 
-  private VisibilityCondition fixedCond = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return imageSource.equals(SRC_FIXED);
-    }
-  };
+  private VisibilityCondition fixedCond = () -> imageSource.equals(SRC_FIXED);
 
   public static class TextSource extends StringEnum {
     @Override

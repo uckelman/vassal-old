@@ -98,12 +98,7 @@ public class TextBoxItem extends TextItem {
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (FONT.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return !isHTML;
-        }
-      };
+      return () -> !isHTML;
     }
     else {
       return super.getAttributeVisibility(name);

@@ -91,15 +91,12 @@ public class SendSoundAction extends AbstractAction {
     if (GameModule.getGameModule() != null) {
       Prefs.getGlobalPrefs().addOption(Resources.getString("Prefs.sounds_tab"), new SoundConfigurer(soundKey, name, defaultSoundFile)); //$NON-NLS-1$
     }
-    return new PlayerActionFactory() {
-      @Override
-      public Action getAction(SimplePlayer p, JTree tree) {
-        final Room r = client.getRoom();
-        if (client instanceof LockableChatServerConnection && ((LockableChatServerConnection) client).isDefaultRoom(r)) {
-          return null;
-        }
-        return new SendSoundAction(name, client, soundKey, p);
+    return (p, tree) -> {
+      final Room r = client.getRoom();
+      if (client instanceof LockableChatServerConnection && ((LockableChatServerConnection) client).isDefaultRoom(r)) {
+        return null;
       }
+      return new SendSoundAction(name, client, soundKey, p);
     };
   }
 }

@@ -316,25 +316,13 @@ public final class GameRefresher implements GameComponent {
       final JPanel buttonPanel = new JPanel(new MigLayout());
 
       final JButton testButton = new JButton(Resources.getString("General.test"));
-      testButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          test();
-        }});
+      testButton.addActionListener(e -> test());
 
       final JButton runButton = new JButton(Resources.getString("General.run"));
-      runButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          run();
-        }});
+      runButton.addActionListener(e -> run());
 
       final JButton exitButton = new JButton(Resources.getString("General.exit"));
-      exitButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          exit();
-        }});
+      exitButton.addActionListener(e -> exit());
 
       buttonPanel.add(testButton);
       buttonPanel.add(runButton);

@@ -79,12 +79,7 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
   private boolean pickedSide = false;
 
   public PlayerRoster() {
-    ActionListener al = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        launch();
-      }
-    };
+    ActionListener al = e -> launch();
     retireButton = new LaunchButton(Resources.getString("PlayerRoster.retire"), TOOL_TIP, BUTTON_TEXT, null, BUTTON_ICON, al); //$NON-NLS-1$
     retireButton.setToolTipText(Resources.getString("PlayerRoster.allow_another")); //$NON-NLS-1$
     retireButton.setVisible(false);
@@ -573,38 +568,20 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
       controls = new JPanel();
       controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
       sidesConfig = new StringArrayConfigurer(null, Resources.getString("Editor.PlayerRoster.sides_available"), sides.toArray(new String[0])); //$NON-NLS-1$
-      sidesConfig.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          sides.clear();
-          sides.addAll(Arrays.asList(sidesConfig.getStringArray()));
-        }
+      sidesConfig.addPropertyChangeListener(evt -> {
+        sides.clear();
+        sides.addAll(Arrays.asList(sidesConfig.getStringArray()));
       });
       controls.add(sidesConfig.getControls());
       textConfig = new StringConfigurer(BUTTON_TEXT, Resources.getString("Editor.PlayerRoster.retire_button_text"), retireButton.getAttributeValueString(BUTTON_TEXT)); //$NON-NLS-1$
-      textConfig.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          retireButton.setAttribute(BUTTON_TEXT, textConfig.getValueString());
-        }
-      });
+      textConfig.addPropertyChangeListener(evt -> retireButton.setAttribute(BUTTON_TEXT, textConfig.getValueString()));
       controls.add(textConfig.getControls());
       tooltipConfig = new StringConfigurer(TOOL_TIP, Resources.getString("Editor.PlayerRoster.retire_button_tooltip"), retireButton.getAttributeValueString(TOOL_TIP)); //$NON-NLS-1$
-      tooltipConfig.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          retireButton.setAttribute(TOOL_TIP, tooltipConfig.getValueString());
-        }
-      });
+      tooltipConfig.addPropertyChangeListener(evt -> retireButton.setAttribute(TOOL_TIP, tooltipConfig.getValueString()));
       controls.add(tooltipConfig.getControls());
       iconConfig = new IconConfigurer(BUTTON_ICON, Resources.getString("Editor.PlayerRoster.retire_button_icon"), null); //$NON-NLS-1$
       iconConfig.setValue(retireButton.getIcon());
-      iconConfig.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          retireButton.setAttribute(BUTTON_ICON, iconConfig.getValueString());
-        }
-      });
+      iconConfig.addPropertyChangeListener(evt -> retireButton.setAttribute(BUTTON_ICON, iconConfig.getValueString()));
       controls.add(iconConfig.getControls());
     }
 

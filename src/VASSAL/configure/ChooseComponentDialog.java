@@ -66,19 +66,11 @@ public class ChooseComponentDialog extends JDialog implements TreeSelectionListe
     Box b = Box.createHorizontalBox();
     okButton = new JButton("Ok");
     okButton.setEnabled(false);
-    okButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        dispose();
-      }
-    });
+    okButton.addActionListener(e -> dispose());
     JButton cancelButton = new JButton("Cancel");
-    cancelButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        target = null;
-        dispose();
-      }
+    cancelButton.addActionListener(e -> {
+      target = null;
+      dispose();
     });
     b.add(okButton);
     b.add(cancelButton);

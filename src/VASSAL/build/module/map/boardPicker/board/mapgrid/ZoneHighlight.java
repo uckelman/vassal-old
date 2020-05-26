@@ -336,20 +336,10 @@ public class ZoneHighlight extends AbstractConfigurable  {
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (IMAGE.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return STYLE_IMAGE.equals(style);
-        }
-      };
+      return () -> STYLE_IMAGE.equals(style);
     }
     else if (WIDTH.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return COVERAGE_BORDER.equals(coverage);
-        }
-      };
+      return () -> COVERAGE_BORDER.equals(coverage);
     }
     else {
       return super.getAttributeVisibility(name);
@@ -389,14 +379,12 @@ public class ZoneHighlight extends AbstractConfigurable  {
       slider.setLabelTable(new Hashtable<>(labelTable));
       slider.setPaintLabels(true);
       slider.setBorder(javax.swing.BorderFactory.createTitledBorder(name));
-      slider.addChangeListener(new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-          final JSlider source = (JSlider) e.getSource();
-          if (!source.getValueIsAdjusting()) {
-            opacity = source.getValue();
-          }
-        }});
+      slider.addChangeListener(e -> {
+        final JSlider source = (JSlider) e.getSource();
+        if (!source.getValueIsAdjusting()) {
+          opacity = source.getValue();
+        }
+      });
 
       return slider;
     }

@@ -214,12 +214,7 @@ public abstract class Item extends AbstractConfigurable {
     setAllAttributesUntranslatable();
   }
 
-  private VisibilityCondition advancedCond = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return advanced;
-    }
-  };
+  private VisibilityCondition advancedCond = () -> advanced;
 
 
   /**

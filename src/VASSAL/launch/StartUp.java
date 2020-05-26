@@ -69,38 +69,35 @@ public class StartUp {
     System.setProperty("awt.useSystemAAFontSettings", "on"); //$NON-NLS-1$ //$NON-NLS-2$
 
     try {
-      SwingUtilities.invokeAndWait(new Runnable() {
-        @Override
-        public void run() {
-          if (SystemUtils.IS_OS_MAC_OSX) {
-            // Bug 2505: JEditorPane.registerEditorKitForContentType()
-            // sometimes throws an NPE becuase the context class loader is
-            // null. This is a JDK bug, but we can work around it by setting
-            // the EDT's context ClassLoader explicitly.
-            Thread.currentThread().setContextClassLoader(
-              ClassLoader.getSystemClassLoader()
+      SwingUtilities.invokeAndWait(() -> {
+        if (SystemUtils.IS_OS_MAC_OSX) {
+          // Bug 2505: JEditorPane.registerEditorKitForContentType()
+          // sometimes throws an NPE becuase the context class loader is
+          // null. This is a JDK bug, but we can work around it by setting
+          // the EDT's context ClassLoader explicitly.
+          Thread.currentThread().setContextClassLoader(
+            ClassLoader.getSystemClassLoader()
+          );
+        }
+
+        if (!SystemUtils.IS_OS_WINDOWS) {
+          // use native LookAndFeel
+          // NB: This must be after Mac-specific properties
+          try {
+            UIManager.setLookAndFeel(
+              UIManager.getSystemLookAndFeelClassName()
             );
           }
-
-          if (!SystemUtils.IS_OS_WINDOWS) {
-            // use native LookAndFeel
-            // NB: This must be after Mac-specific properties
-            try {
-              UIManager.setLookAndFeel(
-                UIManager.getSystemLookAndFeelClassName()
-              );
-            }
-            catch (ClassNotFoundException | UnsupportedLookAndFeelException
-              | InstantiationException | IllegalAccessException e) {
-              ErrorDialog.bug(e);
-            }
+          catch (ClassNotFoundException | UnsupportedLookAndFeelException
+            | InstantiationException | IllegalAccessException e) {
+            ErrorDialog.bug(e);
           }
-
-          // Ensure consistent behavior in NOT consuming "mousePressed" events
-          // upon a JPopupMenu closing (added for Windows L&F, but others might
-          // also be affected.
-          UIManager.put("PopupMenu.consumeEventOnClose", Boolean.FALSE);
         }
+
+        // Ensure consistent behavior in NOT consuming "mousePressed" events
+        // upon a JPopupMenu closing (added for Windows L&F, but others might
+        // also be affected.
+        UIManager.put("PopupMenu.consumeEventOnClose", Boolean.FALSE);
       });
     }
     catch (InterruptedException | InvocationTargetException e) {

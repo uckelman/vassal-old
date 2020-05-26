@@ -89,12 +89,7 @@ public class ErrorDialog {
       final Frame frame = GameModule.getGameModule() == null
         ? null : GameModule.getGameModule().getFrame();
 
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          new BugDialog(frame, thrown).setVisible(true);
-        }
-      });
+      SwingUtilities.invokeLater(() -> new BugDialog(frame, thrown).setVisible(true));
     }
   }
 

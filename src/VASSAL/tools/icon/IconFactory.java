@@ -92,16 +92,13 @@ public final class IconFactory {
 // FIXME: preloadThread is never set to null, cannot be gc'd
     // Find all available Icon Familys within Vassal.
     // May take a little while, so run it on a background thread
-    preloadThread = new Thread(new Runnable(){
-      @Override
-      public void run() {
-        synchronized (preloadLock) {
-          try {
-            initVassalIconFamilys();
-          }
-          catch (IllegalBuildException e) {
-            ErrorDialog.bug(e);
-          }
+    preloadThread = new Thread(() -> {
+      synchronized (preloadLock) {
+        try {
+          initVassalIconFamilys();
+        }
+        catch (IllegalBuildException e) {
+          ErrorDialog.bug(e);
         }
       }
     }, "IconFactory-preload"); //$NON-NLS-1$

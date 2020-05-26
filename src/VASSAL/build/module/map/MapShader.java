@@ -522,12 +522,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
 
   public MapShader() {
 
-    ActionListener al = new ActionListener() {
-      @Override
-      public void actionPerformed(java.awt.event.ActionEvent e) {
-        toggleShading();
-      }
-    };
+    ActionListener al = e -> toggleShading();
     launch = new LaunchButton("Shade", TOOLTIP, BUTTON_TEXT, HOT_KEY, ICON, al);
     launch.setEnabled(false);
     setLaunchButtonVisibility();
@@ -805,51 +800,22 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (ICON.equals(name) || HOT_KEY.equals(name) || BUTTON_TEXT.equals(name) || STARTS_ON.equals(name) || TOOLTIP.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return !isAlwaysOn();
-        }
-      };
+      return () -> !isAlwaysOn();
     }
     else if (BOARD_LIST.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return !boardSelection.equals(ALL_BOARDS);
-        }
-      };
+      return () -> !boardSelection.equals(ALL_BOARDS);
     }
     else if (COLOR.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return !pattern.equals(TYPE_IMAGE);
-        }
-      };
+      return () -> !pattern.equals(TYPE_IMAGE);
     }
     else if (IMAGE.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return pattern.equals(TYPE_IMAGE);
-        }
-      };
+      return () -> pattern.equals(TYPE_IMAGE);
     }
     else if (SCALE_IMAGE.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return pattern.equals(TYPE_IMAGE);
-        }};
+      return () -> pattern.equals(TYPE_IMAGE);
     }
     else if (BORDER_COLOR.equals(name) || BORDER_WIDTH.equals(name) || BORDER_OPACITY.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return border;
-        }
-      };
+      return () -> border;
     }
     else {
       return super.getAttributeVisibility(name);

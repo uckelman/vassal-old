@@ -112,21 +112,13 @@ public class LocaleConfigurer extends Configurer {
       panel = Box.createHorizontalBox();
       langBox = new JComboBox(getLanguageList());
       langBox.setSelectedItem(Locale.getDefault().getDisplayLanguage());
-      langBox.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          updateValue();
-        }});
+      langBox.addActionListener(e -> updateValue());
       panel.add(new JLabel("Language:  "));
       panel.add(langBox);
 
       countryBox = new JComboBox(getCountryList());
       countryBox.setSelectedItem(ANY_COUNTRY);
-      countryBox.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          updateValue();
-        }});
+      countryBox.addActionListener(e -> updateValue());
       panel.add(new JLabel("  Country:  "));
       panel.add(countryBox);
 

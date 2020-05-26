@@ -142,14 +142,10 @@ public abstract class GameModule extends AbstractConfigurable implements Command
   protected FileChooser fileChooser;
   protected FileDialog fileDialog;
   protected MutablePropertiesContainer propsContainer = new Impl();
-  protected PropertyChangeListener repaintOnPropertyChange =
-      new PropertyChangeListener() {
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
+  protected PropertyChangeListener repaintOnPropertyChange = evt -> {
       for (Map map : Map.getMapList()) {
         map.repaint();
       }
-    }
   };
 
   protected PlayerWindow frame = new PlayerWindow();

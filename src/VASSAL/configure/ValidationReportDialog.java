@@ -78,24 +78,18 @@ public class ValidationReportDialog extends JDialog {
 
   private JButton createCancelButton() {
     JButton cancel = new JButton("Cancel");
-    cancel.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        callback.cancel();
-        dispose();
-      }
+    cancel.addActionListener(e -> {
+      callback.cancel();
+      dispose();
     });
     return cancel;
   }
 
   private JButton createOkButton() {
     JButton ok = new JButton("Ignore, save anyway");
-    ok.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        callback.ok();
-        dispose();
-      }
+    ok.addActionListener(e -> {
+      callback.ok();
+      dispose();
     });
     return ok;
   }

@@ -98,12 +98,7 @@ public class GlobalMap implements AutoConfigurable,
     scroll.setAlignmentX(0.0f);
     scroll.setAlignmentY(0.0f);
 
-    ActionListener al = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        scroll.setVisible(!scroll.isVisible());
-      }
-    };
+    ActionListener al = e -> scroll.setVisible(!scroll.isVisible());
 
     launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT,
                               HOTKEY, ICON_NAME, al);

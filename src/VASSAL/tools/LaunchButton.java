@@ -68,12 +68,9 @@ public class LaunchButton extends JButton {
     iconAtt = iconAttribute;
     iconConfig = new IconConfigurer(iconAtt, null, null);
     setAlignmentY(0.0F);
-    keyListener = new NamedKeyStrokeListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        if (isEnabled() && getParent() != null && getParent().isShowing()) {
-          al.actionPerformed(e);
-        }
+    keyListener = new NamedKeyStrokeListener(e -> {
+      if (isEnabled() && getParent() != null && getParent().isShowing()) {
+        al.actionPerformed(e);
       }
     });
     if (al != null) {

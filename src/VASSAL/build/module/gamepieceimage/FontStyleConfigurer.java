@@ -99,12 +99,7 @@ public class FontStyleConfigurer extends Configurer {
     fonts.setSelectedItem(value == null ? "Default" : ((FontStyle) value).getConfigureName()); //$NON-NLS-1$
     fontPanel.add(fonts);
 
-    ItemListener l = new ItemListener() {
-      @Override
-      public void itemStateChanged(ItemEvent evt) {
-        updateValue();
-      }
-    };
+    ItemListener l = evt -> updateValue();
 
     fonts.addItemListener(l);
 

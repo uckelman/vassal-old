@@ -87,12 +87,7 @@ public class ImageSaver extends AbstractConfigurable {
   protected static ProgressDialog dialog;
 
   public ImageSaver() {
-    final ActionListener al = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        writeMapAsImage();
-      }
-    };
+    final ActionListener al = e -> writeMapAsImage();
 
     launch =
       new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, ICON_NAME, al);
@@ -252,29 +247,21 @@ public class ImageSaver extends AbstractConfigurable {
   protected void writeMapRectAsImage(File file, int x, int y, int w, int h) {
     final SnapshotTask task = new SnapshotTask(file, x, y, w, h);
 
-    task.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent e) {
-        if ("progress".equals(e.getPropertyName())) {
-          dialog.setProgress((Integer) e.getNewValue());
-        }
-        else if ("state".equals(e.getPropertyName())) {
-          if (e.getNewValue() ==
-              SwingWorker.StateValue.DONE) {
-            // close the dialog on cancellation or completion
-            dialog.setVisible(false);
-            dialog.dispose();
-          }
+    task.addPropertyChangeListener(e -> {
+      if ("progress".equals(e.getPropertyName())) {
+        dialog.setProgress((Integer) e.getNewValue());
+      }
+      else if ("state".equals(e.getPropertyName())) {
+        if (e.getNewValue() ==
+            SwingWorker.StateValue.DONE) {
+          // close the dialog on cancellation or completion
+          dialog.setVisible(false);
+          dialog.dispose();
         }
       }
     });
 
-    dialog.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        task.cancel(true);
-      }
-    });
+    dialog.addActionListener(e -> task.cancel(true));
 
     task.execute();
   }
@@ -328,12 +315,9 @@ public class ImageSaver extends AbstractConfigurable {
       }
 
       // update the dialog on the EDT
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          dialog.setLabel("Saving map image as " + f.getName() + ":");
-          dialog.setIndeterminate(true);
-        }
+      SwingUtilities.invokeLater(() -> {
+        dialog.setLabel("Saving map image as " + f.getName() + ":");
+        dialog.setIndeterminate(true);
       });
 
       // FIXME: do something to estimate how long painting will take
@@ -349,12 +333,7 @@ public class ImageSaver extends AbstractConfigurable {
       g.dispose();
 
       // update the dialog on the EDT
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          dialog.setIndeterminate(false);
-        }
-      });
+      SwingUtilities.invokeLater(() -> dialog.setIndeterminate(false));
 
       final ImageWriter iw = ImageIO.getImageWritersByFormatName("png").next();
       iw.addIIOWriteProgressListener(new IIOWriteProgressListener() {

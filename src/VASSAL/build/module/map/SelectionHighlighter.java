@@ -148,20 +148,10 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (COLOR.equals(name) || THICKNESS.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return !useImage;
-        }
-      };
+      return () -> !useImage;
     }
     else if (IMAGE.equals(name) || X_OFFSET.equals(name) || Y_OFFSET.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return useImage;
-        }
-      };
+      return () -> useImage;
     }
     else {
       return super.getAttributeVisibility(name);

@@ -338,11 +338,7 @@ public class Translate extends Decorator implements TranslatablePiece {
       controls.add(moveStack.getControls());
 
       advancedInput = new BooleanConfigurer(null, "Advanced Options", false);
-      advancedInput.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          updateAdvancedVisibility();
-        }});
+      advancedInput.addPropertyChangeListener(e -> updateAdvancedVisibility());
       controls.add(advancedInput.getControls());
 
       Box b = Box.createHorizontalBox();

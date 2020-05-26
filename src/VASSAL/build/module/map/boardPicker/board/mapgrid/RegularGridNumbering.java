@@ -353,29 +353,13 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
   public VisibilityCondition getAttributeVisibility(String name) {
     if (FONT_SIZE.equals(name)
         || COLOR.equals(name)) {
-      VisibilityCondition cond = new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return visible;
-        }
-      };
-      return cond;
+      return () -> visible;
     }
     else if (H_LEADING.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return hType == 'N';
-        }
-      };
+      return () -> hType == 'N';
     }
     else if (V_LEADING.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return vType == 'N';
-        }
-      };
+      return () -> vType == 'N';
     }
     else {
       return super.getAttributeVisibility(name);
@@ -387,12 +371,7 @@ public abstract class RegularGridNumbering extends AbstractConfigurable implemen
     AutoConfigurer c = (AutoConfigurer) super.getConfigurer();
     String[] s = getAttributeNames();
     for (String value : s) {
-      c.getConfigurer(value).addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          visualizer.repaint();
-        }
-      });
+      c.getConfigurer(value).addPropertyChangeListener(evt -> visualizer.repaint());
     }
     ((Container) c.getControls()).add(getGridVisualizer());
     return c;

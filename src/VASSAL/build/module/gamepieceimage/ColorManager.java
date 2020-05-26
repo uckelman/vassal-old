@@ -199,14 +199,11 @@ public class ColorManager extends AbstractConfigurable {
     if (b instanceof ColorSwatch) {
       ColorSwatch def = (ColorSwatch) b;
       userColors.put(def.getConfigureName(), def);
-      def.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
-            userColors.remove(evt.getOldValue());
-            userColors.put((String) evt.getNewValue(),
-                           (ColorSwatch) evt.getSource());
-          }
+      def.addPropertyChangeListener(evt -> {
+        if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
+          userColors.remove(evt.getOldValue());
+          userColors.put((String) evt.getNewValue(),
+                         (ColorSwatch) evt.getSource());
         }
       });
     }

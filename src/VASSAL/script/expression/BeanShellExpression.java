@@ -71,18 +71,15 @@ public class BeanShellExpression extends Expression {
    */
   @Override
   public PieceFilter getFilter(final PropertySource ps) {
-    return new PieceFilter() {
-      @Override
-      public boolean accept(GamePiece piece) {
-        String result = null;
-        try {
-          result = evaluate(piece);
-        }
-        catch (ExpressionException e) {
-          ErrorDialog.dataError(new BadDataReport(Resources.getString("Error.expression_error"), "Expression="+getExpression()+", Error="+e.getError(), e));
-        }
-        return "true".equals(result);
+    return piece -> {
+      String result = null;
+      try {
+        result = evaluate(piece);
       }
+      catch (ExpressionException e) {
+        ErrorDialog.dataError(new BadDataReport(Resources.getString("Error.expression_error"), "Expression="+getExpression()+", Error="+e.getError(), e));
+      }
+      return "true".equals(result);
     };
   }
 

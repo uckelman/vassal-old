@@ -80,26 +80,23 @@ public class ObscurableOptions implements CommandEncoder, GameComponent {
   public void allowSome(String preferencesPrompt) {
     Configurer c = new BooleanConfigurer(PREFS_KEY, preferencesPrompt);
     GameModule.getGameModule().getPrefs().addOption(c);
-    c.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        if (Boolean.TRUE.equals(evt.getNewValue())) {
-          ObscurableOptions.getInstance().allow(GameModule.getUserId());
-          String side = PlayerRoster.getMySide();
-          if (side != null) {
-            ObscurableOptions.getInstance().allow(side);
-          }
+    c.addPropertyChangeListener(evt -> {
+      if (Boolean.TRUE.equals(evt.getNewValue())) {
+        ObscurableOptions.getInstance().allow(GameModule.getUserId());
+        String side = PlayerRoster.getMySide();
+        if (side != null) {
+          ObscurableOptions.getInstance().allow(side);
         }
-        else {
-          ObscurableOptions.getInstance().disallow(GameModule.getUserId());
-          String side = PlayerRoster.getMySide();
-          if (side != null) {
-            ObscurableOptions.getInstance().disallow(side);
-          }
-        }
-        GameModule.getGameModule()
-                  .getServer().sendToOthers(new SetAllowed(instance.allowed));
       }
+      else {
+        ObscurableOptions.getInstance().disallow(GameModule.getUserId());
+        String side = PlayerRoster.getMySide();
+        if (side != null) {
+          ObscurableOptions.getInstance().disallow(side);
+        }
+      }
+      GameModule.getGameModule()
+                .getServer().sendToOthers(new SetAllowed(instance.allowed));
     });
     if (Boolean.TRUE.equals(c.getValue())) {
       allow(GameModule.getUserId());

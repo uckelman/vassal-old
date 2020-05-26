@@ -266,12 +266,8 @@ public class Pivot extends Decorator implements TranslatablePiece {
       controls.add(angle.getControls());
 
       angle.getControls().setVisible(p.fixedAngle);
-      fixedAngle.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          angle.getControls().setVisible(Boolean.TRUE.equals(fixedAngle.getValue()));
-        }
-      });
+      fixedAngle.addPropertyChangeListener(
+        evt -> angle.getControls().setVisible(Boolean.TRUE.equals(fixedAngle.getValue())));
     }
 
     @Override

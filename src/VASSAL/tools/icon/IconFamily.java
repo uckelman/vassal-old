@@ -447,12 +447,9 @@ public class IconFamily extends AbstractConfigurable {
       final JPanel mig = new JPanel(new MigLayout("inset 5")); //$NON-NLS-1$
 
       title = new StringConfigurer(null, "", family.getConfigureName()); //$NON-NLS-1$
-      title.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          if (evt.getNewValue() != null) {
-            family.setConfigureName((String) evt.getNewValue());
-          }
+      title.addPropertyChangeListener(evt -> {
+        if (evt.getNewValue() != null) {
+          family.setConfigureName((String) evt.getNewValue());
         }
       });
 
@@ -462,14 +459,11 @@ public class IconFamily extends AbstractConfigurable {
       errorLabel = new JLabel(Resources.getString("Editor.IconFamily.name_taken")); //$NON-NLS-1$
       errorLabel.setForeground(Color.red);
       errorLabel.setVisible(false);
-      family.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
-            final IconFamily savedFamily = IconFactory.getIconFamily(family
-                .getName());
-            errorLabel.setVisible(savedFamily != null && savedFamily != family);
-          }
+      family.addPropertyChangeListener(evt -> {
+        if (Configurable.NAME_PROPERTY.equals(evt.getPropertyName())) {
+          final IconFamily savedFamily = IconFactory.getIconFamily(family
+              .getName());
+          errorLabel.setVisible(savedFamily != null && savedFamily != family);
         }
       });
       mig.add(errorLabel, "span 2,wrap"); //$NON-NLS-1$
@@ -563,12 +557,9 @@ public class IconFamily extends AbstractConfigurable {
         controls.add(p);
 
         final JButton select = new JButton(Resources.getString(Resources.SELECT));
-        select.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            selectImage();
-            p.repaint();
-          }
+        select.addActionListener(e -> {
+          selectImage();
+          p.repaint();
         });
         controls.add(select, "wrap"); //$NON-NLS-1$
 

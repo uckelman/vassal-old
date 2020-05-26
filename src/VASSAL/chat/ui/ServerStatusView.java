@@ -79,12 +79,7 @@ public class ServerStatusView extends JTabbedPane implements ChangeListener, Tre
 
     toolbar.setFloatable(false);
     JButton b = new JButton(Resources.getString("Chat.refresh")); //$NON-NLS-1$
-    b.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        refresh();
-      }
-    });
+    b.addActionListener(e -> refresh());
     toolbar.add(b);
     current.add(toolbar, BorderLayout.NORTH);
     treeCurrent = createTree();

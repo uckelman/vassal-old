@@ -81,12 +81,7 @@ public abstract class Expression {
    * @return
    */
   public PieceFilter getFilter(PropertySource ps) {
-    return new PieceFilter() {
-      @Override
-      public boolean accept(GamePiece piece) {
-        return true;
-      }
-    };
+    return piece -> true;
   }
 
   public PieceFilter getFilter() {

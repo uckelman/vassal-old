@@ -67,13 +67,8 @@ public class TileSlicerImpl implements TileSlicer {
     final List<Future<Void>> futures = new ArrayList<>();
 
     // slice unscaled 1:1 tiles
-    final TaskMaker unscaled = new TaskMaker() {
-      @Override
-      public TileTask make(BufferedImage src, File f,
-                           int tx, int ty, int tw, int th, int sw, int sh) {
-        return new TileTask(src, f, tx, ty, tw, th, sw, sh);
-      }
-    };
+    final TaskMaker unscaled =
+      (src1, f, tx, ty, tw1, th1, sw1, sh1) -> new TileTask(src1, f, tx, ty, tw1, th1, sw1, sh1);
 
     queueTileTasks(
       src, iname, tpath, 1, tw, th, sw, sh, unscaled, exec, futures

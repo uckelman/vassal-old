@@ -40,22 +40,20 @@ public class LockableJabberRoomControls extends LockableRoomControls {
   @Override
   public void initializeControls(final ChatServerControls controls) {
     super.initializeControls(controls);
-    extendedRoomCreator = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        if (client.isConnected()) {
-          final Properties props = JabberRoom.configureNewRoom();
-          if (props != null) {
-            final String name = props.getProperty(JabberRoom.CONFIG_NAME);
-            if (name.length() > 0) {
-              createRoom(props);
-            }
+    extendedRoomCreator = e -> {
+      if (client.isConnected()) {
+        final Properties props = JabberRoom.configureNewRoom();
+        if (props != null) {
+          final String name = props.getProperty(JabberRoom.CONFIG_NAME);
+          if (name.length() > 0) {
+            createRoom(props);
           }
         }
-        else {
-          GameModule.getGameModule().warn(Resources.getString("Chat.must_connect")); //$NON-NLS-1$
-        }
-      }};
+      }
+      else {
+        GameModule.getGameModule().warn(Resources.getString("Chat.must_connect")); //$NON-NLS-1$
+      }
+    };
       controls.addExtendedNewRoomHandler(extendedRoomCreator);
   }
 

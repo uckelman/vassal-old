@@ -166,12 +166,7 @@ public class LOS_Thread extends AbstractConfigurable implements
     visible = false;
     persisting = false;
     mirroring = false;
-    ActionListener al = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        launch();
-      }
-    };
+    ActionListener al = e -> launch();
     launch = new LaunchButton("Thread", TOOLTIP, LABEL, HOTKEY, ICON_NAME, al);
     launch.setAttribute(ICON_NAME, DEFAULT_ICON);
     launch.setAttribute(TOOLTIP, "Show LOS Thread");
@@ -217,12 +212,7 @@ public class LOS_Thread extends AbstractConfigurable implements
         getConfigureName(), config);
       threadColor = (Color) GameModule.getGameModule()
                                       .getPrefs().getValue(LOS_COLOR);
-      config.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          threadColor = (Color) evt.getNewValue();
-        }
-      });
+      config.addPropertyChangeListener(evt -> threadColor = (Color) evt.getNewValue());
       config.fireUpdate();
     }
   }
@@ -849,28 +839,13 @@ public class LOS_Thread extends AbstractConfigurable implements
     VisibilityCondition cond = null;
     if (RANGE_SCALE.equals(name)
       || RANGE_ROUNDING.equals(name)) {
-      cond = new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return drawRange;
-        }
-      };
+      cond = () -> drawRange;
     }
     else if (HIDE_OPACITY.equals(name)) {
-      cond = new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return hideCounters;
-        }
-      };
+      cond = () -> hideCounters;
     }
     else if (PERSISTENT_ICON_NAME.equals(name)) {
-      cond = new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return persistence.equals(CTRL_CLICK) || persistence.equals(ALWAYS);
-        }
-      };
+      cond = () -> persistence.equals(CTRL_CLICK) || persistence.equals(ALWAYS);
     }
 
     return cond;

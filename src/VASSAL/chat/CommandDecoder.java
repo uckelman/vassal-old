@@ -36,12 +36,9 @@ public class CommandDecoder implements PropertyChangeListener {
   public void propertyChange(PropertyChangeEvent evt) {
     final Command c = GameModule.getGameModule().decode((String) evt.getNewValue());
     if (c != null) {
-      Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-          c.execute();
-          GameModule.getGameModule().getLogger().log(c);
-        }
+      Runnable runnable = () -> {
+        c.execute();
+        GameModule.getGameModule().getLogger().log(c);
       };
       SwingUtilities.invokeLater(runnable);
     }

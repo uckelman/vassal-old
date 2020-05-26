@@ -152,12 +152,10 @@ public class CounterTurnLevel extends TurnLevel {
   protected Component getSetControl() {
 
     final IntConfigurer config = new IntConfigurer("", " "+getConfigureName()+":  ", current); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    config.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent e) {
-        current = (Integer) ((IntConfigurer) e.getSource()).getValue();
-        myValue.setPropertyValue(getValueString());
-      }});
+    config.addPropertyChangeListener(e -> {
+      current = (Integer) ((IntConfigurer) e.getSource()).getValue();
+      myValue.setPropertyValue(getValueString());
+    });
 
     return config.getControls();
   }
@@ -267,10 +265,5 @@ public class CounterTurnLevel extends TurnLevel {
     }
   }
 
-  private VisibilityCondition loopCond = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return loop;
-    }
-  };
+  private VisibilityCondition loopCond = () -> loop;
  }

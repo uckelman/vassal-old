@@ -254,20 +254,17 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
 
       table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       ListSelectionModel rowSM = table.getSelectionModel();
-      rowSM.addListSelectionListener(new ListSelectionListener() {
-        @Override
-        public void valueChanged(ListSelectionEvent e) {
-          //Ignore extra messages.
-          if (e.getValueIsAdjusting())
-            return;
+      rowSM.addListSelectionListener(e -> {
+        //Ignore extra messages.
+        if (e.getValueIsAdjusting())
+          return;
 
-          ListSelectionModel lsm = (ListSelectionModel) e.getSource();
-          if (lsm.isSelectionEmpty()) {
-            //...//no rows are selected
-          }
-          else {
-            displaySelected();
-          }
+        ListSelectionModel lsm = (ListSelectionModel) e.getSource();
+        if (lsm.isSelectionEmpty()) {
+          //...//no rows are selected
+        }
+        else {
+          displaySelected();
         }
       });
 
@@ -280,21 +277,11 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       b.setAlignmentX(0.0F);
 
       JButton newButton = new JButton(Resources.getString(Resources.NEW));
-      newButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          createNewNote();
-        }
-      });
+      newButton.addActionListener(e -> createNewNote());
       b.add(newButton);
 
       revealButton = new JButton(Resources.getString("Notes.reveal")); //$NON-NLS-1$
-      revealButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          revealSelectedNote();
-        }
-      });
+      revealButton.addActionListener(e -> revealSelectedNote());
       revealButton.setEnabled(false);
       b.add(revealButton);
       add(b);
@@ -435,36 +422,28 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
 
       final Box buttonPanel = Box.createHorizontalBox();
       final JButton okButton = new JButton(Resources.getString(Resources.OK));
-      okButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          final SecretNote note = new SecretNote(
-            name.getValueString(),
-            GameModule.getUserId(),
-            (String) text.getValue(),
-            true
-          );
+      okButton.addActionListener(e -> {
+        final SecretNote note = new SecretNote(
+          name.getValueString(),
+          GameModule.getUserId(),
+          (String) text.getValue(),
+          true
+        );
 
-          if (notes.contains(note)) {
-            WarningDialog.show(Controls.this, "Notes.note_exists");
-          }
-          else {
-            notes.add(0, note);
-            refresh();
-            d.dispose();
-          }
+        if (notes.contains(note)) {
+          WarningDialog.show(Controls.this, "Notes.note_exists");
+        }
+        else {
+          notes.add(0, note);
+          refresh();
+          d.dispose();
         }
       });
 
-      final PropertyChangeListener l = new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          okButton.setEnabled(name.getValueString() != null
-                              && name.getValueString().length() > 0
-                              && text.getValueString() != null
-                              && text.getValueString().length() > 0);
-        }
-      };
+      final PropertyChangeListener l = evt -> okButton.setEnabled(name.getValueString() != null
+                          && name.getValueString().length() > 0
+                          && text.getValueString() != null
+                          && text.getValueString().length() > 0);
       name.addPropertyChangeListener(l);
       text.addPropertyChangeListener(l);
 
@@ -472,12 +451,7 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
       buttonPanel.add(okButton);
       final JButton cancelButton =
         new JButton(Resources.getString(Resources.CANCEL));
-      cancelButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          d.dispose();
-        }
-      });
+      cancelButton.addActionListener(e -> d.dispose());
       d.add(buttonPanel);
 
       d.pack();

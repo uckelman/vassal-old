@@ -433,29 +433,23 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       p.add(keyInput.getControls());
       Box b = Box.createHorizontalBox();
       b.add(pieceInput.getComponent());
-      defineButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          markerSlotPath = null;
-          new ConfigurerWindow(pieceInput.getConfigurer()).setVisible(true);
-        }
+      defineButton.addActionListener(e -> {
+        markerSlotPath = null;
+        new ConfigurerWindow(pieceInput.getConfigurer()).setVisible(true);
       });
       b.add(defineButton);
-      selectButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          ChoosePieceDialog d = new ChoosePieceDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, p), PieceSlot.class);
-          d.setVisible(true);
-          if (d.getTarget() instanceof PieceSlot) {
-            pieceInput.setPiece(((PieceSlot) d.getTarget()).getPiece());
-          }
-          if (d.getPath() != null) {
-            markerSlotPath = ComponentPathBuilder.getInstance().getId(d.getPath());
-            slotId = "";
-          }
-          else {
-            markerSlotPath = null;
-          }
+      selectButton.addActionListener(e -> {
+        ChoosePieceDialog d = new ChoosePieceDialog((Frame) SwingUtilities.getAncestorOfClass(Frame.class, p), PieceSlot.class);
+        d.setVisible(true);
+        if (d.getTarget() instanceof PieceSlot) {
+          pieceInput.setPiece(((PieceSlot) d.getTarget()).getPiece());
+        }
+        if (d.getPath() != null) {
+          markerSlotPath = ComponentPathBuilder.getInstance().getId(d.getPath());
+          slotId = "";
+        }
+        else {
+          markerSlotPath = null;
         }
       });
       b.add(selectButton);
@@ -469,12 +463,9 @@ public class PlaceMarker extends Decorator implements TranslatablePiece {
       if (aboveConfig != null) {
         aboveConfig.setValue(piece.above);
         p.add(aboveConfig.getControls());
-        ((JCheckBox) matchRotationConfig.getControls()).addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            aboveConfig.getControls().setVisible(((JCheckBox) matchRotationConfig.getControls()).isSelected());
-          }
-        });
+        ((JCheckBox) matchRotationConfig.getControls()).addActionListener(
+          e -> aboveConfig.getControls().setVisible(
+            ((JCheckBox) matchRotationConfig.getControls()).isSelected()));
         aboveConfig.getControls().setVisible(piece.matchRotation);
       }
       placementConfig = new JComboBox(new String[]{"On top of stack","On bottom of stack","Above this piece","Below this piece"});

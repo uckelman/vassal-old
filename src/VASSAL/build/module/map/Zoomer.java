@@ -238,28 +238,15 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
   public Zoomer() {
     state = new State(defaultZoomLevels, defaultInitialZoomLevel);
 
-    ActionListener zoomIn = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        zoomIn();
-      }
-    };
+    ActionListener zoomIn = e -> zoomIn();
 
-    ActionListener zoomOut = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        zoomOut();
-      }
-    };
+    ActionListener zoomOut = e -> zoomOut();
 
     zoomMenu = new ZoomMenu();
 
-    ActionListener zoomPick = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        if (zoomPickButton.isShowing()) {
-          zoomMenu.show(zoomPickButton, 0, zoomPickButton.getHeight());
-        }
+    ActionListener zoomPick = e -> {
+      if (zoomPickButton.isShowing()) {
+        zoomMenu.show(zoomPickButton, 0, zoomPickButton.getHeight());
       }
     };
 
@@ -418,10 +405,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
       // Add button
       addButton = new JButton(Resources.getString(Resources.ADD));
-      addButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) { addLevel(); }
-      });
+      addButton.addActionListener(e -> addLevel());
 
       addButton.setEnabled(false);
       addBox.add(addButton);
@@ -451,11 +435,8 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       });
 
       // rely on addButton to do the validation
-      levelField.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          if (addButton.isEnabled()) addLevel();
-        }
+      levelField.addActionListener(e -> {
+        if (addButton.isEnabled()) addLevel();
       });
 
       addBox.add(levelField);
@@ -466,52 +447,46 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
       // Remove button
       removeButton = new JButton(Resources.getString(Resources.REMOVE));
-      removeButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          // get the zoom level index to be removed
-          final int rm_level = levelList.getSelectedIndex();
-          final List<Double> l = z.state.getLevels();
+      removeButton.addActionListener(e -> {
+        // get the zoom level index to be removed
+        final int rm_level = levelList.getSelectedIndex();
+        final List<Double> l = z.state.getLevels();
 
-          final int new_init;
-          if (rm_level == z.state.getInitialLevel()) {
-            // we're deleting the initial level; keep it the same position
-            new_init = Math.min(rm_level, z.state.getLevelCount()-2);
-            l.remove(rm_level);
-          }
-          else {
-            // find the new index of the old initial level
-            final Double old_init_val = l.get(z.state.getInitialLevel());
-            l.remove(rm_level);
-            new_init = l.indexOf(old_init_val);
-          }
-
-          // adjust the state
-          z.state = new State(l, new_init);
-          z.init();
-          model.updateModel();
-
-          // adjust the selection
-          levelList.setSelectedIndex(
-            Math.max(Math.min(rm_level, l.size()-1), 0));
-          updateButtons();
+        final int new_init;
+        if (rm_level == z.state.getInitialLevel()) {
+          // we're deleting the initial level; keep it the same position
+          new_init = Math.min(rm_level, z.state.getLevelCount()-2);
+          l.remove(rm_level);
         }
+        else {
+          // find the new index of the old initial level
+          final Double old_init_val = l.get(z.state.getInitialLevel());
+          l.remove(rm_level);
+          new_init = l.indexOf(old_init_val);
+        }
+
+        // adjust the state
+        z.state = new State(l, new_init);
+        z.init();
+        model.updateModel();
+
+        // adjust the selection
+        levelList.setSelectedIndex(
+          Math.max(Math.min(rm_level, l.size()-1), 0));
+        updateButtons();
       });
 
       buttonBox.add(removeButton);
 
       // Set Initial button
       initialButton = new JButton(Resources.getString("Editor.zoom.set_initial")); //$NON-NLS-1$
-      initialButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          // set the new initial scale level
-          final int i = levelList.getSelectedIndex();
-          z.state = new State(z.state.getLevels(), i);
-          z.init();
-          model.updateModel();
-          updateButtons();
-        }
+      initialButton.addActionListener(e -> {
+        // set the new initial scale level
+        final int i = levelList.getSelectedIndex();
+        z.state = new State(z.state.getLevels(), i);
+        z.init();
+        model.updateModel();
+        updateButtons();
       });
 
       buttonBox.add(initialButton);
@@ -534,10 +509,7 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       levelList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       levelList.setSelectedIndex(0);
 
-      levelList.addListSelectionListener(new ListSelectionListener() {
-        @Override
-        public void valueChanged(ListSelectionEvent e) { updateButtons(); }
-      });
+      levelList.addListSelectionListener(e -> updateButtons());
 
       final JSplitPane pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
       pane.setLeftComponent(leftBox);

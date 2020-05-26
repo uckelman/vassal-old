@@ -70,13 +70,10 @@ public class BoardSlot extends JPanel implements Icon, ActionListener {
 
     reverseCheckBox =
       new JCheckBox(Resources.getString("BoardPicker.flip")); //$NON-NLS-1$
-    reverseCheckBox.addItemListener(new ItemListener() {
-      @Override
-      public void itemStateChanged(ItemEvent e) {
-        if (getBoard() != null) {
-          getBoard().setReversed(reverseCheckBox.isSelected());
-          picker.repaint();
-        }
+    reverseCheckBox.addItemListener(e -> {
+      if (getBoard() != null) {
+        getBoard().setReversed(reverseCheckBox.isSelected());
+        picker.repaint();
       }
     });
 

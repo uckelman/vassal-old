@@ -306,18 +306,10 @@ public class WizardSupport {
         if (tutorialButton != null) {
           // Select tutorial button by default, but not until wizard is built.  Bug #2286742
           final JRadioButton clickOnMe = tutorialButton;
-          SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              clickOnMe.doClick();
-            }
-          });
-          tutorialButton.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-              if (e.getStateChange() == ItemEvent.DESELECTED) {
-                tutorial.markAsViewed();
-              }
+          SwingUtilities.invokeLater(() -> clickOnMe.doClick());
+          tutorialButton.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.DESELECTED) {
+              tutorial.markAsViewed();
             }
           });
         }
@@ -330,12 +322,7 @@ public class WizardSupport {
           Prefs.getGlobalPrefs().getOption(WELCOME_WIZARD_KEY);
         final JCheckBox show = new JCheckBox(wizardConf.getName());
         show.setSelected(wizardConf.booleanValue());
-        show.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            wizardConf.setValue(show.isSelected());
-          }
-        });
+        show.addActionListener(e -> wizardConf.setValue(show.isSelected()));
         box.add(show);
       }
       return actionControls;
@@ -343,17 +330,14 @@ public class WizardSupport {
 
     private JRadioButton createTutorialButton(final WizardController controller, final Map settings) {
       JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.LoadTutorial")); //$NON-NLS-1$
-      b.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          controller.setProblem(Resources.getString("WizardSupport.LoadingTutorial")); //$NON-NLS-1$
-          try {
-            new TutorialLoader(controller, settings, new BufferedInputStream(tutorial.getTutorialContents()), POST_INITIAL_STEPS_WIZARD, tutorial).start();
-          }
-          catch (IOException e1) {
-            logger.error("", e1);
-            controller.setProblem(Resources.getString("WizardSupport.ErrorLoadingTutorial")); //$NON-NLS-1$
-          }
+      b.addActionListener(e -> {
+        controller.setProblem(Resources.getString("WizardSupport.LoadingTutorial")); //$NON-NLS-1$
+        try {
+          new TutorialLoader(controller, settings, new BufferedInputStream(tutorial.getTutorialContents()), POST_INITIAL_STEPS_WIZARD, tutorial).start();
+        }
+        catch (IOException e1) {
+          logger.error("", e1);
+          controller.setProblem(Resources.getString("WizardSupport.ErrorLoadingTutorial")); //$NON-NLS-1$
         }
       });
       return b;
@@ -361,51 +345,39 @@ public class WizardSupport {
 
     private JRadioButton createLoadSavedGameButton(final WizardController controller, final Map settings) {
       JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.LoadSavedGame")); //$NON-NLS-1$
-      b.addActionListener(new ActionListener() {
-        @Override
-        @SuppressWarnings("unchecked")
-        public void actionPerformed(ActionEvent e) {
-          settings.put(WizardSupport.ACTION_KEY, LOAD_GAME_ACTION);
-          Wizard wiz = new BranchingWizard(new LoadSavedGamePanels(), POST_LOAD_GAME_WIZARD).createWizard();
-          settings.put(POST_INITIAL_STEPS_WIZARD, wiz);
-          controller.setForwardNavigationMode(WizardController.MODE_CAN_CONTINUE);
-          controller.setProblem(null);
-        }
+      b.addActionListener(e -> {
+        settings.put(WizardSupport.ACTION_KEY, LOAD_GAME_ACTION);
+        Wizard wiz = new BranchingWizard(new LoadSavedGamePanels(), POST_LOAD_GAME_WIZARD).createWizard();
+        settings.put(POST_INITIAL_STEPS_WIZARD, wiz);
+        controller.setForwardNavigationMode(WizardController.MODE_CAN_CONTINUE);
+        controller.setProblem(null);
       });
       return b;
     }
 
     private JRadioButton createPlayOnlineButton(final WizardController controller, final Map settings) {
       JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.PlayOnline")); //$NON-NLS-1$
-      b.addActionListener(new ActionListener() {
-        @Override
-        @SuppressWarnings("unchecked")
-        public void actionPerformed(ActionEvent e) {
-          settings.put(WizardSupport.ACTION_KEY, PLAY_ONLINE_ACTION);
-          controller.setForwardNavigationMode(WizardController.MODE_CAN_FINISH);
-          controller.setProblem(null);
-        }
+      b.addActionListener(e -> {
+        settings.put(WizardSupport.ACTION_KEY, PLAY_ONLINE_ACTION);
+        controller.setForwardNavigationMode(WizardController.MODE_CAN_FINISH);
+        controller.setProblem(null);
       });
       return b;
     }
 
     private JRadioButton createPlayOfflineButton(final WizardController controller, final Map settings) {
       JRadioButton b = new JRadioButton(Resources.getString("WizardSupport.PlayOffline")); //$NON-NLS-1$
-      b.addActionListener(new ActionListener() {
-        @Override
-        @SuppressWarnings("unchecked")
-        public void actionPerformed(ActionEvent e) {
-          GameModule.getGameModule().getGameState().setup(false);
-          settings.put(WizardSupport.ACTION_KEY, PLAY_OFFLINE_ACTION);
-          final WizardPanelProvider panels = createPlayOfflinePanels();
-          if (panels == null) {
-            controller.setForwardNavigationMode(WizardController.MODE_CAN_FINISH);
-          }
-          else {
-            Wizard wiz = new BranchingWizard(panels, POST_PLAY_OFFLINE_WIZARD).createWizard();
-            settings.put(POST_INITIAL_STEPS_WIZARD, wiz);
-            controller.setForwardNavigationMode(WizardController.MODE_CAN_CONTINUE);
-          }
+      b.addActionListener(e -> {
+        GameModule.getGameModule().getGameState().setup(false);
+        settings.put(WizardSupport.ACTION_KEY, PLAY_OFFLINE_ACTION);
+        final WizardPanelProvider panels = createPlayOfflinePanels();
+        if (panels == null) {
+          controller.setForwardNavigationMode(WizardController.MODE_CAN_FINISH);
+        }
+        else {
+          Wizard wiz = new BranchingWizard(panels, POST_PLAY_OFFLINE_WIZARD).createWizard();
+          settings.put(POST_INITIAL_STEPS_WIZARD, wiz);
+          controller.setForwardNavigationMode(WizardController.MODE_CAN_CONTINUE);
         }
       });
       return b;
@@ -424,42 +396,38 @@ public class WizardSupport {
         final StringConfigurer nameConfig = new StringConfigurer(null, Resources.getString("WizardSupport.RealName")); //$NON-NLS-1$
         final StringConfigurer pwd = new PasswordConfigurer(null, Resources.getString("WizardSupport.Password")); //$NON-NLS-1$
         final StringConfigurer pwd2 = new PasswordConfigurer(null, Resources.getString("WizardSupport.ConfirmPassword")); //$NON-NLS-1$
-        PropertyChangeListener pl = new PropertyChangeListener() {
-          @Override
-          @SuppressWarnings("unchecked")
-          public void propertyChange(PropertyChangeEvent evt) {
-            settings.put(GameModule.REAL_NAME, nameConfig.getValue());
-            settings.put(GameModule.SECRET_NAME, pwd.getValue());
-            if (nameConfig.getValue() == null || "".equals(nameConfig.getValue())) { //$NON-NLS-1$
-              controller.setProblem(Resources.getString("WizardSupport.EnterYourName")); //$NON-NLS-1$
-            }
-            else if (pwd.getValue() == null || "".equals(pwd.getValue())) { //$NON-NLS-1$
-              controller.setProblem(Resources.getString("WizardSupport.EnterYourPassword")); //$NON-NLS-1$
-            }
-            else if (!pwd.getValue().equals(pwd2.getValue())) {
-              controller.setProblem(Resources.getString("WizardSupport.PasswordsDontMatch")); //$NON-NLS-1$
-            }
-            else {
-              final Prefs p = GameModule.getGameModule().getPrefs();
+        PropertyChangeListener pl = evt -> {
+          settings.put(GameModule.REAL_NAME, nameConfig.getValue());
+          settings.put(GameModule.SECRET_NAME, pwd.getValue());
+          if (nameConfig.getValue() == null || "".equals(nameConfig.getValue())) { //$NON-NLS-1$
+            controller.setProblem(Resources.getString("WizardSupport.EnterYourName")); //$NON-NLS-1$
+          }
+          else if (pwd.getValue() == null || "".equals(pwd.getValue())) { //$NON-NLS-1$
+            controller.setProblem(Resources.getString("WizardSupport.EnterYourPassword")); //$NON-NLS-1$
+          }
+          else if (!pwd.getValue().equals(pwd2.getValue())) {
+            controller.setProblem(Resources.getString("WizardSupport.PasswordsDontMatch")); //$NON-NLS-1$
+          }
+          else {
+            final Prefs p = GameModule.getGameModule().getPrefs();
 
-              p.getOption(GameModule.REAL_NAME)
-               .setValue(nameConfig.getValueString());
+            p.getOption(GameModule.REAL_NAME)
+             .setValue(nameConfig.getValueString());
 
-              p.getOption(GameModule.SECRET_NAME)
-               .setValue(pwd.getValueString());
+            p.getOption(GameModule.SECRET_NAME)
+             .setValue(pwd.getValueString());
 
-              try {
-                p.save();
-                controller.setProblem(null);
+            try {
+              p.save();
+              controller.setProblem(null);
+            }
+            // FIXME: review error message
+            catch (IOException e) {
+              String msg = e.getMessage();
+              if (msg == null) {
+                msg = Resources.getString("Prefs.unable_to_save");
               }
-              // FIXME: review error message
-              catch (IOException e) {
-                String msg = e.getMessage();
-                if (msg == null) {
-                  msg = Resources.getString("Prefs.unable_to_save");
-                }
-                controller.setProblem(msg);
-              }
+              controller.setProblem(msg);
             }
           }
         };
@@ -503,25 +471,21 @@ public class WizardSupport {
       final JComboBox setupSelection = new JComboBox(setups.toArray());
       ((DefaultComboBoxModel) setupSelection.getModel()).insertElementAt(description, 0);
       setupSelection.setSelectedIndex(0);
-      setupSelection.addActionListener(new ActionListener() {
-        @Override
-        @SuppressWarnings("unchecked")
-        public void actionPerformed(ActionEvent e) {
-          if (setupSelection.getSelectedItem() instanceof PredefinedSetup) {
-            PredefinedSetup setup = (PredefinedSetup) setupSelection.getSelectedItem();
-            if (setup.isUseFile() && setup.getFileName() != null) {
-              loadSetup(setup, controller, settings);
-            }
-            else {
-              final GameSetupPanels panels = GameSetupPanels.newInstance();
-              settings.put(POST_PLAY_OFFLINE_WIZARD, panels);
-              controller.setProblem(null);
-              controller.setForwardNavigationMode(panels == null ? WizardController.MODE_CAN_FINISH : WizardController.MODE_CAN_CONTINUE);
-            }
+      setupSelection.addActionListener(e -> {
+        if (setupSelection.getSelectedItem() instanceof PredefinedSetup) {
+          PredefinedSetup setup = (PredefinedSetup) setupSelection.getSelectedItem();
+          if (setup.isUseFile() && setup.getFileName() != null) {
+            loadSetup(setup, controller, settings);
           }
           else {
-            controller.setProblem(description);
+            final GameSetupPanels panels = GameSetupPanels.newInstance();
+            settings.put(POST_PLAY_OFFLINE_WIZARD, panels);
+            controller.setProblem(null);
+            controller.setForwardNavigationMode(panels == null ? WizardController.MODE_CAN_FINISH : WizardController.MODE_CAN_CONTINUE);
           }
+        }
+        else {
+          controller.setProblem(description);
         }
       });
       setupSelection.setMaximumSize(new Dimension(setupSelection.getMaximumSize().width, setupSelection.getPreferredSize().height));

@@ -165,22 +165,10 @@ public class PanelWidget extends Widget {
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (COLS.equals(name)) {
-      VisibilityCondition isFixed = new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return fixed;
-        }
-      };
-      return isFixed;
+      return () -> fixed;
     }
     else if (VERTICAL.equals(name)) {
-      VisibilityCondition notFixed = new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return !fixed;
-        }
-      };
-      return notFixed;
+      return () -> !fixed;
     }
     else {
       return super.getAttributeVisibility(name);

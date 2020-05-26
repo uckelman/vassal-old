@@ -73,12 +73,7 @@ public class HidePiecesButton extends JPanel implements MouseListener,
 
 
   public HidePiecesButton() {
-    ActionListener al = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        setPiecesVisible(!piecesVisible);
-      }
-    };
+    ActionListener al = e -> setPiecesVisible(!piecesVisible);
     launch = new LaunchButton(null, TOOLTIP, BUTTON_TEXT, HOTKEY, LAUNCH_ICON, al);
     launch.setAttribute(TOOLTIP, "Hide all pieces on this map");
     addMouseListener(this);

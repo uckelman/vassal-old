@@ -59,11 +59,7 @@ public class BooleanPreference extends BasicPreference {
   public Configurer getPreferenceConfigurer() {
     if (config == null) {
       config = new BooleanConfigurer(getVariableName(), getDescription(), defaultValue);
-      config.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          updateGlobalProperty(config.getValueString());
-        }});
+      config.addPropertyChangeListener(e -> updateGlobalProperty(config.getValueString()));
     }
     return config;
   }

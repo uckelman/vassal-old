@@ -96,12 +96,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   protected boolean useParentGrid;
   protected PropertyChangeListener globalPropertyListener;
   protected MutablePropertiesContainer propsContainer = new Impl();
-  protected PropertyChangeListener repaintOnPropertyChange = new PropertyChangeListener() {
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-      repaint();
-    }
-  };
+  protected PropertyChangeListener repaintOnPropertyChange = evt -> repaint();
   /*
    * Cache as much as possible to minimise the number of Affine Transformations that need to be performed.
    */
@@ -262,12 +257,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (HIGHLIGHT_PROPERTY.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return useHighlight;
-        }
-      };
+      return () -> useHighlight;
     }
     else {
       return super.getAttributeVisibility(name);
@@ -591,12 +581,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
             .findMutableProperty(highlightPropertyName, Arrays.asList(new MutablePropertiesContainer[]{this, getMap(), GameModule.getGameModule()}));
         if (highlightProperty != null) {
           if (highlightPropertyChangeListener == null) {
-            highlightPropertyChangeListener = new PropertyChangeListener() {
-              @Override
-              public void propertyChange(PropertyChangeEvent e) {
-                setHighlighter((String) e.getNewValue());
-              }
-            };
+            highlightPropertyChangeListener = e -> setHighlighter((String) e.getNewValue());
           }
           highlightProperty.addMutablePropertyChangeListener(highlightPropertyChangeListener);
           setHighlighter(highlightProperty.getPropertyValue());
@@ -636,12 +621,7 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     public Editor(final Zone zone) {
       super(PATH, null);
       button = new JButton("Define Shape");
-      button.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          init(zone);
-        }
-      });
+      button.addActionListener(e -> init(zone));
       editor = new PolygonEditor(new Polygon(zone.myPolygon.xpoints, zone.myPolygon.ypoints, zone.myPolygon.npoints)) {
         private static final long serialVersionUID = 1L;
 
@@ -685,24 +665,21 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       frame.add(labels);
 
       final JButton direct = new JButton("Set Coordinates directly");
-      direct.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          String newShape = JOptionPane.showInputDialog(frame, "Enter x,y coordinates of polygon vertices,\nseparated by spaces", PolygonEditor
-              .polygonToString(editor.getPolygon()).replace(';', ' '));
-          if (newShape != null) {
-            final StringBuilder buffer = new StringBuilder();
-            final StringTokenizer st = new StringTokenizer(newShape);
-            while (st.hasMoreTokens()) {
-              buffer.append(st.nextToken());
-              if (st.hasMoreTokens()) {
-                buffer.append(';');
-              }
+      direct.addActionListener(e -> {
+        String newShape = JOptionPane.showInputDialog(frame, "Enter x,y coordinates of polygon vertices,\nseparated by spaces", PolygonEditor
+            .polygonToString(editor.getPolygon()).replace(';', ' '));
+        if (newShape != null) {
+          final StringBuilder buffer = new StringBuilder();
+          final StringTokenizer st = new StringTokenizer(newShape);
+          while (st.hasMoreTokens()) {
+            buffer.append(st.nextToken());
+            if (st.hasMoreTokens()) {
+              buffer.append(';');
             }
-            newShape = buffer.toString();
-            PolygonEditor.reset(editor.getPolygon(), newShape);
-            editor.repaint();
           }
+          newShape = buffer.toString();
+          PolygonEditor.reset(editor.getPolygon(), newShape);
+          editor.repaint();
         }
       });
       direct.setAlignmentX(0.0f);
@@ -714,22 +691,16 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
       final JPanel buttonPanel = new JPanel();
 
       final JButton closeButton = new JButton("Ok");
-      closeButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          setValue((Object) getValueString());
-          frame.setVisible(false);
-        }
+      closeButton.addActionListener(e -> {
+        setValue((Object) getValueString());
+        frame.setVisible(false);
       });
 
       final JButton canButton = new JButton("Cancel");
-      canButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          editor.setPolygon(savePoly);
-          setValue((Object) getValueString());
-          frame.setVisible(false);
-        }
+      canButton.addActionListener(e -> {
+        editor.setPolygon(savePoly);
+        setValue((Object) getValueString());
+        frame.setVisible(false);
       });
 
       buttonPanel.add(closeButton);

@@ -131,10 +131,5 @@ public class ImageItemInstance extends ItemInstance {
      }
    }
 
-  private VisibilityCondition imageCond = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return !((ImageItem) getItem()).isFixed();
-    }
-  };
+  private VisibilityCondition imageCond = () -> !((ImageItem) getItem()).isFixed();
 }

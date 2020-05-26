@@ -225,35 +225,24 @@ public class MultiRoll extends JDialog implements ActionListener {
 
     // Add Some buttons
     buttonPanel = new JPanel();
-    rollButton.addActionListener(new java.awt.event.ActionListener() {
-      @Override
-      public void actionPerformed(java.awt.event.ActionEvent e) {
-        rollCancelled = false;
-        int dieCount = 0;
-        for (int i = 0; i < MAX_ROLLS; i++) {
-          dieCount += useDie[i] ? 1 : 0;
-        }
-        if (dieCount == 0) {
-          JOptionPane.showMessageDialog(me, "No dice selected for Roll.", "Roll Cancelled", JOptionPane.ERROR_MESSAGE);
-          return;
-        }
-        setVisible(false);
+    rollButton.addActionListener(e -> {
+      rollCancelled = false;
+      int dieCount = 0;
+      for (int i = 0; i < MAX_ROLLS; i++) {
+        dieCount += useDie[i] ? 1 : 0;
       }
+      if (dieCount == 0) {
+        JOptionPane.showMessageDialog(me, "No dice selected for Roll.", "Roll Cancelled", JOptionPane.ERROR_MESSAGE);
+        return;
+      }
+      setVisible(false);
     });
-    canButton.addActionListener(new java.awt.event.ActionListener() {
-      @Override
-      public void actionPerformed(java.awt.event.ActionEvent e) {
-        rollCancelled = true;
-        setVisible(false);
-      }
+    canButton.addActionListener(e -> {
+      rollCancelled = true;
+      setVisible(false);
     });
 
-    emailButton.addActionListener(new java.awt.event.ActionListener() {
-      @Override
-      public void actionPerformed(java.awt.event.ActionEvent e) {
-        updateEmailAddress();
-      }
-    });
+    emailButton.addActionListener(e -> updateEmailAddress());
 
     buttonPanel.add(rollButton);
     buttonPanel.add(canButton);
@@ -412,13 +401,10 @@ public class MultiRoll extends JDialog implements ActionListener {
       col1 = new StateButton((row + 1) + "");
       col1.setPreferredSize(new Dimension(COL1_WIDTH, ROW_HEIGHT));
       col1.setState(useDie[myRow]);
-      col1.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          col1.switchState();
-          useDie[myRow] = col1.getState();
-          setEnabled(col1.getState());
-        }
+      col1.addActionListener(e -> {
+        col1.switchState();
+        useDie[myRow] = col1.getState();
+        setEnabled(col1.getState());
       });
 
       // Roll Description
@@ -454,12 +440,9 @@ public class MultiRoll extends JDialog implements ActionListener {
       col4 = new JComboBox(diceData);
       col4.setSelectedIndex(defaultNDIdx);
       col4.setPreferredSize(new Dimension(COL4_WIDTH, ROW_HEIGHT));
-      col4.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          JComboBox cb = (JComboBox) e.getSource();
-          rolls[myRow].setNumDice(Integer.parseInt((String) cb.getSelectedItem()));
-        }
+      col4.addActionListener(e -> {
+        JComboBox cb = (JComboBox) e.getSource();
+        rolls[myRow].setNumDice(Integer.parseInt((String) cb.getSelectedItem()));
       });
       col4.setEnabled(false);
 
@@ -475,12 +458,9 @@ public class MultiRoll extends JDialog implements ActionListener {
       col5 = new JComboBox(sideData);
       col5.setSelectedIndex(defaultNSIdx);
       col5.setPreferredSize(new Dimension(COL5_WIDTH, ROW_HEIGHT));
-      col5.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          JComboBox cb = (JComboBox) e.getSource();
-          rolls[myRow].setNumSides(Integer.parseInt((String) cb.getSelectedItem()));
-        }
+      col5.addActionListener(e -> {
+        JComboBox cb = (JComboBox) e.getSource();
+        rolls[myRow].setNumSides(Integer.parseInt((String) cb.getSelectedItem()));
       });
       col5.setEnabled(false);
 
@@ -509,12 +489,7 @@ public class MultiRoll extends JDialog implements ActionListener {
       col7.setPreferredSize(new Dimension(COL7_WIDTH, ROW_HEIGHT));
       col7.setHorizontalAlignment(JCheckBox.CENTER);
       col7.setSelected(rolls[myRow].isReportTotal());
-      col7.addItemListener(new ItemListener() {
-        @Override
-        public void itemStateChanged(ItemEvent e) {
-          rolls[myRow].setReportTotal((e.getStateChange() == ItemEvent.SELECTED));
-        }
-      });
+      col7.addItemListener(e -> rolls[myRow].setReportTotal((e.getStateChange() == ItemEvent.SELECTED)));
       col7.setEnabled(false);
 
       add(col1);

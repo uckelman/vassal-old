@@ -88,12 +88,9 @@ public class ServerNode extends Node {
 
     final MsgSender[] senders = Arrays.copyOf(target, target.length);
 
-    return new MsgSender() {
-      @Override
-      public void send(String msg) {
-        for (MsgSender sender : senders) {
-          sender.send(msg);
-        }
+    return msg -> {
+      for (MsgSender sender : senders) {
+        sender.send(msg);
       }
     };
   }

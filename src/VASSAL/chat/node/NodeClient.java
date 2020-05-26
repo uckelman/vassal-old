@@ -127,25 +127,19 @@ public abstract class NodeClient implements LockableChatServerConnection,
     privateChatEncoder = new PrivateChatEncoder(this, privateChatManager);
     soundEncoder = new SoundEncoder(this);
     inviteEncoder = new InviteEncoder(this);
-    nameChangeListener = new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        SimplePlayer p = (SimplePlayer) getUserInfo();
-        p.setName((String) evt.getNewValue());
-        setUserInfo(p);
-      }
+    nameChangeListener = evt -> {
+      SimplePlayer p = (SimplePlayer) getUserInfo();
+      p.setName((String) evt.getNewValue());
+      setUserInfo(p);
     };
-    profileChangeListener = new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        SimplePlayer p = (SimplePlayer) getUserInfo();
-        SimpleStatus s = (SimpleStatus) p.getStatus();
-        s = new SimpleStatus(s.isLooking(), s.isAway(), (String) evt
-            .getNewValue(), s.getClient(), s.getIp(), s.getModuleVersion(), s
-            .getCrc());
-        p.setStatus(s);
-        setUserInfo(p);
-      }
+    profileChangeListener = evt -> {
+      SimplePlayer p = (SimplePlayer) getUserInfo();
+      SimpleStatus s = (SimpleStatus) p.getStatus();
+      s = new SimpleStatus(s.isLooking(), s.isAway(), (String) evt
+          .getNewValue(), s.getClient(), s.getIp(), s.getModuleVersion(), s
+          .getCrc());
+      p.setStatus(s);
+      setUserInfo(p);
     };
   }
 

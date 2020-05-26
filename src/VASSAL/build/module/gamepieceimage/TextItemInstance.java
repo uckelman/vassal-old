@@ -193,23 +193,14 @@ public class TextItemInstance extends ItemInstance {
       return valueCond;
     }
     else if (OUTLINE_COLOR.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return isOutline();
-        }};
+      return () -> isOutline();
     }
     else {
       return super.getAttributeVisibility(name);
     }
   }
 
-  private VisibilityCondition valueCond = new VisibilityCondition() {
-    @Override
-    public boolean shouldBeVisible() {
-      return !((TextItem) getItem()).isFixed();
-    }
-  };
+  private VisibilityCondition valueCond = () -> !((TextItem) getItem()).isFixed();
 
   public static class BgColorSwatchConfig implements ConfigurerFactory {
     @Override

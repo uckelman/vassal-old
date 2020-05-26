@@ -91,15 +91,12 @@ public class ColorSwatchConfigurer extends Configurer {
 
       colorBox = Box.createHorizontalBox();
       config = new ColorConfigurer("", "Select Color  "); //$NON-NLS-1$
-      config.addPropertyChangeListener(new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent e) {
-          Color c = (Color) config.getValue();
-          ColorSwatch cs = ColorManager.getColorManager().getColorSwatch(c);
-          setValue(cs);
-          buildSwatches();
-          updateValue();
-        }
+      config.addPropertyChangeListener(e -> {
+        Color c = (Color) config.getValue();
+        ColorSwatch cs = ColorManager.getColorManager().getColorSwatch(c);
+        setValue(cs);
+        buildSwatches();
+        updateValue();
       });
       colorBox.add(config.getControls());
       p.add(colorBox);
@@ -119,12 +116,7 @@ public class ColorSwatchConfigurer extends Configurer {
       swatchPanel.remove(swatches);
     }
 
-    ItemListener l = new ItemListener() {
-      @Override
-      public void itemStateChanged(ItemEvent evt) {
-        updateValue();
-      }
-    };
+    ItemListener l = evt -> updateValue();
 
     swatches = new SwatchComboBox(l, ((ColorSwatch) value).getConfigureName());
     swatchPanel.add(swatches);

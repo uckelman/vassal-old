@@ -91,12 +91,9 @@ public class PropertyChangerConfigurer extends Configurer {
   @Override
   public Component getControls() {
     if (controls == null) {
-      PropertyChangeListener l = new PropertyChangeListener() {
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-          updateValue();
-          updateControls();
-        }
+      PropertyChangeListener l = evt -> {
+        updateValue();
+        updateControls();
       };
       controls = new JPanel();
       controls.setLayout(new BoxLayout(controls, BoxLayout.X_AXIS));

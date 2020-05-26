@@ -41,12 +41,7 @@ public class WidgetMap extends Map {
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
     if (USE_LAUNCH_BUTTON.equals(name) || BUTTON_NAME.equals(name) || ICON.equals(name) || HOTKEY.equals(name)) {
-      return new VisibilityCondition() {
-        @Override
-        public boolean shouldBeVisible() {
-          return false;
-        }
-      };
+      return () -> false;
     }
     else {
       return super.getAttributeVisibility(name);

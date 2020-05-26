@@ -133,57 +133,36 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
     JPanel buttonPanel = new JPanel();
 
     okButton = new JButton(OK);
-    okButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        cancelSetMode();
-        setVisible(false);
+    okButton.addActionListener(e -> {
+      cancelSetMode();
+      setVisible(false);
 /*
-        GameModule.getGameModule()
-                  .getDataArchive().clearTransformedImageCache();
+      GameModule.getGameModule()
+                .getDataArchive().clearTransformedImageCache();
 */
-      }
     });
     buttonPanel.add(okButton);
 
     JButton canButton = new JButton(CANCEL);
-    canButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        cancel();
-      }
-    });
+    canButton.addActionListener(e -> cancel());
     buttonPanel.add(canButton);
 
     setButton = new JButton(SET);
-    setButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        startSetMode();
-      }
-    });
+    setButton.addActionListener(e -> startSetMode());
     setButton.setRequestFocusEnabled(false);
     buttonPanel.add(setButton);
 
     canSetButton = new JButton(CANCEL_SET);
-    canSetButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        cancelSetMode();
-      }
-    });
+    canSetButton.addActionListener(e -> cancelSetMode());
     canSetButton.setVisible(false);
     canSetButton.setRequestFocusEnabled(false);
     buttonPanel.add(canSetButton);
 
 
     numberingButton = new JButton(NUMBERING);
-    numberingButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        ((RegularGridNumbering) grid.getGridNumbering()).setAttribute(RegularGridNumbering.VISIBLE, !grid.getGridNumbering().isVisible());
-        repaint();
-      }
+    numberingButton.addActionListener(e -> {
+      ((RegularGridNumbering) grid.getGridNumbering()).setAttribute(RegularGridNumbering.VISIBLE, !grid.getGridNumbering().isVisible());
+      repaint();
     });
     numberingButton.setEnabled(grid.getGridNumbering() != null);
     numberingButton.setVisible(true);

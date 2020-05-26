@@ -97,42 +97,33 @@ public class StringArrayConfigurer extends Configurer {
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
       JButton addButton = new JButton(Resources.getString(Resources.ADD));
-      addButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          String s = getTextValue();
-          addValue(s);
-          setTextValue("");
-        }
+      addButton.addActionListener(e -> {
+        String s = getTextValue();
+        addValue(s);
+        setTextValue("");
       });
       buttonBox.add(addButton);
 
       JButton removeButton = new JButton(Resources.getString(Resources.REMOVE));
-      removeButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          Object[] o = list.getSelectedValues();
-          for (Object item : o) {
-            removeValue((String) item);
-          }
+      removeButton.addActionListener(e -> {
+        Object[] o = list.getSelectedValues();
+        for (Object item : o) {
+          removeValue((String) item);
         }
       });
       buttonBox.add(removeButton);
 
       JButton insertButton = new JButton(Resources.getString(Resources.INSERT));
-      ActionListener insertAction = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          if (value == null) {
-            addValue(getTextValue());
-          }
-          else {
-            int pos = list.getSelectedIndex();
-            if (pos < 0) pos = list.getModel().getSize();
-            setValue(ArrayUtils.insert((String[]) value, pos, getTextValue()));
-            setTextValue("");
-            list.setSelectedIndex(pos+1);
-          }
+      ActionListener insertAction = e -> {
+        if (value == null) {
+          addValue(getTextValue());
+        }
+        else {
+          int pos = list.getSelectedIndex();
+          if (pos < 0) pos = list.getModel().getSize();
+          setValue(ArrayUtils.insert((String[]) value, pos, getTextValue()));
+          setTextValue("");
+          list.setSelectedIndex(pos+1);
         }
       };
       insertButton.addActionListener(insertAction);
@@ -239,12 +230,7 @@ public class StringArrayConfigurer extends Configurer {
   public static void main(String[] args) {
     JFrame f = new JFrame();
     final StringArrayConfigurer c = new StringArrayConfigurer(null, "Visible to these players:  ");
-    c.addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent evt) {
-        System.err.println(c.getName() + " = " + c.getValueString());
-      }
-    });
+    c.addPropertyChangeListener(evt -> System.err.println(c.getName() + " = " + c.getValueString()));
     c.setValue("Rack,Shack,Benny");
     f.add(c.getControls());
     f.pack();

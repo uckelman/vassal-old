@@ -41,12 +41,7 @@ public class PropertiesPieceFilter {
   private static final Pattern AND = Pattern.compile("&&");
   private static final Pattern OR = Pattern.compile("\\|\\|");
 
-  private static PieceFilter ACCEPT_ALL = new PieceFilter() {
-    @Override
-    public boolean accept(GamePiece piece) {
-      return true;
-    }
-  };
+  private static PieceFilter ACCEPT_ALL = piece -> true;
 
   /**
    * Return a PieceFilter parsed from a boolean expression such as

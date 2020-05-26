@@ -67,21 +67,11 @@ public class StrBuilder extends JDialog {
 
     final JPanel buttonBox = new JPanel(new MigLayout("", "[]rel[]rel[]"));
     final JButton okButton = ButtonFactory.getOkButton();
-    okButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        save();
-      }
-    });
+    okButton.addActionListener(e -> save());
     buttonBox.add(okButton);
 
     final JButton cancelButton = ButtonFactory.getCancelButton();
-    cancelButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        cancel();
-      }
-    });
+    cancelButton.addActionListener(e -> cancel());
     buttonBox.add(cancelButton);
 
     p.add(buttonBox, "span 2,align center");

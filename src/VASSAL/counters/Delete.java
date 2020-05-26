@@ -107,13 +107,10 @@ public class Delete extends Decorator implements TranslatablePiece {
           next = getParent().getPieceAbove(outer);
         if (next != null) {
           final GamePiece selected = next;
-          Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-              // Don't select if the next piece has itself been deleted
-              if (GameModule.getGameModule().getGameState().getPieceForId(selected.getId()) != null) {
-                KeyBuffer.getBuffer().add(selected);
-              }
+          Runnable runnable = () -> {
+            // Don't select if the next piece has itself been deleted
+            if (GameModule.getGameModule().getGameState().getPieceForId(selected.getId()) != null) {
+              KeyBuffer.getBuffer().add(selected);
             }
           };
           SwingUtilities.invokeLater(runnable);
