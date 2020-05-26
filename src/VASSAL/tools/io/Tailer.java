@@ -214,7 +214,12 @@ public class Tailer {
         logger.error("", e);
       }
       finally {
-        IOUtils.closeQuietly(raf);
+        try {
+          raf.close();
+        }
+        catch (IOException e) {
+          logger.error("Exception while closing file", e);
+        }
       }
     }
   }

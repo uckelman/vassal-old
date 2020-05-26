@@ -68,7 +68,6 @@ import VASSAL.tools.concurrent.FutureUtils;
 import VASSAL.tools.concurrent.listener.EventListener;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.ModuleFileFilter;
-import VASSAL.tools.io.IOUtils;
 import VASSAL.tools.io.ProcessLauncher;
 import VASSAL.tools.io.ProcessWrapper;
 import VASSAL.tools.ipc.IPCMessage;
@@ -619,8 +618,18 @@ e.printStackTrace();
         }
       }
       finally {
-        IOUtils.closeQuietly(clientSocket);
-        IOUtils.closeQuietly(serverSocket);
+        try {
+          clientSocket.close();
+        }
+        catch (IOException e) {
+          logger.error("Exception while closing clientSocket", e);
+        }
+        try {
+          serverSocket.close();
+        }
+        catch (IOException e) {
+          logger.error("Exception while closing serverSocket", e);
+        }
         children.remove(ipc);
       }
     }

@@ -190,15 +190,14 @@ public class ModuleManagerWindow extends JFrame {
       public void actionPerformed(ActionEvent e) {
         if (!AbstractLaunchAction.shutDown()) return;
 
-        final Prefs gp = Prefs.getGlobalPrefs();
-        try {
-          gp.close();
+        File globalPrefsFile = null;
+        try (final Prefs gp = Prefs.getGlobalPrefs()) {
+          globalPrefsFile = gp.getFile();
         }
         catch (IOException ex) {
-          WriteErrorDialog.error(ex, gp.getFile());
-        }
-        finally {
-          IOUtils.closeQuietly(gp);
+          if (globalPrefsFile != null) {
+            WriteErrorDialog.error(ex, globalPrefsFile);
+          }
         }
 
         try {

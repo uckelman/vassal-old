@@ -24,6 +24,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
@@ -123,29 +124,24 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
     // Record that we are currently building this Extension
     GameModule.getGameModule().setGpIdSupport(this);
 
-    BufferedInputStream in = null;
+    InputStream archiveInputStream = null;
     try {
-      in = new BufferedInputStream(archive.getInputStream(fileName));
+      archiveInputStream = archive.getInputStream(fileName);
     }
 // FIXME: should this be a FileNotFoundException?
     catch (IOException e) {
     }
 
-    if (in == null) {
+    if (archiveInputStream == null) {
       build(null);
     }
     else {
-      try {
+      try (BufferedInputStream in = new BufferedInputStream(archiveInputStream)) {
         final Document doc = Builder.createDocument(in);
         build(doc.getDocumentElement());
-        in.close();
       }
-      // FIXME: review error message
       catch (IOException e) {
         throw new ExtensionsLoader.LoadExtensionException(e);
-      }
-      finally {
-        IOUtils.closeQuietly(in);
       }
     }
 

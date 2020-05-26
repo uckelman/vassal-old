@@ -27,6 +27,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -108,20 +110,25 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   }
 
   protected void extractContents() {
-    ZipInputStream in = null;
+    InputStream dataArchiveInputStream;
     try {
+      dataArchiveInputStream = GameModule.getGameModule().getDataArchive()
+                                         .getInputStream("help/" + getContentsResource()); //$NON-NLS-1$
+    }
+    catch (IOException e) {
+      // The help file was created with empty contents.
+      // Assume an absolute URL as the starting page.
+      logger.error("The help file was created with empty contents. Assuming an absolute URL as the starting page.");
       try {
-        in = new ZipInputStream(new BufferedInputStream(
-              GameModule.getGameModule().getDataArchive()
-                .getInputStream("help/" + getContentsResource()))); //$NON-NLS-1$
-      }
-      catch (IOException e) {
-        // The help file was created with empty contents.
-        // Assume an absolute URL as the starting page.
         url = new URL(startingPage);
-        return;
       }
+      catch (MalformedURLException malformedURLException) {
+        logger.error("Malformed URL " + startingPage, malformedURLException);
+      }
+      return;
+    }
 
+    try (ZipInputStream in = new ZipInputStream(new BufferedInputStream(dataArchiveInputStream))) {
       final File tmp = File.createTempFile("VASSAL", "help"); //$NON-NLS-1$ //$NON-NLS-2$
       File output = tmp.getParentFile();
       tmp.delete();
@@ -145,15 +152,11 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
         }
       }
 
-      in.close();
       url = new File(output, startingPage).toURI().toURL();
     }
     // FIXME: review error message
     catch (IOException e) {
       logger.error("", e);
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 
