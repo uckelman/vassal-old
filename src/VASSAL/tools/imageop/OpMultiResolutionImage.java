@@ -39,7 +39,7 @@ public class OpMultiResolutionImage extends AbstractMultiResolutionImage {
 
   @Override
   public List<Image> getResolutionVariants() {
-    return Collections.unmodifiableList(Arrays.asList(sop.getImage())); 
+    return List.of(sop.getImage());
   }
 
   @Override

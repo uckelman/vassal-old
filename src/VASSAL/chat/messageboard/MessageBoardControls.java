@@ -66,9 +66,7 @@ public class MessageBoardControls {
   }
 
   public void showMessages(Message[] m) {
-    viewer.setMessages(
-      Collections.enumeration(
-        Collections.unmodifiableList((Arrays.asList(m)))));
+    viewer.setMessages(Collections.enumeration(java.util.List.of(m)));
   }
 
   private void initComponents() {
