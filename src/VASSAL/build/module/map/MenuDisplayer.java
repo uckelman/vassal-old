@@ -169,12 +169,9 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
       }
 
       // Move commands from main menu into submenus
-      for (java.util.Map.Entry<KeyCommandSubMenu,JMenu> e :
-                                                        subMenus.entrySet()) {
-        final KeyCommandSubMenu menuCommand = e.getKey();
-        final JMenu subMenu = e.getValue();
+      subMenus.forEach((menuCommand, subMenu) -> {
 
-        for (Iterator<String> it2 = menuCommand.getCommands(); it2.hasNext();) {
+        for (Iterator<String> it2 = menuCommand.getCommands(); it2.hasNext(); ) {
           final ArrayList<JMenuItem> matchingCommands =
             commandNames.get(it2.next());
           if (matchingCommands != null) {
@@ -184,7 +181,7 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
             }
           }
         }
-      }
+      });
 
       // Promote contents of a single submenu [Removed as per Bug 4775]
       // if (commands.size() == 1) {

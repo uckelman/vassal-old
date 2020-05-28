@@ -58,24 +58,22 @@ public class DefaultMultiEventListenerSupport
     listeners.putIfAbsent(c, new CopyOnWriteArrayList<>());
 
     // add the listener to the list for every supertype of c
-    for (Map.Entry<Class<?>,List<EventListener<?>>> e : listeners.entrySet()) {
-      final Class<?> other = e.getKey();
+    listeners.forEach((other, value) -> {
       if (c.isAssignableFrom(other)) {
-        e.getValue().add(l);
+        value.add(l);
       }
-    }
+    });
   }
 
   /** {@inheritDoc} */
   @Override
   public <T> void removeEventListener(Class<T> c, EventListener<? super T> l) {
     // add the listener to the list for every supertype of c
-    for (Map.Entry<Class<?>,List<EventListener<?>>> e : listeners.entrySet()) {
-      final Class<?> other = e.getKey();
+    listeners.forEach((other, value) -> {
       if (c.isAssignableFrom(other)) {
-        e.getValue().remove(l);
+        value.remove(l);
       }
-    }
+    });
   }
 
   /** {@inheritDoc} */
@@ -101,12 +99,11 @@ public class DefaultMultiEventListenerSupport
     final List<EventListener<? super T>> list = new ArrayList<>();
 
     // make a list of all listeners for every supertype of c
-    for (Map.Entry<Class<?>,List<EventListener<?>>> e : listeners.entrySet()) {
-      final Class<?> other = e.getKey();
+    listeners.forEach((other, value) -> {
       if (other.isAssignableFrom(c)) {
-        list.addAll((List) e.getValue());
+        list.addAll((List) value);
       }
-    }
+    });
 
     return list;
   }
@@ -132,12 +129,11 @@ public class DefaultMultiEventListenerSupport
     final Set<EventListener<?>> lset = new HashSet<>();
 
     // make a set of all listeners for every supertype of c
-    for (Map.Entry<Class<?>,List<EventListener<?>>> e : listeners.entrySet()) {
-      final Class<?> other = e.getKey();
+    listeners.forEach((other, value) -> {
       if (other.isAssignableFrom(c)) {
-        lset.addAll(e.getValue());
+        lset.addAll(value);
       }
-    }
+    });
 
     final List<EventListener<?>> list = listeners.get(c);
     list.addAll(lset);

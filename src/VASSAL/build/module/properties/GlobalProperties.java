@@ -97,9 +97,7 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
   public void addTo(Buildable parent) {
     this.parent = (MutablePropertiesContainer) parent;
 
-    for (Map.Entry<String,MutableProperty> e : initialValues.entrySet()) {
-      this.parent.addMutableProperty(e.getKey(), e.getValue());
-    }
+    initialValues.forEach((key, value) -> this.parent.addMutableProperty(key, value));
 
     tempToolbar.setDelegate((ToolBarComponent) parent);
     propertySource = (PropertySource) parent;
