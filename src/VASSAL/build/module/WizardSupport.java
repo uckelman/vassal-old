@@ -306,7 +306,7 @@ public class WizardSupport {
         if (tutorialButton != null) {
           // Select tutorial button by default, but not until wizard is built.  Bug #2286742
           final JRadioButton clickOnMe = tutorialButton;
-          SwingUtilities.invokeLater(() -> clickOnMe.doClick());
+          SwingUtilities.invokeLater(clickOnMe::doClick);
           tutorialButton.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.DESELECTED) {
               tutorial.markAsViewed();

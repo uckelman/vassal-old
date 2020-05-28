@@ -193,7 +193,7 @@ public class TextItemInstance extends ItemInstance {
       return valueCond;
     }
     else if (OUTLINE_COLOR.equals(name)) {
-      return () -> isOutline();
+      return this::isOutline;
     }
     else {
       return super.getAttributeVisibility(name);

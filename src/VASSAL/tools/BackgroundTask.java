@@ -35,7 +35,7 @@ public abstract class BackgroundTask {
     public abstract void doLater();
 
     public Thread start() {
-        final Runnable later = () -> doLater();
+        final Runnable later = this::doLater;
         Runnable first = () -> {
             try {
                 doFirst();

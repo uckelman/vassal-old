@@ -145,7 +145,7 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
       };
     }
     else if (LOCATION.equals(name)) {
-      return () -> isUseGridLocation();
+      return this::isUseGridLocation;
     }
     else if (X_POSITION.equals(name) || Y_POSITION.equals(name)) {
       return () -> !isUseGridLocation();

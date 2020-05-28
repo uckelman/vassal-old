@@ -98,8 +98,8 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
 
   public BasicCommandEncoder() {
     basicFactories.put(Stack.TYPE, type -> new Stack());
-    basicFactories.put(BasicPiece.ID, type -> new BasicPiece(type));
-    basicFactories.put(Deck.ID, type -> new Deck(type));
+    basicFactories.put(BasicPiece.ID, BasicPiece::new);
+    basicFactories.put(Deck.ID, Deck::new);
     decoratorFactories.put(Immobilized.ID, (type, inner) -> new Immobilized(inner, type));
     decoratorFactories.put(Embellishment.ID, (type, inner) -> {
       final Embellishment e = new Embellishment(type, inner);
@@ -108,39 +108,39 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
       }
       return e;
     });
-    decoratorFactories.put(Embellishment.OLD_ID, (type, inner) -> new Embellishment(type, inner));
-    decoratorFactories.put(Hideable.ID, (type, inner) -> new Hideable(type, inner));
-    decoratorFactories.put(Obscurable.ID, (type, inner) -> new Obscurable(type, inner));
-    decoratorFactories.put(Labeler.ID, (type, inner) -> new Labeler(type, inner));
-    decoratorFactories.put(TableInfo.ID, (type, inner) -> new TableInfo(type, inner));
-    decoratorFactories.put(PropertySheet.ID, (type, inner) -> new PropertySheet(type, inner));
-    decoratorFactories.put(FreeRotator.ID, (type, inner) -> new FreeRotator(type, inner));
-    decoratorFactories.put(Pivot.ID, (type, inner) -> new Pivot(type, inner));
-    decoratorFactories.put(NonRectangular.ID, (type, inner) -> new NonRectangular(type, inner));
-    decoratorFactories.put(Marker.ID, (type, inner) -> new Marker(type, inner));
-    decoratorFactories.put(Restricted.ID, (type, inner) -> new Restricted(type, inner));
-    decoratorFactories.put(PlaceMarker.ID, (type, inner) -> new PlaceMarker(type, inner));
-    decoratorFactories.put(Replace.ID, (type, inner) -> new Replace(type, inner));
-    decoratorFactories.put(ReportState.ID, (type, inner) -> new ReportState(type, inner));
-    decoratorFactories.put(MovementMarkable.ID, (type, inner) -> new MovementMarkable(type, inner));
-    decoratorFactories.put(Footprint.ID, (type, inner) -> new Footprint(type, inner));
-    decoratorFactories.put(ReturnToDeck.ID, (type, inner) -> new ReturnToDeck(type, inner));
-    decoratorFactories.put(SendToLocation.ID, (type, inner) -> new SendToLocation(type, inner));
-    decoratorFactories.put(UsePrototype.ID, (type, inner) -> new UsePrototype(type, inner));
-    decoratorFactories.put(Clone.ID, (type, inner) -> new Clone(type, inner));
-    decoratorFactories.put(Delete.ID, (type, inner) -> new Delete(type, inner));
-    decoratorFactories.put(SubMenu.ID, (type, inner) -> new SubMenu(type, inner));
-    decoratorFactories.put(Translate.ID, (type, inner) -> new Translate(type, inner));
-    decoratorFactories.put(AreaOfEffect.ID, (type, inner) -> new AreaOfEffect(type, inner));
-    decoratorFactories.put(CounterGlobalKeyCommand.ID, (type, inner) -> new CounterGlobalKeyCommand(type, inner));
-    decoratorFactories.put(TriggerAction.ID, (type, inner) -> new TriggerAction(type, inner));
-    decoratorFactories.put(DynamicProperty.ID, (type, inner) -> new DynamicProperty(type, inner));
-    decoratorFactories.put(CalculatedProperty.ID, (type, inner) -> new CalculatedProperty(type, inner));
-    decoratorFactories.put(SetGlobalProperty.ID, (type, inner) -> new SetGlobalProperty(type, inner));
-    decoratorFactories.put(RestrictCommands.ID, (type, inner) -> new RestrictCommands(type, inner));
-    decoratorFactories.put(PlaySound.ID, (type, inner) -> new PlaySound(type, inner));
-    decoratorFactories.put(ActionButton.ID, (type, inner) -> new ActionButton(type, inner));
-    decoratorFactories.put(GlobalHotKey.ID, (type, inner) -> new GlobalHotKey(type, inner));
+    decoratorFactories.put(Embellishment.OLD_ID, Embellishment::new);
+    decoratorFactories.put(Hideable.ID, Hideable::new);
+    decoratorFactories.put(Obscurable.ID, Obscurable::new);
+    decoratorFactories.put(Labeler.ID, Labeler::new);
+    decoratorFactories.put(TableInfo.ID, TableInfo::new);
+    decoratorFactories.put(PropertySheet.ID, PropertySheet::new);
+    decoratorFactories.put(FreeRotator.ID, FreeRotator::new);
+    decoratorFactories.put(Pivot.ID, Pivot::new);
+    decoratorFactories.put(NonRectangular.ID, NonRectangular::new);
+    decoratorFactories.put(Marker.ID, Marker::new);
+    decoratorFactories.put(Restricted.ID, Restricted::new);
+    decoratorFactories.put(PlaceMarker.ID, PlaceMarker::new);
+    decoratorFactories.put(Replace.ID, Replace::new);
+    decoratorFactories.put(ReportState.ID, ReportState::new);
+    decoratorFactories.put(MovementMarkable.ID, MovementMarkable::new);
+    decoratorFactories.put(Footprint.ID, Footprint::new);
+    decoratorFactories.put(ReturnToDeck.ID, ReturnToDeck::new);
+    decoratorFactories.put(SendToLocation.ID, SendToLocation::new);
+    decoratorFactories.put(UsePrototype.ID, UsePrototype::new);
+    decoratorFactories.put(Clone.ID, Clone::new);
+    decoratorFactories.put(Delete.ID, Delete::new);
+    decoratorFactories.put(SubMenu.ID, SubMenu::new);
+    decoratorFactories.put(Translate.ID, Translate::new);
+    decoratorFactories.put(AreaOfEffect.ID, AreaOfEffect::new);
+    decoratorFactories.put(CounterGlobalKeyCommand.ID, CounterGlobalKeyCommand::new);
+    decoratorFactories.put(TriggerAction.ID, TriggerAction::new);
+    decoratorFactories.put(DynamicProperty.ID, DynamicProperty::new);
+    decoratorFactories.put(CalculatedProperty.ID, CalculatedProperty::new);
+    decoratorFactories.put(SetGlobalProperty.ID, SetGlobalProperty::new);
+    decoratorFactories.put(RestrictCommands.ID, RestrictCommands::new);
+    decoratorFactories.put(PlaySound.ID, PlaySound::new);
+    decoratorFactories.put(ActionButton.ID, ActionButton::new);
+    decoratorFactories.put(GlobalHotKey.ID, GlobalHotKey::new);
   }
 
   /**

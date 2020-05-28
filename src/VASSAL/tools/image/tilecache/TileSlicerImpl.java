@@ -67,8 +67,7 @@ public class TileSlicerImpl implements TileSlicer {
     final List<Future<Void>> futures = new ArrayList<>();
 
     // slice unscaled 1:1 tiles
-    final TaskMaker unscaled =
-      (src1, f, tx, ty, tw1, th1, sw1, sh1) -> new TileTask(src1, f, tx, ty, tw1, th1, sw1, sh1);
+    final TaskMaker unscaled = TileTask::new;
 
     queueTileTasks(
       src, iname, tpath, 1, tw, th, sw, sh, unscaled, exec, futures

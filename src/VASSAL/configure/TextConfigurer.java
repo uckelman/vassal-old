@@ -172,7 +172,7 @@ public class TextConfigurer extends Configurer implements ConfigurerFactory {
         catch (InterruptedException e) {
         }
 
-        SwingUtilities.invokeLater(() -> executeUpdate());
+        SwingUtilities.invokeLater(this::executeUpdate);
       };
       new Thread(delayedUpdate).start();
     }

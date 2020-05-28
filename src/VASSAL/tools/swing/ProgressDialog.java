@@ -96,7 +96,7 @@ public class ProgressDialog extends JDialog {
     });
 
     // forward clicks on the close button to the cancellation listeners
-    cancel.addActionListener(e -> fireCancelledEvent(e));
+    cancel.addActionListener(this::fireCancelledEvent);
 
     // create the layout
     final JPanel panel = new JPanel(new MigLayout(
