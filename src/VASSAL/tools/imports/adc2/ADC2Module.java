@@ -223,11 +223,7 @@ public class ADC2Module extends Importer {
       super(name, pieces);
       // cull non-cards
       if (pieces != null) {
-        for (Iterator<Piece> iter = pieces.iterator(); iter.hasNext(); ) {
-          if (!iter.next().isCard()) {
-            iter.remove();
-          }
-        }
+        pieces.removeIf(piece -> !piece.isCard());
       }
     }
 
