@@ -491,7 +491,7 @@ public class ModuleManagerWindow extends JFrame {
       recentModuleConfig.removeValue(s);
     }
 
-    moduleList.sort((f1, f2) -> f1.compareTo(f2));
+    moduleList.sort(Comparator.naturalOrder());
 
     rootNode = new MyTreeNode(new RootInfo());
 

@@ -799,7 +799,7 @@ public class ADC2Module extends Importer {
     private final SymbolSet.SymbolData hiddenSymbol;
     private final int hiddenPieceOptions;
     private final int order;
-    private TreeSet<Player> allies = new TreeSet<>((p1, p2) -> p1.order - p2.order);
+    private TreeSet<Player> allies = new TreeSet<>(Comparator.comparingInt(p -> p.order));
 
     public Player(String name, SymbolSet.SymbolData hiddenSymbol, int hiddenPieceOptions) {
       this.name = name;

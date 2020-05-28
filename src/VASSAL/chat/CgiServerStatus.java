@@ -219,7 +219,7 @@ public class CgiServerStatus implements ServerStatus {
 
     final ServerStatus.ModuleSummary[] e = entries.values().toArray(
       new ModuleSummary[0]);
-    Arrays.sort(e, (a, b) -> a.getModuleName().compareTo(b.getModuleName()));
+    Arrays.sort(e, Comparator.comparing(ModuleSummary::getModuleName));
     return e;
   }
 
