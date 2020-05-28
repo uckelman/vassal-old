@@ -100,18 +100,15 @@ public class Mp3AudioClip implements AudioClip {
     }
 
     // run in new thread to play in background
-    new Thread() {
-      @Override
-      public void run() {
-        try (stream) {
-          player.play();
-        }
-        catch (JavaLayerException | IOException e) {
-          ErrorDialog.dataError(new BadDataReport(
-            "Error reading sound file", name, e
-          ));
-        }
+    new Thread(() -> {
+      try (stream) {
+        player.play();
       }
-    }.start();
+      catch (JavaLayerException | IOException e) {
+        ErrorDialog.dataError(new BadDataReport(
+          "Error reading sound file", name, e
+        ));
+      }
+    }).start();
   }
 }
