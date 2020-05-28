@@ -799,7 +799,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
 
   @Override
   public VisibilityCondition getAttributeVisibility(String name) {
-    if (ICON.equals(name) || HOT_KEY.equals(name) || BUTTON_TEXT.equals(name) || STARTS_ON.equals(name) || TOOLTIP.equals(name)) {
+    if (List.of(ICON, HOT_KEY, BUTTON_TEXT, STARTS_ON, TOOLTIP).contains(name)) {
       return () -> !isAlwaysOn();
     }
     else if (BOARD_LIST.equals(name)) {
@@ -814,7 +814,7 @@ public class MapShader extends AbstractConfigurable implements GameComponent, Dr
     else if (SCALE_IMAGE.equals(name)) {
       return () -> pattern.equals(TYPE_IMAGE);
     }
-    else if (BORDER_COLOR.equals(name) || BORDER_WIDTH.equals(name) || BORDER_OPACITY.equals(name)) {
+    else if (List.of(BORDER_COLOR, BORDER_WIDTH, BORDER_OPACITY).contains(name)) {
       return () -> border;
     }
     else {

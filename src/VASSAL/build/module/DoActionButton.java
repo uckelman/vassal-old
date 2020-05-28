@@ -477,10 +477,10 @@ public class DoActionButton extends AbstractConfigurable
     else if (UNTIL_EXPRESSION.equals(name)) {
       return () -> doLoop && LoopControl.LOOP_UNTIL.equals(loopType);
     }
-    else if (LOOP_TYPE.equals(name) || PRE_LOOP_HOTKEY.equals(name) || POST_LOOP_HOTKEY.equals(name) || INDEX.equals(name)) {
+    else if (List.of(LOOP_TYPE, PRE_LOOP_HOTKEY, POST_LOOP_HOTKEY, INDEX).contains(name)) {
       return () -> doLoop;
     }
-    else if (INDEX_PROPERTY.equals(name) || INDEX_START.equals(name) || INDEX_STEP.equals(name)) {
+    else if (List.of(INDEX_PROPERTY, INDEX_START, INDEX_STEP).contains(name)) {
       return () -> doLoop && hasIndex;
     }
     else {

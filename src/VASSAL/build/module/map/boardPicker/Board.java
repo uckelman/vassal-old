@@ -33,6 +33,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
@@ -178,7 +179,7 @@ public class Board extends AbstractConfigurable implements GridContainer {
     if (REVERSIBLE.equals(name)) {
       return () -> imageFile != null;
     }
-    else if (WIDTH.equals(name) || HEIGHT.equals(name) || COLOR.equals(name)) {
+    else if (List.of(WIDTH, HEIGHT, COLOR).contains(name)) {
       return () -> imageFile == null;
     }
     else {
