@@ -199,7 +199,7 @@ public class DragBuffer {
   }
 
   public void sort(Comparator<GamePiece> comp) {
-    Collections.sort(pieces, comp);
+    pieces.sort(comp);
   }
 
   /**
