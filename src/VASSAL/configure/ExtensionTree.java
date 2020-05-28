@@ -23,6 +23,7 @@ import java.awt.Component;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
+import java.util.stream.IntStream;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -73,10 +74,9 @@ public class ExtensionTree extends ConfigureTree {
 
   public Configurable[] getPath(DefaultMutableTreeNode node) {
     Object[] nodePath = node.getUserObjectPath();
-    Configurable[] path = new Configurable[nodePath.length - 1];
-    for (int i = 0; i < path.length; ++i) {
-      path[i] = (Configurable) nodePath[i + 1];
-    }
+    Configurable[] path = IntStream.range(0, nodePath.length - 1)
+                                   .mapToObj(i -> (Configurable) nodePath[i + 1])
+                                   .toArray(Configurable[]::new);
     return path;
   }
 
@@ -309,13 +309,10 @@ public class ExtensionTree extends ConfigureTree {
           boolean removed = remove(parent, target);
           if (removed && !isEditable(parent)) {
             // We've removed an ExtensionElement
-            for (ExtensionElement el :
-                 extension.getComponentsOf(ExtensionElement.class)) {
-              if (el.getExtension() == target) {
-                extension.remove(el);
-                break;
-              }
-            }
+            extension.getComponentsOf(ExtensionElement.class).stream()
+                     .filter(el -> el.getExtension() == target)
+                     .findFirst()
+                     .ifPresent(el -> extension.remove(el));
           }
         }
       };

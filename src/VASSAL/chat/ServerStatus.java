@@ -18,6 +18,7 @@
  */
 package VASSAL.chat;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -75,12 +76,9 @@ public interface ServerStatus {
     }
 
     public int numPlayers(){
-      Room[] roomsArray = getRooms();
-    int n=0;
-      for (Room room : roomsArray) {
-        n += ((SimpleRoom) room).numPlayers();
-      }
-      return n;
+      return Arrays.stream(getRooms())
+                   .mapToInt(room -> ((SimpleRoom) room).numPlayers())
+                   .sum();
     }
 
     public String toString() {

@@ -32,6 +32,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.Box;
@@ -456,78 +457,74 @@ public class MassKeyCommand extends AbstractConfigurable
 
   @Override
   public void setAttribute(String key, Object value) {
-    if (DEPRECATED_NAME.equals(key)) {
-      setAttribute(NAME, value);
-      setAttribute(BUTTON_TEXT, value);
-    }
-    else if (NAME.equals(key)) {
-      setConfigureName((String) value);
-      if (launch.getAttributeValueString(TOOLTIP) == null) {
-        launch.setAttribute(TOOLTIP, value);
-      }
-    }
-    else if (KEY_COMMAND.equals(key)) {
-      if (value instanceof String) {
-        value = NamedHotKeyConfigurer.decode((String) value);
-      }
-      stroke = (NamedKeyStroke) value;
-      globalCommand.setKeyStroke(stroke);
-    }
-    else if (AFFECTED_PIECE_NAMES.equals(key)) {
-      if (value instanceof String) {
-        value = StringArrayConfigurer.stringToArray((String) value);
-      }
-      names = (String[]) value;
-      if (names.length == 0) {
-        names = null;
-      }
-      else {
-        filter = piece -> {
-          for (String s : names) {
-            if (Decorator.getInnermost(piece).getName().equals(s)) {
-              return true;
-            }
-          }
-          return false;
-        };
-      }
-    }
-    else if (CHECK_PROPERTY.equals(key)) {
-      checkProperty = (String) value;
-    }
-    else if (CHECK_VALUE.equals(key)) {
-      checkValue = (String) value;
-    }
-    else if (PROPERTIES_FILTER.equals(key)) {
-      propertiesFilter.setExpression((String) value);
-    }
-    else if (CONDITION.equals(key)) {
-      condition = (String) value;
-    }
-    else if (REPORT_SINGLE.equals(key)) {
-      if (value instanceof String) {
-        value = Boolean.valueOf((String) value);
-      }
-      globalCommand.setReportSingle((Boolean) value);
-    }
-    else if (DECK_COUNT.equals(key)) {
-      if (value instanceof String) {
-        value = Integer.valueOf((String) value);
-      }
-      globalCommand.setSelectFromDeck((Integer) value);
-    }
-    else if (REPORT_FORMAT.equals(key)) {
-      reportFormat.setFormat((String) value);
-      globalCommand.setReportFormat((String) value);
-    }
-    else if (SINGLE_MAP.equals(key)) {
-      if (value instanceof String) {
-        value = Boolean.valueOf((String) value);
-      }
-      singleMap = ((Boolean) value);
-    }
-    else {
-      launch.setAttribute(key, value);
+    switch (key) {
+      case DEPRECATED_NAME:
+        setAttribute(NAME, value);
+        setAttribute(BUTTON_TEXT, value);
+        break;
+      case NAME:
+        setConfigureName((String) value);
+        if (launch.getAttributeValueString(TOOLTIP) == null) {
+          launch.setAttribute(TOOLTIP, value);
+        }
+        break;
+      case KEY_COMMAND:
+        if (value instanceof String) {
+          value = NamedHotKeyConfigurer.decode((String) value);
+        }
+        stroke = (NamedKeyStroke) value;
+        globalCommand.setKeyStroke(stroke);
+        break;
+      case AFFECTED_PIECE_NAMES:
+        if (value instanceof String) {
+          value = StringArrayConfigurer.stringToArray((String) value);
+        }
+        names = (String[]) value;
+        if (names.length == 0) {
+          names = null;
+        }
+        else {
+          filter = piece -> Arrays.stream(names)
+                                  .anyMatch(s -> Decorator.getInnermost(piece).getName().equals(s));
+        }
+        break;
+      case CHECK_PROPERTY:
+        checkProperty = (String) value;
+        break;
+      case CHECK_VALUE:
+        checkValue = (String) value;
+        break;
+      case PROPERTIES_FILTER:
+        propertiesFilter.setExpression((String) value);
+        break;
+      case CONDITION:
+        condition = (String) value;
+        break;
+      case REPORT_SINGLE:
+        if (value instanceof String) {
+          value = Boolean.valueOf((String) value);
+        }
+        globalCommand.setReportSingle((Boolean) value);
+        break;
+      case DECK_COUNT:
+        if (value instanceof String) {
+          value = Integer.valueOf((String) value);
+        }
+        globalCommand.setSelectFromDeck((Integer) value);
+        break;
+      case REPORT_FORMAT:
+        reportFormat.setFormat((String) value);
+        globalCommand.setReportFormat((String) value);
+        break;
+      case SINGLE_MAP:
+        if (value instanceof String) {
+          value = Boolean.valueOf((String) value);
+        }
+        singleMap = ((Boolean) value);
+        break;
+      default:
+        launch.setAttribute(key, value);
+        break;
     }
   }
 

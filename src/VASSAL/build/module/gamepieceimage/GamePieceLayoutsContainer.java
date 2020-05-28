@@ -22,6 +22,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
@@ -121,12 +122,11 @@ public class GamePieceLayoutsContainer extends AbstractConfigurable {
   }
 
   public GamePieceImage getGenericDefn(String defnName) {
-    for (GamePieceLayout d : definitions.values()) {
-      if (d != null) {
-        return d.getGenericDefn(defnName);
-      }
-    }
-    return null;
+    return definitions.values().stream()
+                      .filter(Objects::nonNull)
+                      .findFirst()
+                      .map(d -> d.getGenericDefn(defnName))
+                      .orElse(null);
   }
 }
 

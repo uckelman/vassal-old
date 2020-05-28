@@ -24,6 +24,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.stream.IntStream;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -105,10 +106,10 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
     se.append(current);
     se.append(currentSubLevel);
     se.append(first);
-    String[] s = new String[active.length];
-    for (int i = 0; i < s.length; i++) {
-      s[i] = active[i] + ""; //$NON-NLS-1$
-    }
+    String[] s = IntStream.range(0, active.length)
+                          .mapToObj(i -> active[i] + "") //$NON-NLS-1$
+                          .toArray(String[]::new);
+
     se.append(s);
     for (int i = 0; i < getTurnLevelCount(); i++) {
       se.append(getTurnLevel(i).getState());

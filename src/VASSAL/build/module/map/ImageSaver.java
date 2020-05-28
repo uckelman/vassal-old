@@ -38,6 +38,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriter;
@@ -198,9 +200,10 @@ public class ImageSaver extends AbstractConfigurable {
     // FIXME: this is not really a good way to do this---should do
     // something with the minimum size or font metrics
     final int l = "Saving map image as ".length() + file.getName().length() + 6;
-    final StringBuilder b = new StringBuilder();
-    for (int i = 0; i < l; i++) b.append("N");
-    dialog.setLabel(b.toString());
+    final String b = IntStream.range(0, l)
+                              .mapToObj(i -> "N")
+                              .collect(Collectors.joining());
+    dialog.setLabel(b);
 
     dialog.pack();
     dialog.setLabel("Saving map image as ");

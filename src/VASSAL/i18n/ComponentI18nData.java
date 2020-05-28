@@ -241,12 +241,8 @@ public class ComponentI18nData {
     if (translatableProperties.size() > 0) {
       return true;
     }
-    for (Translatable child : children) {
-      if (child.getI18nData().isTranslatable()) {
-        return true;
-      }
-    }
-    return false;
+    return children.stream()
+                   .anyMatch(child -> child.getI18nData().isTranslatable());
   }
 
   /**
@@ -375,15 +371,8 @@ public class ComponentI18nData {
     /*
      * Check Children
      */
-    for (Translatable child : children) {
-      if (child.getI18nData().hasUntranslatedAttributes(t)) {
-        return true;
-      }
-    }
-    /*
-     * Nothing left untranslated!
-     */
-    return false;
+    return children.stream()
+                   .anyMatch(child -> child.getI18nData().hasUntranslatedAttributes(t));
   }
   /** An attribute of a Configurable component that can be translated into another language */
   public static class Property {

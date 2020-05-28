@@ -39,6 +39,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -243,12 +244,9 @@ public class GameState implements CommandEncoder {
    * yet finished
    */
   public Iterator<GameSetupStep> getUnfinishedSetupSteps() {
-    ArrayList<GameSetupStep> l = new ArrayList<>();
-    for (GameSetupStep step : setupSteps) {
-      if (!step.isFinished()) {
-        l.add(step);
-      }
-    }
+    List<GameSetupStep> l = setupSteps.stream()
+                                           .filter(step -> !step.isFinished())
+                                           .collect(Collectors.toCollection(ArrayList::new));
     return l.iterator();
   }
 

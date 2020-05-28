@@ -28,6 +28,9 @@ import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.tools.ComponentPathBuilder;
 
+import java.util.Objects;
+import java.util.stream.Stream;
+
 /**
  * An element of a {@link ModuleExtension} that extends an
  * individual {@link VASSAL.build.Buildable} component of the
@@ -65,12 +68,11 @@ public class ExtensionElement implements Buildable {
     }
 
     // find and build first child which is an element
-    for (Node n = e.getFirstChild(); n != null; n = n.getNextSibling()) {
-      if (n.getNodeType() == Node.ELEMENT_NODE) {
-        extension = Builder.create((Element) n);
-        break;
-      }
-    }
+    extension = Stream.iterate(e.getFirstChild(), Objects::nonNull, Node::getNextSibling)
+                      .filter(n -> n.getNodeType() == Node.ELEMENT_NODE)
+                      .findFirst()
+                      .map(n -> Builder.create((Element) n))
+                      .orElse(extension);
   }
 
   public Buildable getExtension() {

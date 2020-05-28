@@ -22,6 +22,7 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Properties;
 
@@ -242,10 +243,9 @@ public class DirectPeerPool implements PeerPool, ChatControlsInitializer {
     if (selected.length == 0) {
       return;
     }
-    final Entry[] entries = new Entry[selected.length];
-    for (int i = 0; i < selected.length; i++) {
-      entries[i] = (Entry) addressBook.getElementAt(selected[i]);
-    }
+    final Entry[] entries = Arrays.stream(selected)
+                                  .mapToObj(item -> (Entry) addressBook.getElementAt(item))
+                                  .toArray(Entry[]::new);
 
     final JPanel queryPanel = new JPanel(new MigLayout("", "10[][]10"));
     final String mess = (entries.length == 1 ? Resources.getString("Peer2Peer.remove_entry") : Resources.getString("Peer2Peer.remove_entries", entries.length));  //$NON-NLS-1$ //$NON-NLS-2$

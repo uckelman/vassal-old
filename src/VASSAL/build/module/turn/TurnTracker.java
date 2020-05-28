@@ -36,6 +36,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -447,10 +448,9 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {
       TurnTracker t = (TurnTracker) c;
-      String[] s = new String[t.getLevelCount()];
-      for (int i = 0; i < s.length; i++) {
-        s[i] = LEVEL+(i+1);
-      }
+      String[] s = IntStream.range(0, t.getLevelCount())
+                            .mapToObj(i -> LEVEL + (i + 1))
+                            .toArray(String[]::new);
       return new FormattedStringConfigurer(key, name, s);
     }
   }
@@ -1093,10 +1093,9 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
         p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
         p.setBorder(BorderFactory.createLineBorder(Color.black));
 
-        String[] s = new String[getTurnLevelCount()];
-        for (int i = 0; i < s.length; i++) {
-          s[i] = getTurnLevel(i).getConfigureName();
-        }
+        String[] s = IntStream.range(0, getTurnLevelCount())
+                              .mapToObj(i -> getTurnLevel(i).getConfigureName())
+                              .toArray(String[]::new);
         StringEnumConfigurer e = new StringEnumConfigurer(null, Resources.getString("TurnTracker.select"), s); //$NON-NLS-1$
         e.setValue(getTurnLevel(currentLevel).getConfigureName());
         e.addPropertyChangeListener(e1 -> {

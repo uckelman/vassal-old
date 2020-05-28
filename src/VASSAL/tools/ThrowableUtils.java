@@ -20,6 +20,8 @@ package VASSAL.tools;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,11 +48,11 @@ public class ThrowableUtils {
    */
   public static <T extends Throwable> T getAncestor(Class<T> cl, Throwable t) {
     // traverse the causal history of t until a cause of type cl is found
-    for (Throwable c = t.getCause(); c != null; c = c.getCause()) {
-      if (cl.isInstance(c)) return cl.cast(c);
-    }
-
-    return null;
+    return Stream.iterate(t.getCause(), Objects::nonNull, Throwable::getCause)
+                 .filter(cl::isInstance)
+                 .findFirst()
+                 .map(cl::cast)
+                 .orElse(null);
   }
 
   /**

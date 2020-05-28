@@ -28,6 +28,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -90,10 +91,9 @@ public abstract class ListConfigurer extends Configurer implements
 
   protected void updateValue() {
     noUpdate = true;
-    ArrayList<Object> newArray = new ArrayList<>();
-    for (Configurer c : configurers) {
-      newArray.add(c.getValue());
-    }
+    List<Object> newArray = configurers.stream()
+                                       .map(Configurer::getValue)
+                                       .collect(Collectors.toCollection(ArrayList::new));
     setValue(newArray);
     noUpdate = false;
   }

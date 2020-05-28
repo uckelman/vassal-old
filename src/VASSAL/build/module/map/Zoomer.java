@@ -35,6 +35,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.swing.AbstractListModel;
 import javax.swing.Box;
@@ -229,9 +232,9 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     }
 
     public List<Double> getLevels() {
-      final ArrayList<Double> l = new ArrayList<>(levels.length);
-      for (double d : levels) l.add(d);
-      return l;
+      return Arrays.stream(levels)
+                   .boxed()
+                   .collect(Collectors.toCollection(() -> new ArrayList<>(levels.length)));
     }
   }
 
@@ -667,11 +670,9 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
       return String.valueOf(state.getLevelCount() - state.getInitialLevel());
     }
     else if (ZOOM_LEVELS.equals(key)) {
-      final List<Double> levels = state.getLevels();
-      final String[] s = new String[levels.size()];
-      for (int i = 0; i < s.length; ++i) {
-        s[i] = levels.get(i).toString();
-      }
+      final String[] s = state.getLevels().stream()
+                              .map(Object::toString)
+                              .toArray(String[]::new);
 
       return StringArrayConfigurer.arrayToString(s);
     }
@@ -725,13 +726,11 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
 
       if (val != null) {
         // dump into a set to remove duplicates
-        final HashSet<Double> levels = new HashSet<>();
-        for (String s : (String[]) val) {
-          levels.add(Double.valueOf(s));
-        }
+        final Set<Double> levels = Arrays.stream((String[]) val)
+                                         .map(Double::valueOf)
+                                         .collect(Collectors.toCollection(HashSet::new));
 
-        state = new State(levels,
-          Math.min(state.getInitialLevel(), levels.size()-1));
+        state = new State(levels, Math.min(state.getInitialLevel(), levels.size()-1));
         init();
       }
     }
@@ -778,9 +777,9 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
   private double deprecatedFactor = -1.0;
 
   private void adjustStateForFactorAndMax() {
-    final double[] levels = new double[deprecatedMax+1];
-    for (int i = 0; i < levels.length; ++i)
-      levels[i] = Math.pow(deprecatedFactor, -(i-1));
+    final double[] levels = IntStream.range(0, deprecatedMax + 1)
+                                     .mapToDouble(i -> Math.pow(deprecatedFactor, -(i - 1)))
+                                     .toArray();
     final int initial = Math.min(state.getInitialLevel(), levels.length-1);
     state = new State(levels, initial);
     init();

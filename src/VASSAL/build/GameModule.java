@@ -30,7 +30,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 import javax.swing.JComponent;
@@ -494,27 +496,21 @@ public abstract class GameModule extends AbstractConfigurable implements Command
    * @return
    */
   public GamePiece createPiece(String type) {
-    for (CommandEncoder commandEncoder : commandEncoders) {
-      if (commandEncoder instanceof BasicCommandEncoder) {
-        GamePiece p = ((BasicCommandEncoder) commandEncoder).createPiece(type);
-        if (p != null) {
-          return p;
-        }
-      }
-    }
-    return null;
+    return Arrays.stream(commandEncoders)
+                 .filter(commandEncoder -> commandEncoder instanceof BasicCommandEncoder)
+                 .map(commandEncoder -> ((BasicCommandEncoder) commandEncoder).createPiece(type))
+                 .filter(Objects::nonNull)
+                 .findFirst()
+                 .orElse(null);
   }
 
   public GamePiece createPiece(String type, GamePiece inner) {
-    for (CommandEncoder commandEncoder : commandEncoders) {
-      if (commandEncoder instanceof BasicCommandEncoder) {
-        GamePiece p = ((BasicCommandEncoder) commandEncoder).createDecorator(type, inner);
-        if (p != null) {
-          return p;
-        }
-      }
-    }
-    return null;
+    return Arrays.stream(commandEncoders)
+                 .filter(commandEncoder -> commandEncoder instanceof BasicCommandEncoder)
+                 .map(commandEncoder -> ((BasicCommandEncoder) commandEncoder).createDecorator(type, inner))
+                 .filter(Objects::nonNull)
+                 .findFirst()
+                 .orElse(null);
   }
 
   /**

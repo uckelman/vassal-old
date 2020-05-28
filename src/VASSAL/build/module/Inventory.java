@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -46,8 +47,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -444,17 +447,15 @@ public class Inventory extends AbstractConfigurable
     );
 
     while (pi.hasMoreElements()) {
-      final ArrayList<String> groups = new ArrayList<>();
+      final ArrayList<String> groups;
       final GamePiece p = pi.nextPiece();
 
       if (p instanceof Decorator || p instanceof BasicPiece) {
-        for (String s : groupBy) {
-          if (s.length() > 0) {
-            String prop = (String) p.getProperty(s);
-            if (prop != null)
-              groups.add(prop);
-          }
-        }
+        groups = Arrays.stream(groupBy)
+                       .filter(s -> s.length() > 0)
+                       .map(s -> (String) p.getProperty(s))
+                       .filter(Objects::nonNull)
+                       .collect(Collectors.toCollection(ArrayList::new));
 
         int count = 1;
         if (nonLeafFormat.length() > 0)
@@ -802,11 +803,7 @@ public class Inventory extends AbstractConfigurable
   protected boolean enabledForPlayersSide() {
     if (sides == null || sides.length == 0)
       return true;
-    for (String side : sides) {
-      if (side.equalsIgnoreCase(PlayerRoster.getMySide()))
-        return true;
-    }
-    return false;
+    return Arrays.stream(sides).anyMatch(side -> side.equalsIgnoreCase(PlayerRoster.getMySide()));
   }
 
 //  protected void executeCommand() {
@@ -1265,9 +1262,9 @@ public class Inventory extends AbstractConfigurable
         value = counter.getValue();
 
       // inform children about update
-      for (CounterNode child : children) {
-        value += child.updateValues();
-      }
+      value += children.stream()
+                       .mapToInt(CounterNode::updateValues)
+                       .sum();
 
       // save new value in counter
       counter.setValue(value);

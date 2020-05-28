@@ -46,6 +46,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -53,6 +54,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -269,11 +272,8 @@ public class ADC2Module extends Importer {
         return true;
       if (name == null)
         return false;
-      for (int i = 0; i < name.length(); ++i) {
-        if (Character.isLetterOrDigit(name.charAt(i)))
-          return true;
-      }
-      return false;
+      return IntStream.range(0, name.length())
+                      .anyMatch(i -> Character.isLetterOrDigit(name.charAt(i)));
     }
 
     ForcePool(String name, ArrayList<Piece> pieces) {
@@ -838,13 +838,10 @@ public class ADC2Module extends Importer {
     }
 
     public String getName() {
-      final StringBuilder sb = new StringBuilder();
-      for (Player p : allies) {
-        if (sb.length() > 0)
-          sb.append('/');
-        sb.append(p.name);
-      }
-      return sb.toString();
+      final String result = allies.stream()
+                              .map(p -> p.name)
+                              .collect(Collectors.joining("/"));
+      return result;
     }
 
     public void setAlly(Player player) {
@@ -1397,10 +1394,9 @@ public class ADC2Module extends Importer {
     }
 
     public int getNValues() {
-      int total = 0;
-      for (ValueType t : types)
-        if (t != ValueType.NOT_USED)
-          ++total;
+      int total = (int) Arrays.stream(types)
+                              .filter(t -> t != ValueType.NOT_USED)
+                              .count();
       return total;
     }
 
@@ -1627,11 +1623,8 @@ private PieceWindow pieceWin;
   }
 
   public boolean usePieceValues() {
-    for (String pieceValue : pieceValues) {
-      if (pieceValue != null && !pieceValue.equals(""))
-        return true;
-    }
-    return false;
+    return Arrays.stream(pieceValues)
+                 .anyMatch(pieceValue -> pieceValue != null && !pieceValue.equals(""));
   }
 
   @Override
@@ -2524,10 +2517,9 @@ private void configureMainMap(GameModule gameModule) throws IOException {
       PlayerHand hand = new PlayerHand();
       insertComponent(hand, module);
       if (pool.getOwner() == Player.ALL_PLAYERS) {
-        String[] sides = new String[players.size()];
-        for (int i = 0; i < players.size(); ++i) {
-          sides[i] = players.get(i).getName();
-        }
+        String[] sides = players.stream()
+                                .map(Player::getName)
+                                .toArray(String[]::new);
         hand.setAttribute(PrivateMap.SIDE, StringArrayConfigurer.arrayToString(sides));
       }
       else {

@@ -353,67 +353,50 @@ public class GamePieceImage extends AbstractConfigurable implements Visualizable
   }
 
   public ItemInstance getInstance(String name) {
-    for (ItemInstance instance : instances) {
-      if (name.equals(instance.getName())) {
-        return instance;
-      }
-    }
-    return null;
+    return instances.stream()
+                    .filter(instance -> name.equals(instance.getName()))
+                    .findFirst()
+                    .orElse(null);
   }
 
   public TextItemInstance getTextInstance(String name) {
-    for (ItemInstance instance : instances) {
-      if (instance instanceof TextItemInstance) {
-        if (name.equals(instance.getName())) {
-          return (TextItemInstance) instance;
-        }
-      }
-    }
-    return null;
+    return (TextItemInstance) instances.stream()
+                                       .filter(instance -> instance instanceof TextItemInstance)
+                                       .filter(instance -> name.equals(instance.getName()))
+                                       .findFirst()
+                                       .orElse(null);
   }
 
   public TextBoxItemInstance getTextBoxInstance(String name) {
-    for (ItemInstance instance : instances) {
-      if (instance instanceof TextBoxItemInstance) {
-        if (name.equals(instance.getName())) {
-          return (TextBoxItemInstance) instance;
-        }
-      }
-    }
-    return null;
+    return (TextBoxItemInstance) instances.stream()
+                                          .filter(instance -> instance instanceof TextBoxItemInstance)
+                                          .filter(instance -> name.equals(instance.getName()))
+                                          .findFirst()
+                                          .orElse(null);
   }
 
   public SymbolItemInstance getSymbolInstance(String name) {
-    for (ItemInstance instance : instances) {
-      if (instance instanceof SymbolItemInstance) {
-        if (name.equals(instance.getName())) {
-          return (SymbolItemInstance) instance;
-        }
-      }
-    }
-    return null;
+    return (SymbolItemInstance) instances.stream()
+                                         .filter(instance -> instance instanceof SymbolItemInstance)
+                                         .filter(instance -> name.equals(instance.getName()))
+                                         .findFirst()
+                                         .orElse(null);
   }
 
   public ShapeItemInstance getShapeInstance(String name) {
-    for (ItemInstance instance : instances) {
-      if (instance instanceof ShapeItemInstance) {
-        if (name.equals(instance.getName())) {
-          return (ShapeItemInstance) instance;
-        }
-      }
-    }
-    return null;
+    return (ShapeItemInstance) instances.stream()
+                                        .filter(instance -> instance instanceof ShapeItemInstance)
+                                        .filter(instance -> name.equals(instance.getName()))
+                                        .findFirst()
+                                        .orElse(null);
   }
 
   public ImageItemInstance getImageInstance(String name) {
-    for (ItemInstance instance : instances) {
-      if (instance instanceof ImageItemInstance) {
-        if (name.equals(instance.getName())) {
-          return (ImageItemInstance) instance;
-        }
-      }
-    }
-    return null;
+    return (ImageItemInstance) instances.stream()
+                                        .filter(instance -> instance instanceof ImageItemInstance)
+                                        .filter(instance -> name.equals(instance.getName()))
+                                        .findFirst()
+                                        .orElse(null);
   }
 
   /*

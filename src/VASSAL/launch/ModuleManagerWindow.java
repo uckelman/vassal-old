@@ -43,11 +43,14 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -509,17 +512,14 @@ public class ModuleManagerWindow extends JFrame {
           final GameFolderInfo folderInfo = new GameFolderInfo(f, moduleInfo);
           final MyTreeNode folderNode = new MyTreeNode(folderInfo);
           moduleNode.add(folderNode);
-          final ArrayList<File> l = new ArrayList<>();
 
           final File[] files = f.listFiles();
           if (files == null) continue;
 
-          for (File f1 : files) {
-            if (f1.isFile()) {
-              l.add(f1);
-            }
-          }
-          Collections.sort(l);
+          final List<File> l = Arrays.stream(files)
+                                     .filter(File::isFile)
+                                     .sorted()
+                                     .collect(Collectors.toCollection(ArrayList::new));
 
           for (File f2 : l) {
             final SaveFileInfo fileInfo = new SaveFileInfo(f2, folderInfo);
@@ -781,24 +781,19 @@ public class ModuleManagerWindow extends JFrame {
   public File getModuleByName(String name) {
     if (name == null) return null;
 
-    for (int i = 0; i < rootNode.getChildCount(); i++) {
-      final ModuleInfo module =
-        (ModuleInfo) rootNode.getChild(i).getNodeInfo();
-
-      if (name.equals(module.getModuleName())) return module.getFile();
-    }
-
-    return null;
+    return IntStream.range(0, rootNode.getChildCount())
+                    .mapToObj(i -> (ModuleInfo) rootNode.getChild(i).getNodeInfo())
+                    .filter(module -> name.equals(module.getModuleName()))
+                    .findFirst()
+                    .map(AbstractInfo::getFile)
+                    .orElse(null);
   }
 
   private void updateModuleList() {
-    final List<String> l = new ArrayList<>();
-    for (int i = 0; i < rootNode.getChildCount(); i++) {
-      final ModuleInfo module =
-        (ModuleInfo) (rootNode.getChild(i)).getNodeInfo();
-      l.add(module.encode());
-    }
-    recentModuleConfig.setValue(l.toArray(new String[0]));
+    recentModuleConfig.setValue(IntStream.range(0, rootNode.getChildCount())
+                                         .mapToObj(i -> (ModuleInfo) (rootNode.getChild(i)).getNodeInfo())
+                                         .map(ModuleInfo::encode)
+                                         .toArray(String[]::new));
     modulePanelLayout.show(
       moduleView, getModuleCount() == 0 ? "quickStart" : "modules");
   }
@@ -1284,10 +1279,9 @@ public class ModuleManagerWindow extends JFrame {
       loadMetaData();
 
       // Remove any missing children
-      final MyTreeNode[] nodes = new MyTreeNode[getTreeNode().getChildCount()];
-      for (int i = 0; i < getTreeNode().getChildCount(); i++) {
-        nodes[i] = getTreeNode().getChild(i);
-      }
+      final MyTreeNode[] nodes = IntStream.range(0, getTreeNode().getChildCount())
+                                          .mapToObj(i -> getTreeNode().getChild(i))
+                                          .toArray(MyTreeNode[]::new);
       for (MyTreeNode myTreeNode : nodes) {
         if (!myTreeNode.getFile().exists()) {
           treeModel.removeNodeFromParent(myTreeNode);
@@ -1371,10 +1365,9 @@ public class ModuleManagerWindow extends JFrame {
     }
 
     public List<ExtensionInfo> getExtensions() {
-      final List<ExtensionInfo> l = new ArrayList<>();
-      for (File f : extMgr.getActiveExtensions()) {
-        l.add(new ExtensionInfo(f, true, this));
-      }
+      final List<ExtensionInfo> l = extMgr.getActiveExtensions().stream()
+                                          .map(f -> new ExtensionInfo(f, true, this))
+                                          .collect(Collectors.toList());
       for (File f : extMgr.getInactiveExtensions()) {
         l.add(new ExtensionInfo(f, false, this));
       }

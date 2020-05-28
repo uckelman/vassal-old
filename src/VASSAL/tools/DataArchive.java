@@ -46,6 +46,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.zip.ZipFile;
@@ -391,12 +392,12 @@ public class DataArchive extends SecureClassLoader implements Closeable {
   public ArchiveWriter getWriter() {
     if (this instanceof ArchiveWriter) return (ArchiveWriter) this;
 
-    for (DataArchive ext : extensions) {
-      final ArchiveWriter writer = ext.getWriter();
-      if (writer != null) return writer;
-    }
+    return extensions.stream()
+                     .map(DataArchive::getWriter)
+                     .filter(Objects::nonNull)
+                     .findFirst()
+                     .orElse(null);
 
-    return null;
   }
 
 /////////////////////////////////////////////////////////////////////

@@ -42,6 +42,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.swing.Action;
 import javax.swing.Box;
@@ -204,11 +206,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   protected String[] getGlobalCommands() {
-    String[] commands = new String[globalCommands.size()];
-    for (int i = 0; i < globalCommands.size(); i++) {
-      commands[i] = globalCommands.get(i).encode();
-    }
-    return commands;
+    return globalCommands.stream()
+                         .map(DeckGlobalKeyCommand::encode)
+                         .toArray(String[]::new);
   }
 
   protected void setGlobalCommands(String[] commands) {
@@ -460,11 +460,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   }
 
   public String[] getCountExpressions() {
-    String[] fullstrings = new String[countExpressions.length];
-    for (int index = 0; index < countExpressions.length;index++) {
-      fullstrings[index] = countExpressions[index].getFullString();
-    }
-    return fullstrings;
+    return Arrays.stream(countExpressions)
+                 .map(CountExpression::getFullString)
+                 .toArray(String[]::new);
   }
 
   public boolean doesExpressionCounting() {
@@ -779,10 +777,9 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
       final ArrayList<GamePiece> pieces = new ArrayList<>();
       if (ALWAYS.equals(shuffleOption)) {
         // Instead of shuffling the entire deck, just pick <b>count</b> random elements
-        final ArrayList<Integer> indices = new ArrayList<>();
-        for (int i = 0; i < getPieceCount(); ++i) {
-          indices.add(i);
-        }
+        final List<Integer> indices = IntStream.range(0, getPieceCount())
+                                               .boxed()
+                                               .collect(Collectors.toCollection(ArrayList::new));
 
         final Random rng = GameModule.getGameModule().getRNG();
 

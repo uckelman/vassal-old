@@ -133,12 +133,8 @@ public abstract class Command {
    * @return
    */
   protected boolean isAtomic() {
-    for (Command c : seq) {
-      if (!c.isNull()) {
-        return false;
-      }
-    }
-    return true;
+    return seq.stream()
+              .allMatch(Command::isNull);
   }
 
   public String toString() {

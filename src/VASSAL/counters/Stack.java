@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.stream.IntStream;
 
 import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
@@ -171,14 +172,10 @@ public class Stack implements GamePiece, StateMergeable {
   }
 
   public int indexOf(GamePiece p) {
-    int index = -1;
-    for (int i = 0; i < pieceCount; ++i) {
-      if (p == contents[i]) {
-        index = i;
-        break;
-      }
-    }
-    return index;
+    return IntStream.range(0, pieceCount)
+                    .filter(i -> p == contents[i])
+                    .findFirst()
+                    .orElse(-1);
   }
 
   public GamePiece getPieceAt(int index) {
@@ -344,15 +341,15 @@ public class Stack implements GamePiece, StateMergeable {
 
   public void selectNext(GamePiece c) {
     KeyBuffer.getBuffer().remove(c);
-    if (pieceCount > 1 && indexOf(c) >= 0) {
-      int newSelectedIndex = indexOf(c) == pieceCount - 1 ? pieceCount - 2 : indexOf(c) + 1;
-      for (int i = 0; i < pieceCount; ++i) {
-        if (indexOf(contents[i]) == newSelectedIndex) {
-          KeyBuffer.getBuffer().add(contents[i]);
-          return;
-        }
-      }
+    if (pieceCount <= 1 || indexOf(c) < 0) {
+      return;
     }
+
+    int newSelectedIndex = indexOf(c) == pieceCount - 1 ? pieceCount - 2 : indexOf(c) + 1;
+    IntStream.range(0, pieceCount)
+             .filter(i -> indexOf(contents[i]) == newSelectedIndex)
+             .findFirst()
+             .ifPresent(i -> KeyBuffer.getBuffer().add(contents[i]));
   }
 
   public GamePiece getPieceBeneath(GamePiece p) {

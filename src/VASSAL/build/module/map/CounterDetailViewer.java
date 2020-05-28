@@ -40,6 +40,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -553,21 +554,12 @@ public class CounterDetailViewer extends AbstractConfigurable implements Drawabl
 
         // Include pieces on named layers only
         else if (displayWhat.equals(INC_LAYERS)) {
-          for (String displayLayer : displayLayers) {
-            if (layerName.equals(displayLayer)) {
-              return true;
-            }
-          }
+          return Arrays.stream(displayLayers).anyMatch(layerName::equals);
         }
 
         // Exclude pieces from named layers.
         else if (displayWhat.equals(EXC_LAYERS)) {
-          for (String displayLayer : displayLayers) {
-            if (layerName.equals(displayLayer)) {
-              return false;
-            }
-          }
-          return true;
+          return Arrays.stream(displayLayers).noneMatch(layerName::equals);
         }
       }
 

@@ -216,13 +216,10 @@ public class GpIdChecker {
     // Failed to find a slot by gpid, try by matching piece name if option selected
     if (useName) {
       final String oldPieceName = Decorator.getInnermost(oldPiece).getName();
-      for (SlotElement el : goodSlots.values()) {
-        final GamePiece newPiece = el.getPiece();
-        final String newPieceName = Decorator.getInnermost(newPiece).getName();
-        if (oldPieceName.equals(newPieceName)) {
-          return true;
-        }
-      }
+      return goodSlots.values().stream()
+                      .map(SlotElement::getPiece)
+                      .map(newPiece -> Decorator.getInnermost(newPiece).getName())
+                      .anyMatch(oldPieceName::equals);
     }
 
     return false;

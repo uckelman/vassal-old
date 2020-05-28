@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -548,11 +549,9 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
    */
   @Override
   public List<String> getPropertyNames() {
-    List<String> l = new ArrayList<>();
-    for (ZoneProperty zp : getComponentsOf(ZoneProperty.class)) {
-      l.add(zp.getConfigureName());
-    }
-    return l;
+    return getComponentsOf(ZoneProperty.class).stream()
+                                              .map(AbstractConfigurable::getConfigureName)
+                                              .collect(Collectors.toList());
   }
 
   /*

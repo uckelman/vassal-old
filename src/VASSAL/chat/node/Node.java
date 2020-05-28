@@ -24,6 +24,7 @@ package VASSAL.chat.node;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.logging.Logger;
@@ -124,12 +125,10 @@ public class Node implements MsgSender {
    * @return
    */
   public Node getChild(String id) {
-    for (Node n : getChildren()) {
-      if (id.equals(n.getId())) {
-        return n;
-      }
-    }
-    return null;
+    return Arrays.stream(getChildren())
+                 .filter(n -> id.equals(n.getId()))
+                 .findFirst()
+                 .orElse(null);
   }
 
   /**

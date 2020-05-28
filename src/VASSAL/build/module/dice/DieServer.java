@@ -9,8 +9,10 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import javax.swing.SwingWorker;
 
@@ -260,7 +262,6 @@ public abstract class DieServer {
 
   public void doIRoll(RollSet toss) throws IOException {
     final String[] rollString = buildInternetRollString(toss);
-    final ArrayList<String> returnString = new ArrayList<>();
     //            rollString[0] =
     //                "number1=2&type1=6&number2=2&type2=30&number3=2&type3=30"
     //                    + "&number4=0&type4=2&number5=0&type5=2&number6=0&type6=2&number7=0&type7=2"
@@ -278,13 +279,11 @@ public abstract class DieServer {
       }
     }
 
+    final List<String> returnString;
     try (InputStream is = connection.getInputStream();
          InputStreamReader isr = new InputStreamReader(is);
          BufferedReader in = new BufferedReader(isr)) {
-      String inputLine;
-      while ((inputLine = in.readLine()) != null) {
-        returnString.add(inputLine);
-      }
+      returnString = in.lines().collect(Collectors.toCollection(ArrayList::new));
     }
 
     parseInternetRollString(toss, new Vector<>(returnString));

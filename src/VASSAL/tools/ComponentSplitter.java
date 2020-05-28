@@ -29,6 +29,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import javax.swing.AbstractAction;
 import javax.swing.Box;
@@ -517,16 +519,13 @@ public class ComponentSplitter {
      * @return
      */
     public SplitPane getTransverseSplit() {
-      SplitPane split = null;
-      for (Component c = getParent(); c != null; c = c.getParent()) {
-        if (c instanceof SplitPane) {
-          SplitPane p = (SplitPane) c;
-          if (p.getOrientation() != getOrientation() && SwingUtilities.isDescendingFrom(this, p.getBaseComponent())) {
-            split = p;
-            break;
-          }
-        }
-      }
+      SplitPane split = Stream.iterate(getParent(), Objects::nonNull, Component::getParent)
+                              .filter(c -> c instanceof SplitPane)
+                              .map(c -> (SplitPane) c)
+                              .filter(p -> p.getOrientation() != getOrientation()
+                                && SwingUtilities.isDescendingFrom(this, p.getBaseComponent()))
+                              .findFirst()
+                              .orElse(null);
       return split;
     }
 

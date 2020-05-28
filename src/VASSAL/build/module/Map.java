@@ -59,7 +59,10 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Function;
+import java.util.stream.IntStream;
 
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -770,11 +773,10 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * @return the {@link Board} on this map containing the argument point
    */
   public Board findBoard(Point p) {
-    for (Board b : boards) {
-      if (b.bounds().contains(p))
-        return b;
-    }
-    return null;
+    return boards.stream()
+                 .filter(b -> b.bounds().contains(p))
+                 .findFirst()
+                 .orElse(null);
   }
 
   /**
@@ -800,32 +802,26 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * @return Located zone
    */
   public Zone findZone(String name) {
-    for (Board b : boards) {
-      for (ZonedGrid zg : b.getAllDescendantComponentsOf(ZonedGrid.class)) {
-        Zone z = zg.findZone(name);
-        if (z != null) {
-          return z;
-        }
-      }
-    }
-    return null;
+    return boards.stream()
+                 .flatMap(b -> b.getAllDescendantComponentsOf(ZonedGrid.class).stream())
+                 .map(zg -> zg.findZone(name))
+                 .filter(Objects::nonNull)
+                 .findFirst()
+                 .orElse(null);
   }
 
   /**
    * Search on all boards for a Region with the given name
-   * @param Region name
+   * @param name name of Region
    * @return Located region
    */
   public Region findRegion(String name) {
-    for (Board b : boards) {
-      for (RegionGrid rg : b.getAllDescendantComponentsOf(RegionGrid.class)) {
-        Region r = rg.findRegion(name);
-        if (r != null) {
-          return r;
-        }
-      }
-    }
-    return null;
+    return boards.stream()
+                 .flatMap(b -> b.getAllDescendantComponentsOf(RegionGrid.class).stream())
+                 .map(rg -> rg.findRegion(name))
+                 .filter(Objects::nonNull)
+                 .findFirst()
+                 .orElse(null);
   }
 
   /**
@@ -835,14 +831,14 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * @return null if no such board found
    */
   public Board getBoardByName(String name) {
-    if (name != null) {
-      for (Board b : boards) {
-        if (name.equals(b.getName())) {
-          return b;
-        }
-      }
+    if (name == null) {
+      return null;
     }
-    return null;
+
+    return boards.stream()
+                 .filter(b -> name.equals(b.getName()))
+                 .findFirst()
+                 .orElse(null);
   }
 
   public Dimension getPreferredSize() {
@@ -1143,29 +1139,27 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * @return
    */
   public String getDeckNameAt(Point p) {
-    String deck = null;
-    if (p != null) {
-      for (DrawPile d : getComponentsOf(DrawPile.class)) {
-        if (d.getPosition().equals(p)) {
-          deck = d.getConfigureName();
-          break;
-        }
-      }
+    if (p == null) {
+      return null;
     }
-    return deck;
+
+    return internalGetDeckName(p, AbstractConfigurable::getConfigureName);
   }
 
   public String getLocalizedDeckNameAt(Point p) {
-    String deck = null;
-    if (p != null) {
-      for (DrawPile d : getComponentsOf(DrawPile.class)) {
-        if (d.getPosition().equals(p)) {
-          deck = d.getLocalizedConfigureName();
-          break;
-        }
-      }
+    if (p == null) {
+      return null;
     }
-    return deck;
+
+    return internalGetDeckName(p, AbstractConfigurable::getLocalizedConfigureName);
+  }
+
+  private String internalGetDeckName(Point p, Function<DrawPile, String> nameGetter) {
+    return getComponentsOf(DrawPile.class).stream()
+                                          .filter(d -> d.getPosition().equals(p))
+                                          .findFirst()
+                                          .map(nameGetter)
+                                          .orElse(null);
   }
 
   /**
@@ -2055,14 +2049,7 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * Use the provided {@link PieceFinder} instance to locate a visible piece at the given location
    */
   public GamePiece findPiece(Point pt, PieceFinder finder) {
-    GamePiece[] stack = pieces.getPieces();
-    for (int i = stack.length - 1; i >= 0; --i) {
-      GamePiece p = finder.select(this, stack[i], pt);
-      if (p != null) {
-        return p;
-      }
-    }
-    return null;
+    return internalFindPiece(pt, finder, pieces.getPieces());
   }
 
   /**
@@ -2070,14 +2057,15 @@ public class Map extends AbstractConfigurable implements GameComponent, MouseLis
    * is visible or not
    */
   public GamePiece findAnyPiece(Point pt, PieceFinder finder) {
-    GamePiece[] stack = pieces.getAllPieces();
-    for (int i = stack.length - 1; i >= 0; --i) {
-      GamePiece p = finder.select(this, stack[i], pt);
-      if (p != null) {
-        return p;
-      }
-    }
-    return null;
+    return internalFindPiece(pt, finder, pieces.getAllPieces());
+  }
+
+  private GamePiece internalFindPiece(Point pt, PieceFinder finder, GamePiece[] stack) {
+    return IntStream.iterate(stack.length - 1, i -> i >= 0, i -> i - 1)
+                    .mapToObj(i -> finder.select(this, stack[i], pt))
+                    .filter(Objects::nonNull)
+                    .findFirst()
+                    .orElse(null);
   }
 
   /**

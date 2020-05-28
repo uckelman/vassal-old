@@ -29,6 +29,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -453,13 +454,10 @@ public class GlobalOptions extends AbstractConfigurable {
    */
   @Override
   public List<String> getPropertyNames() {
-    final ArrayList<String> l = new ArrayList<>();
-    for (Buildable b : getBuildables()) {
-      if (b instanceof BasicPreference) {
-        l.add(((BasicPreference) b).getVariableName());
-      }
-    }
-    return l;
+    return getBuildables().stream()
+                          .filter(b -> b instanceof BasicPreference)
+                          .map(b -> ((BasicPreference) b).getVariableName())
+                          .collect(Collectors.toCollection(ArrayList::new));
   }
 
 }

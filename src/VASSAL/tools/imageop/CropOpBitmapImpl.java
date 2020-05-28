@@ -25,8 +25,11 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import VASSAL.tools.opcache.Op;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import VASSAL.tools.image.ImageUtils;
@@ -95,12 +98,9 @@ public class CropOpBitmapImpl extends AbstractTiledOpImpl
     final Point[] tiles =
       sop.getTileIndices(new Rectangle(x0, y0, x1-x0, y1-y0));
 
-    final ArrayList<VASSAL.tools.opcache.Op<?>> ops =
-      new ArrayList<>(tiles.length);
-
-    for (Point tile : tiles) ops.add(sop.getTileOp(tile));
-
-    return ops;
+    return Arrays.stream(tiles)
+                 .map(sop::getTileOp)
+                 .collect(Collectors.toCollection(() -> new ArrayList<>(tiles.length)));
   }
 
   /**

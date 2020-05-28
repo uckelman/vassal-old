@@ -44,6 +44,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
@@ -984,12 +986,9 @@ public class PropertySheet extends Decorator implements TranslatablePiece {
     /** returns a default value-string for the given definition */
     @Override
     public String getState() {
-      final StringBuilder buf = new StringBuilder();
-      for (int i = 0; i < propertyTable.getRowCount(); ++i) {
-        buf.append(STATE_DELIMITOR);
-      }
-
-      return buf.toString();
+      return IntStream.range(0, propertyTable.getRowCount())
+                      .mapToObj(i -> String.valueOf(STATE_DELIMITOR))
+                      .collect(Collectors.joining());
     }
   }
 

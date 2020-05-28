@@ -20,6 +20,8 @@ package VASSAL.script.proxy;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 
 /**
@@ -66,10 +68,8 @@ public class Stack extends GamePiece {
   }
 
   public List<GamePiece> getPieces() {
-    ArrayList<GamePiece> list = new ArrayList<>(getPieceCount());
-    for (int i = 0; i < getPieceCount(); i++) {
-      list.add(new GamePiece(getVassalStack().getPieceAt(i)));
-    }
-    return list;
+    return IntStream.range(0, getPieceCount())
+                    .mapToObj(i -> new GamePiece(getVassalStack().getPieceAt(i)))
+                    .collect(Collectors.toCollection(() -> new ArrayList<>(getPieceCount())));
   }
 }

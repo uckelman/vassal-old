@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.stream.IntStream;
 
 import javax.swing.Icon;
 
@@ -373,10 +374,9 @@ public final class IconFactory {
     // Path to scalable icons
     final String scalablePath = DataArchive.ICON_DIR+IconFamily.SCALABLE_DIR;
     // Path to sized icons
-    final String[] sizePaths = new String[IconFamily.SIZE_COUNT];
-    for (int size = 0; size < IconFamily.SIZE_COUNT; size++) {
-      sizePaths[size] = DataArchive.ICON_DIR+IconFamily.SIZE_DIRS[size];
-    }
+    final String[] sizePaths = IntStream.range(0, IconFamily.SIZE_COUNT)
+                                        .mapToObj(size -> DataArchive.ICON_DIR + IconFamily.SIZE_DIRS[size])
+                                        .toArray(String[]::new);
 
     final JarURLConnection j = (JarURLConnection) jar.getURL(DataArchive.IMAGE_DIR).openConnection();
     final JarFile vengine = j.getJarFile();

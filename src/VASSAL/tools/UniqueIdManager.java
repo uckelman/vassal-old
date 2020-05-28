@@ -95,14 +95,14 @@ public class UniqueIdManager implements ValidityChecker {
    * @return
    */
   public Identifyable findInstance(String id) {
-    if (id != null) {
-      for (Identifyable i : instances) {
-        if (id.equals(i.getConfigureName()) || id.equals(i.getId())) {
-          return i;
-        }
-      }
+    if (id == null) {
+      return null;
     }
-    return null;
+
+    return instances.stream()
+                    .filter(i -> id.equals(i.getConfigureName()) || id.equals(i.getId()))
+                    .findFirst()
+                    .orElse(null);
   }
 
   /** Ensures that no other instance of the same class has the same name */

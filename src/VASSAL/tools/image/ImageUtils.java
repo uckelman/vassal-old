@@ -34,6 +34,7 @@ import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -443,21 +444,15 @@ public class ImageUtils {
 
   public static boolean hasImageSuffix(String name) {
     final String s = name.toLowerCase();
-    for (String suffix : IMAGE_SUFFIXES) {
-      if (s.endsWith(suffix)) {
-        return true;
-      }
-    }
-    return false;
+    return Arrays.stream(IMAGE_SUFFIXES).anyMatch(s::endsWith);
   }
 
   public static String stripImageSuffix(String name) {
     final String s = name.toLowerCase();
-    for (String suffix : IMAGE_SUFFIXES) {
-      if (s.endsWith(suffix)) {
-        return name.substring(0, name.length()-suffix.length());
-      }
-    }
-    return name;
+    return Arrays.stream(IMAGE_SUFFIXES)
+                 .filter(s::endsWith)
+                 .findFirst()
+                 .map(suffix -> name.substring(0, name.length() - suffix.length()))
+                 .orElse(name);
   }
 }

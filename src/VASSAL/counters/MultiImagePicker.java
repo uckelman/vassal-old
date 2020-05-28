@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -101,11 +103,9 @@ public class MultiImagePicker extends JPanel {
    */
   public List<String> getImageNameList() {
     final int size = imageListElements.size();
-    final ArrayList<String> names = new ArrayList<>(size);
-    for (int i = 0; i < size; ++i) {
-      names.add((((ImagePicker) multiPanel.getComponent(i)).getImageName()));
-    }
-    return names;
+    return IntStream.range(0, size)
+                    .mapToObj(i -> (((ImagePicker) multiPanel.getComponent(i)).getImageName()))
+                    .collect(Collectors.toCollection(() -> new ArrayList<>(size)));
   }
 
   /** Use {@link #getImageNameList()} instead. */
@@ -142,10 +142,9 @@ public class MultiImagePicker extends JPanel {
   }
 
   public void swap(int index1, int index2) {
-    Component[] components = new Component[imageListElements.size()];
-    for (int i = 0; i < imageListElements.size(); i++) {
-      components[i] = multiPanel.getComponent(i);
-    }
+    Component[] components = IntStream.range(0, imageListElements.size())
+                                      .mapToObj(i -> multiPanel.getComponent(i))
+                                      .toArray(Component[]::new);
     multiPanel.removeAll();
     cl = new CardLayout();
     multiPanel.setLayout(cl);

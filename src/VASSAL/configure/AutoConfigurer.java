@@ -233,11 +233,9 @@ public class AutoConfigurer extends Configurer
   }
 
   public Configurer getConfigurer(String attribute) {
-    for (Configurer c : configurers) {
-      if (attribute.equals(c.getKey())) {
-        return c;
-      }
-    }
-    return null;
+    return configurers.stream()
+                      .filter(c -> attribute.equals(c.getKey()))
+                      .findFirst()
+                      .orElse(null);
   }
 }

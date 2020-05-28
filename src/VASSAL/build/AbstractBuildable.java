@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
@@ -116,12 +117,10 @@ public abstract class AbstractBuildable implements Buildable, ValidityChecker, P
    * @return all build components that are an instance of the given class
    */
   public <T> List<T> getComponentsOf(Class<T> target) {
-    final ArrayList<T> l = new ArrayList<>();
-    for (Buildable b : buildComponents) {
-      if (target.isInstance(b)) {
-        l.add(target.cast(b));
-      }
-    }
+    final List<T> l = buildComponents.stream()
+                                     .filter(target::isInstance)
+                                     .map(target::cast)
+                                     .collect(Collectors.toCollection(ArrayList::new));
     return l;
   }
 

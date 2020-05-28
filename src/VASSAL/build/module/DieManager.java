@@ -191,12 +191,10 @@ public class DieManager extends AbstractConfigurable {
 
   // Return server matching Description
   public DieServer getServerFromDescription(String de) {
-    for (DieServer d : servers.values()) {
-      if (de.equals(d.getDescription())) {
-        return d;
-      }
-    }
-    return null;
+    return servers.values().stream()
+                  .filter(d -> de.equals(d.getDescription()))
+                  .findFirst()
+                  .orElse(null);
   }
 
   public DieServer getServer() {

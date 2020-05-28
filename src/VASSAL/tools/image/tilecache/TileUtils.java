@@ -35,6 +35,7 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.Arrays;
+import java.util.stream.IntStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -336,11 +337,9 @@ public class TileUtils {
    */
   public static int tileCount(int iw, int ih, int tw, int th) {
     // TODO: Find a closed-form expression for this, if there is one.
-    int tcount = 0;
-    for (int div = 1; iw/div > 0 && ih/div > 0; div <<= 1) {
-      tcount += tileCountAtScale(iw, ih, tw, th, div);
-    }
-    return tcount;
+    return IntStream.iterate(1, div -> iw / div > 0 && ih / div > 0, div -> div << 1)
+                    .map(div -> tileCountAtScale(iw, ih, tw, th, div))
+                    .sum();
   }
 
   /**

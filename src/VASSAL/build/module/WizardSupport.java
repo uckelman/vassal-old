@@ -47,6 +47,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.swing.Action;
 import javax.swing.Box;
@@ -218,11 +219,9 @@ public class WizardSupport {
   }
 
   public WizardPanelProvider createPlayOfflinePanels() {
-    ArrayList<PredefinedSetup> l = new ArrayList<>();
-    for (PredefinedSetup ps : setups) {
-      if (!ps.isMenu())
-        l.add(ps);
-    }
+    List<PredefinedSetup> l = setups.stream()
+                                    .filter(ps -> !ps.isMenu())
+                                    .collect(Collectors.toCollection(ArrayList::new));
     if (l.isEmpty()) {
       return GameSetupPanels.newInstance();
     }

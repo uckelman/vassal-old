@@ -23,6 +23,7 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.stream.IntStream;
 
 import javax.swing.JOptionPane;
 
@@ -111,10 +112,7 @@ public final class ImportAction extends EditModuleAction {
   }
 
   public static Class<?> getImporterClass(File f) throws IOException {
-    final int[] indices = new int[IMPORTERS.length];
-    for (int i = 0; i < indices.length; ++i) {
-      indices[i] = i;
-    }
+    final int[] indices = IntStream.range(0, IMPORTERS.length).toArray();
 
     final String s = '.' + Importer.getExtension(f.getName());
     for (int i = 0; i < EXTENSIONS.length; ++i) {

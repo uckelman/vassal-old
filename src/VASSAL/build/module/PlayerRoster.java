@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.BoxLayout;
 import javax.swing.JOptionPane;
@@ -306,14 +307,15 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
 
   protected static String getMySide(boolean localized) {
     final PlayerRoster r = getInstance();
-    if (r != null) {
-      for (PlayerInfo pi : r.getPlayers()) {
-        if (pi.playerId.equals(GameModule.getUserId())) {
-          return localized ? pi.getLocalizedSide() : pi.getSide();
-        }
-      }
+    if (r == null) {
+      return null;
     }
-    return null;
+
+    return Arrays.stream(r.getPlayers())
+                 .filter(pi -> pi.playerId.equals(GameModule.getUserId()))
+                 .findFirst()
+                 .map(pi -> localized ? pi.getLocalizedSide() : pi.getSide())
+                 .orElse(null);
   }
 
   public PlayerInfo[] getPlayers() {
@@ -401,12 +403,10 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
 
   @Override
   public Component getControls() {
-    ArrayList<String> availableSides = new ArrayList<>(sides);
-    ArrayList<String> alreadyTaken = new ArrayList<>();
-
-    for (PlayerInfo p : players) {
-      alreadyTaken.add(p.side);
-    }
+    List<String> availableSides = new ArrayList<>(sides);
+    List<String> alreadyTaken = players.stream()
+                                       .map(p -> p.side)
+                                       .collect(Collectors.toCollection(ArrayList::new));
 
     availableSides.removeAll(alreadyTaken);
     availableSides.add(0, translatedObserver);
@@ -455,22 +455,17 @@ public class PlayerRoster extends AbstractConfigurable implements CommandEncoder
    * @return true if all sides have been claimed by a player
    */
   protected boolean allSidesAllocated() {
-    int allocatedSideCount = 0;
-    for (PlayerInfo p : players) {
-      if (!OBSERVER.equals(p.getSide())) {
-        ++allocatedSideCount;
-      }
-    }
+    int allocatedSideCount = (int) players.stream()
+                                          .filter(p -> !OBSERVER.equals(p.getSide()))
+                                          .count();
     return sides.size() == allocatedSideCount;
   }
 
   protected String promptForSide() {
-    ArrayList<String> availableSides = new ArrayList<>(sides);
-    ArrayList<String> alreadyTaken = new ArrayList<>();
-
-    for (PlayerInfo p : players) {
-      alreadyTaken.add(p.side);
-    }
+    List<String> availableSides = new ArrayList<>(sides);
+    List<String> alreadyTaken = players.stream()
+                                       .map(p -> p.side)
+                                       .collect(Collectors.toCollection(ArrayList::new));
 
     availableSides.removeAll(alreadyTaken);
     availableSides.add(0, translatedObserver);

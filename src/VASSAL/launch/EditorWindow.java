@@ -29,6 +29,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -280,13 +281,12 @@ public abstract class EditorWindow extends JFrame {
   }
 
   protected MenuProxy findMenuProxy(String name, MenuBarProxy mb) {
-    for (ChildProxy<?> c : mb.getChildren()) {
-      if (c instanceof MenuProxy) {
-        final MenuProxy m = (MenuProxy) c;
-        if (name.equals(m.getText())) return m;
-      }
-    }
-    return null;
+    return Arrays.stream(mb.getChildren())
+                 .filter(c -> c instanceof MenuProxy)
+                 .map(c -> (MenuProxy) c)
+                 .filter(m -> name.equals(m.getText()))
+                 .findFirst()
+                 .orElse(null);
   }
 
   /*

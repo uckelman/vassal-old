@@ -419,19 +419,15 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
    * @return an array of the names of all boards from which the user may choose
    */
   public String[] getAllowableBoardNames() {
-    final ArrayList<String> s = new ArrayList<>(possibleBoards.size());
-    for (Board b : possibleBoards) {
-      s.add(b.getName());
-    }
-    return s.toArray(new String[0]);
+    return possibleBoards.stream()
+                         .map(Board::getName)
+                         .toArray(String[]::new);
   }
 
   public String[] getAllowableLocalizedBoardNames() {
-    final ArrayList<String> s = new ArrayList<>(possibleBoards.size());
-    for (Board b : possibleBoards) {
-      s.add(b.getLocalizedName());
-    }
-    return s.toArray(new String[0]);
+    return possibleBoards.stream()
+                         .map(Board::getLocalizedName)
+                         .toArray(String[]::new);
   }
 
   /**

@@ -99,11 +99,6 @@ public class Resources {
       addLocale(myLocale);
     }
 
-    final ArrayList<String> languages = new ArrayList<>();
-    for (Locale l : supportedLocales) {
-      languages.add(l.getLanguage());
-    }
-
     final Prefs p = Prefs.getGlobalPrefs();
 
     final String savedLocale = p.getStoredValue(LOCALE_PREF_KEY);
@@ -116,10 +111,13 @@ public class Resources {
     }
 
     setInstanceLocale(myLocale);
+    final String[] languages = supportedLocales.stream()
+                                               .map(Locale::getLanguage)
+                                               .toArray(String[]::new);
     final StringEnumConfigurer localeConfig = new StringEnumConfigurer(
         Resources.LOCALE_PREF_KEY,
         getInstanceString("Prefs.language"),
-        languages.toArray(new String[0])) {
+        languages) {
       @Override
       public Component getControls() {
         if (box == null) {

@@ -31,6 +31,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.stream.IntStream;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -147,13 +148,10 @@ public class MultiRoll extends JDialog implements ActionListener {
   }
 
   public RollSet getRollSet() {
-    ArrayList<DieRoll> l = new ArrayList<>();
-    for (int i = 0; i < MAX_ROLLS; ++i) {
-      if (useDie[i]) {
-        l.add(rolls[i]);
-      }
-    }
-    DieRoll[] rolls = l.toArray(new DieRoll[0]);
+    DieRoll[] rolls = IntStream.range(0, MAX_ROLLS)
+                               .filter(i -> useDie[i])
+                               .mapToObj(i -> rolls[i])
+                               .toArray(DieRoll[]::new);
     return new RollSet(getDescription(), rolls);
   }
 
@@ -227,10 +225,9 @@ public class MultiRoll extends JDialog implements ActionListener {
     buttonPanel = new JPanel();
     rollButton.addActionListener(e -> {
       rollCancelled = false;
-      int dieCount = 0;
-      for (int i = 0; i < MAX_ROLLS; i++) {
-        dieCount += useDie[i] ? 1 : 0;
-      }
+      int dieCount = IntStream.range(0, MAX_ROLLS)
+                              .map(i -> useDie[i] ? 1 : 0)
+                              .sum();
       if (dieCount == 0) {
         JOptionPane.showMessageDialog(me, "No dice selected for Roll.", "Roll Cancelled", JOptionPane.ERROR_MESSAGE);
         return;

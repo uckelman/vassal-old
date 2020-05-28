@@ -93,12 +93,10 @@ public class Localization extends Language {
    * @return Translation object
    */
   public Translation getTranslation(String description) {
-    for (Translation t : translations) {
-      if (t.getDescription().equals(description)) {
-        return t;
-      }
-    }
-    return null;
+    return translations.stream()
+                       .filter(t -> t.getDescription().equals(description))
+                       .findFirst()
+                       .orElse(null);
   }
 
   /**

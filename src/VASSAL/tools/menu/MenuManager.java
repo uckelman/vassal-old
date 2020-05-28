@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 import javax.swing.Action;
 import javax.swing.JFrame;
@@ -149,45 +150,42 @@ public abstract class MenuManager {
     }
   }
 
-  private boolean visibleItemAfter(ChildProxy<?> child) {
+  private static boolean visibleItemAfter(ChildProxy<?> child) {
     final ParentProxy parent = child.getParent();
-    final int count = parent.getChildCount();
-    for (int i = parent.getIndex(child) + 1; i < count; i++) {
-      final ChildProxy<?> c = parent.getChild(i);
-      if (!(c instanceof MenuMarker)) return true;
-    }
-    return false;
+    final IntStream range = IntStream.range(parent.getIndex(child) + 1, parent.getChildCount());
+    return internalVisibleItem(parent, range);
   }
 
-  private boolean visibleItemBefore(ChildProxy<?> child) {
+  private static boolean visibleItemBefore(ChildProxy<?> child) {
     final ParentProxy parent = child.getParent();
-    for (int i = parent.getIndex(child) - 1; i >= 0; i++) {
-      final ChildProxy<?> c = parent.getChild(i);
-      if (!(c instanceof MenuMarker)) return true;
-    }
-    return false;
+    final IntStream range = IntStream.iterate(parent.getIndex(child) - 1, i -> i >= 0, i -> i + 1);
+    return internalVisibleItem(parent, range);
   }
 
-  private boolean nextVisibleItemNotASeparator(ChildProxy<?> child) {
-    final ParentProxy parent = child.getParent();
-    final int count = parent.getChildCount();
-    for (int i = parent.getIndex(child) + 1; i < count; i++) {
-      final ChildProxy<?> c = parent.getChild(i);
-      if (c instanceof MenuMarker) continue;
-
-      return !(c instanceof SeparatorProxy);
-    }
-    return false;
+  private static boolean internalVisibleItem(ParentProxy parent, IntStream range) {
+    return range
+      .mapToObj(parent::getChild)
+      .anyMatch(c -> !(c instanceof MenuMarker));
   }
 
-  private boolean prevVisibleItemNotASeparator(ChildProxy<?> child) {
+  private static boolean nextVisibleItemNotASeparator(ChildProxy<?> child) {
     final ParentProxy parent = child.getParent();
-    for (int i = parent.getIndex(child) - 1; i >= 0; i--) {
-      final ChildProxy<?> c = parent.getChild(i);
-      if (c instanceof MenuMarker) continue;
+    final IntStream range = IntStream.range(parent.getIndex(child) + 1, parent.getChildCount());
+    return internalVisibleItemNotASeparator(parent, range);
+  }
 
-      return !(c instanceof SeparatorProxy);
-    }
-    return false;
+  private static boolean prevVisibleItemNotASeparator(ChildProxy<?> child) {
+    final ParentProxy parent = child.getParent();
+    final IntStream range = IntStream.iterate(parent.getIndex(child) - 1, i -> i >= 0, i -> i - 1);
+    return internalVisibleItemNotASeparator(parent, range);
+  }
+
+  private static boolean internalVisibleItemNotASeparator(ParentProxy parent, IntStream range) {
+    return range
+      .mapToObj(parent::getChild)
+      .filter(c -> !(c instanceof MenuMarker))
+      .findFirst()
+      .filter(c -> !(c instanceof SeparatorProxy))
+      .isPresent();
   }
 }

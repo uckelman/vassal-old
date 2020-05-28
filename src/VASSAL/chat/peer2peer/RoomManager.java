@@ -72,15 +72,12 @@ public class RoomManager {
   }
 
   public P2PPlayer getPlayerById(String id) {
-    for (Room r : rooms) {
-      for (Player p : r.getPlayerList()) {
-        P2PPlayer p2pp = (P2PPlayer) p;
-        if (id.equals(p2pp.getId())) {
-          return p2pp;
-        }
-      }
-    }
-    return null;
+    return rooms.stream()
+                .flatMap(r -> r.getPlayerList().stream())
+                .map(p -> (P2PPlayer) p)
+                .filter(p2pp -> id.equals(p2pp.getId()))
+                .findFirst()
+                .orElse(null);
   }
 
   public Room[] getRooms() {
@@ -100,13 +97,11 @@ public class RoomManager {
   }
 
   public SimpleRoom getRoomContaining(Player p) {
-    for (Room r : rooms) {
-      SimpleRoom sr = (SimpleRoom) r;
-      if (sr.contains(p)) {
-        return sr;
-      }
-    }
-    return null;
+    return rooms.stream()
+                .map(r -> (SimpleRoom) r)
+                .filter(sr -> sr.contains(p))
+                .findFirst()
+                .orElse(null);
   }
 
   public void setDefaultRoomName(String name) {

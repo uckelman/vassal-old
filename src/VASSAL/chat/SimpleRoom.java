@@ -75,12 +75,10 @@ public class SimpleRoom implements Room {
   }
 
   public Player getPlayer(String id) {
-    for (Player player : players) {
-      if (player.getId().equals(id)) {
-        return player;
-      }
-    }
-    return null;
+    return players.stream()
+                  .filter(player -> player.getId().equals(id))
+                  .findFirst()
+                  .orElse(null);
   }
 
   @Override

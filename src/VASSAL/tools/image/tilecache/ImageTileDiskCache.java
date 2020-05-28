@@ -26,7 +26,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import VASSAL.tools.image.ImageIOException;
 import VASSAL.tools.image.ImageTileSource;
@@ -116,27 +118,19 @@ public class ImageTileDiskCache implements ImageTileSource, FileStore {
   @Override
   public List<String> getFiles() throws IOException {
     final File[] files = new File(cpath).listFiles();
-    final List<String> names = new ArrayList<>(files.length);
-
-    for (File f : files) names.add(f.getPath());
-
-    return names;
+    return Arrays.stream(files)
+                 .map(File::getPath)
+                 .collect(Collectors.toCollection(() -> new ArrayList<>(files.length)));
   }
 
   /** {@inheritDoc} */
   @Override
   public List<String> getFiles(String root) throws IOException {
     final File[] files = new File(cpath).listFiles();
-    final List<String> names = new ArrayList<>(files.length);
-
-    for (File f : files) {
-      final String path = f.getPath();
-      if (path.startsWith(root)) {
-        names.add(path);
-      }
-    }
-
-    return names;
+    return Arrays.stream(files)
+                 .map(File::getPath)
+                 .filter(path -> path.startsWith(root))
+                 .collect(Collectors.toCollection(() -> new ArrayList<>(files.length)));
   }
 
   /** {@inheritDoc} */

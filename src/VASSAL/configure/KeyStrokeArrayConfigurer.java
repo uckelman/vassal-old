@@ -26,6 +26,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -131,14 +132,10 @@ public class KeyStrokeArrayConfigurer extends Configurer {
   }
 
   public KeyStroke[] getKeyStrokes() {
-    ArrayList<KeyStroke> l = new ArrayList<>();
-    for (HotKeyConfigurer hotKeyConfigurer : configs) {
-      KeyStroke value = (KeyStroke) hotKeyConfigurer.getValue();
-      if (value != null) {
-        l.add(value);
-      }
-    }
-    return l.toArray(new KeyStroke[0]);
+    return configs.stream()
+                  .map(hotKeyConfigurer -> (KeyStroke) hotKeyConfigurer.getValue())
+                  .filter(Objects::nonNull)
+                  .toArray(KeyStroke[]::new);
   }
 
   public static KeyStroke[] decode(String s) {

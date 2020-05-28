@@ -533,14 +533,13 @@ public class SpecialDiceButton extends AbstractConfigurable implements CommandEn
       return EMPTY;
     }
     final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(s, ',');
-    final ArrayList<String> l = new ArrayList<>();
+    final List<String> l = new ArrayList<>();
     while (st.hasMoreTokens()) {
       l.add(st.nextToken());
     }
-    final int[] val = new int[l.size()];
-    for (int i = 0; i < val.length; ++i) {
-      val[i] = Integer.parseInt(l.get(i));
-    }
+    final int[] val = l.stream()
+                       .mapToInt(Integer::parseInt)
+                       .toArray();
     return val;
   }
 

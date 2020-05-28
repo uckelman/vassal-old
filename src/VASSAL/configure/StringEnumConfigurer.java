@@ -32,6 +32,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
 
 import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
@@ -84,12 +85,7 @@ public class StringEnumConfigurer extends Configurer {
   }
 
   public boolean isValidValue(Object o) {
-    for (String validValue : validValues) {
-      if (validValue.equals(o)) {
-        return true;
-      }
-    }
-    return false;
+    return Arrays.stream(validValues).anyMatch(validValue -> validValue.equals(o));
   }
 
   public String[] getValidValues() {

@@ -488,11 +488,9 @@ public class SecretNotesController implements GameComponent, CommandEncoder, Add
   }
 
   public SecretNote getNoteForName(String s) {
-    for (SecretNote n : notes) {
-      if (n.getName().equals(s)) {
-        return n;
-      }
-    }
-    return null;
+    return notes.stream()
+                .filter(n -> n.getName().equals(s))
+                .findFirst()
+                .orElse(null);
   }
 }

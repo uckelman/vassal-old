@@ -33,6 +33,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
@@ -225,12 +226,7 @@ public class PrivateMap extends Map {
    * @see PlayerRoster
    */
   public boolean isAccessibleTo(String playerSide) {
-    for (String owner : owners) {
-      if (owner.equals(playerSide)) {
-        return true;
-      }
-    }
-    return false;
+    return Arrays.stream(owners).anyMatch(owner -> owner.equals(playerSide));
   }
 
   public boolean isVisibleTo(String playerSide) {

@@ -20,6 +20,7 @@ package VASSAL.build.module.map;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
 import VASSAL.counters.Deck;
 import VASSAL.counters.GamePiece;
@@ -111,9 +112,9 @@ public abstract class CompoundPieceCollection implements PieceCollection {
     int layer = getLayerForPiece(p);
     int index = layers[layer].indexOf(p);
     if (index >= 0) {
-      for (int i=0;i<layer-1;++i) {
-        index += layers[i].getPieces().length;
-      }
+      index += IntStream.range(0, layer - 1)
+                        .map(i -> layers[i].getPieces().length)
+                        .sum();
     }
     return index;
   }

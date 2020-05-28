@@ -30,6 +30,7 @@ import java.net.URL;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.stream.Collectors;
 
 import VASSAL.build.module.DieRoll;
 import VASSAL.tools.ErrorDialog;

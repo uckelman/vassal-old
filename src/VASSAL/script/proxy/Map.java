@@ -19,7 +19,9 @@
 package VASSAL.script.proxy;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import VASSAL.script.BeanShell;
 
@@ -52,11 +54,9 @@ public class Map {
 
   public List<GamePiece> getPieces() {
     VASSAL.counters.GamePiece[] vPieces = vassalMap.getPieces();
-    ArrayList<GamePiece> pieces = new ArrayList<>(vPieces.length);
-    for (VASSAL.counters.GamePiece vPiece : vPieces) {
-      pieces.add(new GamePiece(vPiece));
-    }
-    return pieces;
+    return Arrays.stream(vPieces)
+                 .map(GamePiece::new)
+                 .collect(Collectors.toCollection(() -> new ArrayList<>(vPieces.length)));
   }
 
 }

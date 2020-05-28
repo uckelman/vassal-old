@@ -30,6 +30,8 @@ import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.w3c.dom.Element;
 
@@ -254,13 +256,7 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
 
   @Override
   public String locationName(Point p) {
-    String name = null;
-    for (Zone zone : zones) {
-      if (zone.contains(p)) {
-        name = zone.locationName(p);
-        break;
-      }
-    }
+    String name = internalGetLocationName(p, zone -> zone.locationName(p));
     if (name == null
         && background != null) {
       name = background.locationName(p);
@@ -270,18 +266,20 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
 
   @Override
   public String localizedLocationName(Point p) {
-    String name = null;
-    for (Zone zone : zones) {
-      if (zone.contains(p)) {
-        name = zone.localizedLocationName(p);
-        break;
-      }
-    }
+    String name = internalGetLocationName(p, zone -> zone.localizedLocationName(p));
     if (name == null
         && background != null) {
       name = background.localizedLocationName(p);
     }
     return name;
+  }
+
+  private String internalGetLocationName(Point p, Function<Zone, String> locationNameFunction) {
+    return zones.stream()
+                .filter(zone -> zone.contains(p))
+                .findFirst()
+                .map(locationNameFunction)
+                .orElse(null);
   }
 
   @Override
@@ -316,21 +314,18 @@ public class ZonedGrid extends AbstractConfigurable implements GeometricGrid, Gr
   }
 
   public Zone findZone(Point p) {
-    for (Zone zone : zones) {
-      if (zone.contains(p)) {
-        return zone;
-      }
-    }
-    return null;
+    return internalFindZone(zone -> zone.contains(p));
   }
 
   public Zone findZone(String name) {
-    for (Zone zone : zones) {
-      if (zone.getName().equals(name)) {
-        return zone;
-      }
-    }
-    return null;
+    return internalFindZone(zone -> zone.getName().equals(name));
+  }
+
+  private Zone internalFindZone(Predicate<Zone> zonePredicate) {
+    return zones.stream()
+                .filter(zonePredicate)
+                .findFirst()
+                .orElse(null);
   }
 
   @Override

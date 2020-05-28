@@ -36,6 +36,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -206,13 +208,11 @@ public class MassPieceLoader {
 
     public void save() {
       // Count the pieces to be loaded
-      int pieceCount = 0;
-      for (int i = 0; i < root.getChildCount(); i++) {
-        final PieceNode node = (PieceNode) root.getChildAt(i);
-        if (! node.isSkip()) {
-          pieceCount += node.getCopies();
-        }
-      }
+      int pieceCount = IntStream.range(0, root.getChildCount())
+                                .mapToObj(i -> (PieceNode) root.getChildAt(i))
+                                .filter(node -> !node.isSkip())
+                                .mapToInt(BasicNode::getCopies)
+                                .sum();
 
       // Do they really want to do this?
       if (pieceCount > 0) {
@@ -1018,12 +1018,7 @@ public class MassPieceLoader {
     // Return true if the specified file name matches the level
     // definition of any level in this layer
     public boolean matchLayer(String s) {
-      for (String levelName : imageName) {
-        if (match(s.split("\\.")[0], levelName)) {
-          return true;
-        }
-      }
-      return false;
+      return Arrays.stream(imageName).anyMatch(levelName -> match(s.split("\\.")[0], levelName));
     }
 
     protected boolean match(String s, String levelName) {
@@ -1144,11 +1139,9 @@ public class MassPieceLoader {
     @Override
     public List<String> getImageNameList() {
       final int size = imageListElements.size();
-      final ArrayList<String> names = new ArrayList<>(size);
-      for (int i = 0; i < size; ++i) {
-        names.add((multiPanel.getComponent(i).toString()));
-      }
-      return names;
+      return IntStream.range(0, size)
+                      .mapToObj(i -> (multiPanel.getComponent(i).toString()))
+                      .collect(Collectors.toCollection(() -> new ArrayList<>(size)));
     }
 
     @Override

@@ -292,12 +292,10 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   }
 
   protected Item getItem(String name) {
-    for (Item item : items) {
-      if (item.getConfigureName().equals(name)) {
-        return item;
-      }
-    }
-    return null;
+    return items.stream()
+                .filter(item -> item.getConfigureName().equals(name))
+                .findFirst()
+                .orElse(null);
   }
 
   protected void removeItem(int n) {
@@ -440,14 +438,11 @@ public class GamePieceLayout extends AbstractConfigurable implements Visualizabl
   }
 
   public GamePieceImage getGenericDefn(String defnName) {
-    for (Buildable b : getBuildables()) {
-      if (b instanceof GamePieceImage) {
-        GamePieceImage gpi = (GamePieceImage) b;
-        if (gpi.getConfigureName().equals(defnName)) {
-          return gpi;
-        }
-      }
-    }
-    return null;
+    return getBuildables().stream()
+                          .filter(b -> b instanceof GamePieceImage)
+                          .map(b -> (GamePieceImage) b)
+                          .filter(gpi -> gpi.getConfigureName().equals(defnName))
+                          .findFirst()
+                          .orElse(null);
   }
 }

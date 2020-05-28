@@ -32,6 +32,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -643,12 +644,10 @@ public class Obscurable extends Decorator implements TranslatablePiece {
 
       box = Box.createHorizontalBox();
       displayOption = new StringEnumConfigurer(null, "Display style:  ", optionNames);
-      for (int i = 0; i < optionNames.length; ++i) {
-        if (p.displayStyle == optionChars[i]) {
-          displayOption.setValue(optionNames[i]);
-          break;
-        }
-      }
+      IntStream.range(0, optionNames.length)
+               .filter(i -> p.displayStyle == optionChars[i])
+               .findFirst()
+               .ifPresent(i -> displayOption.setValue(optionNames[i]));
       box.add(displayOption.getControls());
 
       final JPanel showDisplayOption = new JPanel() {

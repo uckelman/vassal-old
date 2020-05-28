@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 /**
  * Performs Get and Post operations to a given URL
@@ -50,11 +51,7 @@ public class HttpRequestWrapper {
   private List<String> readLines(InputStream is) throws IOException {
     try (InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
          BufferedReader in = new BufferedReader(isr)) {
-      final ArrayList<String> l = new ArrayList<>();
-      String line;
-      while ((line = in.readLine()) != null) l.add(line);
-
-      return l;
+      return in.lines().collect(Collectors.toCollection(ArrayList::new));
     }
   }
 

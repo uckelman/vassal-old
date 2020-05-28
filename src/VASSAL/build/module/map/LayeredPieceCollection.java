@@ -34,6 +34,8 @@ import VASSAL.counters.Stack;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.TemporaryToolBar;
 
+import java.util.stream.IntStream;
+
 /**
  * Defines PieceCollection in which pieces are assigned to an arbitrary number of layers
  * according to a property setting
@@ -186,12 +188,10 @@ public class LayeredPieceCollection extends AbstractConfigurable {
 
     @Override
     public int getLayerForName(String layer) {
-      for (int i=0; i < layerOrder.length; i++) {
-        if (layer.equals(layerOrder[i])) {
-          return i;
-        }
-      }
-      return -1;
+      return IntStream.range(0, layerOrder.length)
+                      .filter(i -> layer.equals(layerOrder[i]))
+                      .findFirst()
+                      .orElse(-1);
     }
 
     @Override
@@ -214,15 +214,10 @@ public class LayeredPieceCollection extends AbstractConfigurable {
     @Override
     public Object visitDefault(GamePiece p) {
       String property = (String) p.getProperty(propertyName);
-      int layer = layerOrder.length;
-      for (int i=0;i<layerOrder.length;++i) {
-        if (layerOrder[i].equals(property)) {
-          layer = i;
-          break;
-        }
-      }
-
-      return layer;
+      return IntStream.range(0, layerOrder.length)
+                      .filter(i -> layerOrder[i].equals(property))
+                      .findFirst()
+                      .orElse(layerOrder.length);
     }
 
     @Override

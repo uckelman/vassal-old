@@ -26,6 +26,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -188,14 +189,8 @@ public abstract class TurnLevel extends TurnComponent {
   }
 
   public boolean isConfigurable() {
-
-    for (int i = 0; i < getTurnLevelCount(); i++) {
-      if (getTurnLevel(i).isConfigurable()) {
-        return true;
-      }
-    }
-
-    return false;
+    return IntStream.range(0, getTurnLevelCount())
+                    .anyMatch(i -> getTurnLevel(i).isConfigurable());
   }
 
   private static final Dimension FILLER = new Dimension(0, 3);
@@ -215,10 +210,9 @@ public abstract class TurnLevel extends TurnComponent {
     p.add(Box.createRigidArea(FILLER));
 
     if (getTurnLevelCount() > 1) {
-      String[] s = new String[getTurnLevelCount()];
-      for (int i = 0; i < s.length; i++) {
-        s[i] = getTurnLevel(i).getConfigureName();
-      }
+      String[] s = IntStream.range(0, getTurnLevelCount())
+                            .mapToObj(i -> getTurnLevel(i).getConfigureName())
+                            .toArray(String[]::new);
       StringEnumConfigurer e = new StringEnumConfigurer(null, " Select:  ", s);
       e.setValue(getTurnLevel(currentSubLevel).getConfigureName());
       e.addPropertyChangeListener(e1 -> {

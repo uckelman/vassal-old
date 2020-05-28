@@ -27,6 +27,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.InputEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -385,12 +386,11 @@ public class BasicPiece implements TranslatablePiece, StateMergeable, PropertyNa
     if (stroke == null) {
       return false;
     }
-    for (KeyCommand command : commands) {
-      if (stroke.equals(command.getKeyStroke())) {
-        return command.isEnabled();
-      }
-    }
-    return true;
+    return Arrays.stream(commands)
+                 .filter(command -> stroke.equals(command.getKeyStroke()))
+                 .findFirst()
+                 .map(KeyCommand::isEnabled)
+                 .orElse(true);
   }
 
   @Override

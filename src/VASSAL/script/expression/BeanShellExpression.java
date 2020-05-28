@@ -19,6 +19,7 @@
 package VASSAL.script.expression;
 
 import java.util.Map;
+import java.util.stream.IntStream;
 
 import VASSAL.build.BadDataReport;
 import VASSAL.build.module.properties.PropertySource;
@@ -125,13 +126,8 @@ public class BeanShellExpression extends Expression {
      return false;
     }
 
-    for (int i = 1; i < s.length(); ++i) {
-      if (!Character.isJavaIdentifierPart(s.charAt(i))) {
-        return false;
-      }
-    }
-
-    return true;
+    return IntStream.range(1, s.length())
+                    .allMatch(i -> Character.isJavaIdentifierPart(s.charAt(i)));
   }
 
   /**

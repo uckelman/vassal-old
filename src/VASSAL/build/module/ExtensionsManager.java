@@ -182,11 +182,6 @@ public class ExtensionsManager {
   }
 
   public boolean isExtensionActive(File extension) {
-    for (File f : getActiveExtensions()) {
-      if (f.getName().equals(extension.getName())) {
-        return true;
-      }
-    }
-    return false;
+    return getActiveExtensions().stream().anyMatch(f -> f.getName().equals(extension.getName()));
   }
 }

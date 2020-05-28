@@ -32,11 +32,13 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -435,13 +437,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected boolean isAllowedChildClass(Configurable parent, Class<?> childClass) {
-    final Class<?>[] allowableClasses = parent.getAllowableConfigureComponents();
-    for (Class<?> allowableClass : allowableClasses) {
-      if (allowableClass == childClass) {
-        return true;
-      }
-    }
-    return false;
+    return Arrays.stream(parent.getAllowableConfigureComponents())
+                 .anyMatch(allowableClass -> allowableClass == childClass);
   }
 
   /**
@@ -520,20 +517,14 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   protected boolean hasChild(Configurable parent, Class<?> childClass) {
-    for (Class<?> c : parent.getAllowableConfigureComponents()) {
-      if (c.equals(childClass)) {
-        return true;
-      }
-    }
-    return false;
+    return Arrays.stream(parent.getAllowableConfigureComponents())
+                 .anyMatch(c -> c.equals(childClass));
   }
 
   protected List<Action> buildAddActionsFor(final Configurable target) {
-    final ArrayList<Action> l = new ArrayList<>();
-    for (Class<? extends Buildable> newConfig :
-            target.getAllowableConfigureComponents()) {
-      l.add(buildAddAction(target, newConfig));
-    }
+    final List<Action> l = Arrays.stream(target.getAllowableConfigureComponents())
+                                      .map(newConfig -> buildAddAction(target, newConfig))
+                                      .collect(Collectors.toCollection(ArrayList::new));
 
     for (AdditionalComponent add : additionalComponents) {
       if (target.getClass().equals(add.getParent())) {
@@ -695,14 +686,8 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
   public boolean canContainGamePiece(final Configurable target) {
-    boolean canContainPiece = false;
-    for (Class<?> c : target.getAllowableConfigureComponents()) {
-      if (VASSAL.build.widget.PieceSlot.class.isAssignableFrom(c)) {
-        canContainPiece = true;
-        break;
-      }
-    }
-    return canContainPiece;
+    return Arrays.stream(target.getAllowableConfigureComponents())
+                 .anyMatch(PieceSlot.class::isAssignableFrom);
   }
 
   protected boolean remove(Configurable parent, Configurable child) {
@@ -934,14 +919,12 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   protected boolean isValidParent(Configurable parent, Configurable child) {
     if (parent != null && child != null) {
       final Class<?>[] c = parent.getAllowableConfigureComponents();
-      for (Class<?> aClass : c) {
-        if (aClass.isAssignableFrom(child.getClass()) ||
-                ((aClass == CardSlot.class) && (child.getClass() == PieceSlot.class)) || // Allow PieceSlots to be pasted to Decks
-                ((aClass == ZoneProperty.class) && (child.getClass() == GlobalProperty.class)) // Allow Global Properties to be saved as Zone Properties
-        ) {
-          return true;
-        }
-      }
+      // Allow Global Properties to be saved as Zone Properties
+      return Arrays.stream(c)
+                   .anyMatch(aClass ->
+                     aClass.isAssignableFrom(child.getClass()) ||
+                      ((aClass == CardSlot.class) && (child.getClass() == PieceSlot.class)) || // Allow PieceSlots to be pasted to Decks
+                      ((aClass == ZoneProperty.class) && (child.getClass() == GlobalProperty.class))); // Allow Global Properties to be saved as Zone Properties
     }
     return false;
   }

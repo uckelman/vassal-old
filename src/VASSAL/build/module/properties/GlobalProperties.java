@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.swing.JToolBar;
 
@@ -174,10 +175,8 @@ public class GlobalProperties extends AbstractConfigurable implements MutablePro
 
   @Override
   public List<String> getPropertyNames() {
-    ArrayList<String> l = new ArrayList<>();
-    for (GlobalProperty prop : getComponentsOf(GlobalProperty.class)) {
-      l.add(prop.getConfigureName());
-    }
-    return l;
+    return getComponentsOf(GlobalProperty.class).stream()
+                                                .map(AbstractConfigurable::getConfigureName)
+                                                .collect(Collectors.toCollection(ArrayList::new));
   }
 }

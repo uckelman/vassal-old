@@ -371,23 +371,20 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
    * Return Region selected by Point
    */
   public Region getRegion(Point p) {
-    for (Region checkRegion : regionList.values()) {
-      if (checkRegion.contains(p))
-        return checkRegion;
-    }
-    return null;
+    return regionList.values().stream()
+                     .filter(checkRegion -> checkRegion.contains(p))
+                     .findFirst()
+                     .orElse(null);
   }
 
   /**
    * Return Region by Name
    */
   public Region findRegion(String name) {
-    for (Region checkRegion : regionList.values()) {
-      if (checkRegion.getConfigureName().equals(name)) {
-        return checkRegion;
-      }
-    }
-    return null;
+    return regionList.values().stream()
+                     .filter(checkRegion -> checkRegion.getConfigureName().equals(name))
+                     .findFirst()
+                     .orElse(null);
   }
 
   //

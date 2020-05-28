@@ -162,11 +162,9 @@ public class FontManager extends AbstractConfigurable {
   }
 
   public String[] getFontNames() {
-    ArrayList<String> names = new ArrayList<>(fontStyles.size());
-    for (FontStyle fs : fontStyles.values()) {
-      names.add(fs.getConfigureName());
-    }
-    return names.toArray(new String[0]);
+    return fontStyles.values().stream()
+                     .map(AbstractConfigurable::getConfigureName)
+                     .toArray(String[]::new);
   }
 
 }

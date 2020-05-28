@@ -53,6 +53,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -246,13 +247,9 @@ public class PieceMover extends AbstractBuildable
         DragBuffer.getBuffer().clear();
         // RFE 1629255 - Only add selected pieces within the stack to the DragBuffer
         // Add whole stack if all pieces are selected - better drag cursor
-        int selectedCount = 0;
-        for (int i = 0; i < s.getPieceCount(); i++) {
-          if (Boolean.TRUE.equals(s.getPieceAt(i)
-                                   .getProperty(Properties.SELECTED))) {
-            selectedCount++;
-          }
-        }
+        int selectedCount = (int) IntStream.range(0, s.getPieceCount())
+                                           .filter(i -> Boolean.TRUE.equals(s.getPieceAt(i).getProperty(Properties.SELECTED)))
+                                           .count();
 
         if ((Boolean) GameModule.getGameModule().getPrefs().getValue(Map.MOVING_STACKS_PICKUP_UNITS) || s.getPieceCount() == 1 || s.getPieceCount() == selectedCount) {
           DragBuffer.getBuffer().add(s);

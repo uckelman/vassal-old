@@ -52,12 +52,10 @@ public class ZonedGridHighlighter extends AbstractConfigurable  {
   }
 
   public ZoneHighlight getZoneHighlightByName(String highlightName) {
-    for (ZoneHighlight h : highlightList) {
-      if (h.getName().equals(highlightName)) {
-        return h;
-      }
-    }
-    return null;
+    return highlightList.stream()
+                        .filter(h -> h.getName().equals(highlightName))
+                        .findFirst()
+                        .orElse(null);
   }
 
   public String getName() {

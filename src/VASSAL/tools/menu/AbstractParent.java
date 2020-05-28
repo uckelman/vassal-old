@@ -21,6 +21,7 @@ package VASSAL.tools.menu;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import javax.swing.JComponent;
 
@@ -47,9 +48,9 @@ public abstract class AbstractParent<T extends JComponent>
   protected int proxyIndexToRealIndex(int pos) {
     // find the true position, neglecting markers
     int j = -1;
-    for (int i = 0; i <= pos; i++) {
-      if (!(children.get(i) instanceof MenuMarker)) j++;
-    }
+    j += IntStream.rangeClosed(0, pos)
+                  .filter(i -> !(children.get(i) instanceof MenuMarker))
+                  .count();
     return j;
   }
 

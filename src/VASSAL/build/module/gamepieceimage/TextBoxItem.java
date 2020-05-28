@@ -29,6 +29,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.stream.IntStream;
 
 import javax.swing.JTextPane;
 
@@ -86,12 +87,10 @@ public class TextBoxItem extends TextItem {
 
     final String[] names = getAttributeNames();
     // Change the type of the "Text" attribute to multi-line text
-    for (int i = 0; i < names.length; i++) {
-      if (TEXT.equals(names[i])) {
-        c[i] = TextConfigurer.class;
-        break;
-      }
-    }
+    IntStream.range(0, names.length)
+             .filter(i -> TEXT.equals(names[i]))
+             .findFirst()
+             .ifPresent(i -> c[i] = TextConfigurer.class);
     return c;
   }
 

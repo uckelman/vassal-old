@@ -25,7 +25,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
@@ -127,13 +129,10 @@ public class ColorManager extends AbstractConfigurable {
       return new ColorSwatch("CLEAR", null);
     }
 
-    ColorSwatch swatch = null;
-    for (ColorSwatch cs : userColors.values()) {
-      if (color.equals(cs.getColor())) {
-        swatch = cs;
-        break;
-      }
-    }
+    ColorSwatch swatch = userColors.values().stream()
+                                   .filter(cs -> color.equals(cs.getColor()))
+                                   .findFirst()
+                                   .orElse(null);
 
     if (swatch == null) {
       for (int j = 0; j < standardColors.length && swatch == null; j++) {
@@ -239,15 +238,13 @@ public class ColorManager extends AbstractConfigurable {
   }
 
   public String[] getColorNames() {
-    ArrayList<ColorSwatch> a = new ArrayList<>(userColors.values());
+    List<ColorSwatch> a = new ArrayList<>(userColors.values());
     Collections.sort(a);
 
-    ArrayList<String> names =
-      new ArrayList<>(a.size() + standardColors.length);
-
-    for (ColorSwatch cs : a) {
-      names.add(cs.getConfigureName());
-    }
+    List<String> names =
+      a.stream()
+       .map(AbstractConfigurable::getConfigureName)
+       .collect(Collectors.toCollection(() -> new ArrayList<>(a.size() + standardColors.length)));
 
     names.addAll(Arrays.asList(standardColorNames));
     return names.toArray(new String[0]);

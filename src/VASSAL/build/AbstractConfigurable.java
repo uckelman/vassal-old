@@ -165,13 +165,10 @@ public abstract class AbstractConfigurable extends AbstractBuildable implements 
 
   @Override
   public Configurable[] getConfigureComponents() {
-    final ArrayList<Configurable> l = new ArrayList<>();
-    for (Buildable b : getBuildables()) {
-      if (b instanceof Configurable) {
-        l.add((Configurable) b);
-      }
-    }
-    return l.toArray(new Configurable[0]);
+    return getBuildables().stream()
+                          .filter(b -> b instanceof Configurable)
+                          .map(b -> (Configurable) b)
+                          .toArray(Configurable[]::new);
   }
 
   /**

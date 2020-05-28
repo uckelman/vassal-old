@@ -30,6 +30,7 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.util.Arrays;
 import java.util.Iterator;
 
 import javax.swing.Box;
@@ -124,11 +125,9 @@ public class Restricted extends Decorator implements EditablePiece {
         && PlayerRoster.isActive()
         && GameModule.getGameModule().getGameState().isGameStarted()) {
       restricted = true;
-      for (String s : side) {
-        if (s.equals(PlayerRoster.getMySide())) {
-          restricted = false;
-          break;
-        }
+      if (Arrays.stream(side)
+                .anyMatch(s -> s.equals(PlayerRoster.getMySide()))) {
+        restricted = false;
       }
     }
     return restricted;

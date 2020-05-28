@@ -30,6 +30,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
+import java.util.stream.IntStream;
 
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
@@ -142,14 +143,11 @@ public class IconFamily extends AbstractConfigurable {
    * Return an Icon Size based on the local language name
    */
   public static int getIconSize(String name) {
-    int size = SMALL;
     final String[] options = getIconSizeNames();
-    for (int i = 0; i < options.length; i++) {
-      if (options[i].equals(name)) {
-        return i;
-      }
-    }
-    return size;
+    return IntStream.range(0, options.length)
+                    .filter(i -> options[i].equals(name))
+                    .findFirst()
+                    .orElse(SMALL);
   }
 
   public static int getIconHeight(int size) {

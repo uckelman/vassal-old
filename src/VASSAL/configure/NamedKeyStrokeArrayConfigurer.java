@@ -26,6 +26,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -131,14 +132,10 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer {
   }
 
   public NamedKeyStroke[] getKeyStrokes() {
-    ArrayList<NamedKeyStroke> l = new ArrayList<>();
-    for (NamedHotKeyConfigurer hotKeyConfigurer : configs) {
-      NamedKeyStroke value = hotKeyConfigurer.getValueNamedKeyStroke();
-      if (value != null) {
-        l.add(value);
-      }
-    }
-    return l.toArray(new NamedKeyStroke[0]);
+    return configs.stream()
+                  .map(NamedHotKeyConfigurer::getValueNamedKeyStroke)
+                  .filter(Objects::nonNull)
+                  .toArray(NamedKeyStroke[]::new);
   }
 
   public static NamedKeyStroke[] decode(String s) {

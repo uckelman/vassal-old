@@ -46,6 +46,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import javax.imageio.ImageIO;
 
@@ -2938,9 +2939,9 @@ public class MapBoard extends Importer {
     // add zoom capability
     if (zoomLevel > 0) {
       Zoomer zoom = new Zoomer();
-      String[] s = new String[3];
-      for (int i = 0; i < 3; ++i)
-        s[i] = Double.toString(set.getZoomFactor(i));
+      String[] s = IntStream.range(0, 3)
+                            .mapToObj(i -> Double.toString(set.getZoomFactor(i)))
+                            .toArray(String[]::new);
       zoom.setAttribute("zoomLevels", StringArrayConfigurer.arrayToString(s));
       insertComponent(zoom, getMainMap());
     }

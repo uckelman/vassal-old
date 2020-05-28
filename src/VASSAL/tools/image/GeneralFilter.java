@@ -22,6 +22,7 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.awt.image.WritableRaster;
+import java.util.stream.IntStream;
 
 /*
    This class is the result of much trial and error with using timings
@@ -460,8 +461,9 @@ public final class GeneralFilter {
     final Filter filter)
   {
     // Calculate filter contributions for each destination strip
-    final CList[] contrib = new CList[dl];
-    for (int i = 0; i < contrib.length; i++) contrib[i] = new CList();
+    final CList[] contrib = IntStream.range(0, dl)
+                                     .mapToObj(i -> new CList())
+                                     .toArray(CList[]::new);
 
     final float blur = 1.0f;
     final float kscale = 1.0f/(blur*Math.max(1.0f/scale, 1.0f));
@@ -517,14 +519,12 @@ public final class GeneralFilter {
       final int pos = base + k*stride;
 
       final int pel = src[pos];
-      boolean bPelDelta = false;
 
       // Check for areas of constant color. It is *much* faster to
-      // to check first and then calculate weights only if needed.
-      for (int j = 0; j < max; j++) {
-        if (c.weight[j] == 0.0f) continue;
-        if (src[pos + j] != pel) { bPelDelta = true; break; }
-      }
+      // check first and then calculate weights only if needed.
+      boolean bPelDelta = IntStream.range(0, max)
+                                   .filter(j -> c.weight[j] != 0.0f)
+                                   .anyMatch(j -> src[pos + j] != pel);
 
       if (bPelDelta) {
         // There is a color change from 0 to max; we need to use weights.
@@ -575,14 +575,12 @@ public final class GeneralFilter {
       final int pos = base + k*stride;
 
       final int pel = src[pos];
-      boolean bPelDelta = false;
 
       // Check for areas of constant color. It is *much* faster to
-      // to check first and then calculate weights only if needed.
-      for (int j = 0; j < max; j++) {
-        if (c.weight[j] == 0.0f) continue;
-        if (src[pos + j] != pel) { bPelDelta = true; break; }
-      }
+      // check first and then calculate weights only if needed.
+      boolean bPelDelta = IntStream.range(0, max)
+                                   .filter(j -> c.weight[j] != 0.0f)
+                                   .anyMatch(j -> src[pos + j] != pel);
 
       if (bPelDelta) {
         // There is a color change from 0 to max; we need to use weights.
@@ -626,14 +624,12 @@ public final class GeneralFilter {
       final CList c = ycontrib[i];
       final int max = c.n;
       final int pel = work[c.pixel];
-      boolean bPelDelta = false;
 
       // Check for areas of constant color. It is *much* faster to
-      // to check first and then calculate weights only if needed.
-      for (int j = 0; j < max; j++) {
-        if (c.weight[j] == 0.0f) continue;
-        if (work[c.pixel + j] != pel) { bPelDelta = true; break; }
-      }
+      // check first and then calculate weights only if needed.
+      boolean bPelDelta = IntStream.range(0, max)
+                                   .filter(j -> c.weight[j] != 0.0f)
+                                   .anyMatch(j -> work[c.pixel + j] != pel);
 
       if (bPelDelta) {
         // There is a color change from 0 to max; we need to use weights.
@@ -692,14 +688,12 @@ public final class GeneralFilter {
       final CList c = ycontrib[i];
       final int max = c.n;
       final int pel = work[c.pixel];
-      boolean bPelDelta = false;
 
       // Check for areas of constant color. It is *much* faster to
-      // to check first and then calculate weights only if needed.
-      for (int j = 0; j < max; j++) {
-        if (c.weight[j] == 0.0f) continue;
-        if (work[c.pixel + j] != pel) { bPelDelta = true; break; }
-      }
+      // check first and then calculate weights only if needed.
+      boolean bPelDelta = IntStream.range(0, max)
+                                   .filter(j -> c.weight[j] != 0.0f)
+                                   .anyMatch(j -> work[c.pixel + j] != pel);
 
       if (bPelDelta) {
         // There is a color change from 0 to max; we need to use weights.

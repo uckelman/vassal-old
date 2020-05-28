@@ -150,14 +150,11 @@ public abstract class AbstractInterpreter extends Interpreter {
    * @return Map proxy
    */
   public VASSAL.script.proxy.Map findMap(String mapName) {
-    Map map = null;
-    for (Map m : GameModule.getGameModule().getAllDescendantComponentsOf(
-        Map.class)) {
-      if (m.getMapName().equals(mapName) && isAccessible(m)) {
-        map = m;
-        break;
-      }
-    }
+    Map map = GameModule.getGameModule().getAllDescendantComponentsOf(Map.class)
+                        .stream()
+                        .filter(m -> m.getMapName().equals(mapName) && isAccessible(m))
+                        .findFirst()
+                        .orElse(null);
     return map == null ? null : new VASSAL.script.proxy.Map(map);
   }
 
