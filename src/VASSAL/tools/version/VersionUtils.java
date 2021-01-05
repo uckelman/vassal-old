@@ -3,15 +3,15 @@ package VASSAL.tools.version;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import VASSAL.Info;
+import VASSAL.tools.ConfigFileReader;
 import VASSAL.tools.io.IOUtils;
 
 
 public class VersionUtils {
-  protected VersionUtils() {}
-
-  private static final String baseURL = "http://www.vassalengine.org/util/";
+  private static String baseURL = "";
 
   private static final String currentRelease = "current-release";
   private static final String currentBeta = "current-beta";
@@ -21,13 +21,46 @@ public class VersionUtils {
   private static VassalVersion release = null;
   private static VassalVersion beta = null;
 
+  protected VersionUtils() {
+	  
+	// read the config file to get the server URL
+	ConfigFileReader config = new ConfigFileReader();
+	
+	String serverURL = ""; //$NON-NLS-1$
+	serverURL = config.getServerURL();
+	
+	  baseURL = serverURL + "/util";
+  }
+
   public static VassalVersion getRelease() throws IOException {
-    if (release == null) release = getVersion(baseURL + currentRelease);
+    if (release == null) {
+        if (baseURL == null || baseURL.length() == 0) {
+            // read the config file to get the server URL
+            ConfigFileReader config = new ConfigFileReader();
+            
+            String serverURL = ""; //$NON-NLS-1$
+            serverURL = config.getServerURL();
+            
+            baseURL = serverURL + "/util/";
+        }
+        release = getVersion(baseURL + currentRelease);
+    }
     return release;
   }
 
   public static VassalVersion getBeta() throws IOException {
-    if (beta == null) beta = getVersion(baseURL + currentBeta);
+    if (beta == null) {
+        if (baseURL == null || baseURL.length() == 0) {
+            // read the config file to get the server URL
+            ConfigFileReader config = new ConfigFileReader();
+            
+            String serverURL = ""; //$NON-NLS-1$
+            serverURL = config.getServerURL();
+            
+            baseURL = serverURL + "/util/";
+        }
+        beta = getVersion(baseURL + currentBeta);
+    }
     return beta;
   }
 

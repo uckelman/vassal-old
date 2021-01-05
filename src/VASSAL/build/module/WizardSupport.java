@@ -89,6 +89,7 @@ import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.BasicModule;
 import VASSAL.preferences.Prefs;
+import VASSAL.tools.ConfigFileReader;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SplashScreen;
 import VASSAL.tools.UsernameAndPasswordDialog;
@@ -151,6 +152,13 @@ public class WizardSupport {
    */
   public void showWelcomeWizard() {
 
+	
+	// read the config file to get the server URL
+	ConfigFileReader config = new ConfigFileReader();
+	
+	String serverURL = ""; //$NON-NLS-1$
+	serverURL = config.getServerURL() + config.getWiki() + "/doku.php?id=getting_started:getting_started"; //$NON-NLS-1$
+	
     final GameModule g = GameModule.getGameModule();
     final Boolean showWizard = (Boolean) Prefs.getGlobalPrefs().getValue(WELCOME_WIZARD_KEY);
 
@@ -175,7 +183,7 @@ public class WizardSupport {
 
     Action help = null;
     try {
-      help = new ShowHelpAction(new URL("http://www.vassalengine.org/wiki/doku.php?id=getting_started:getting_started"), null);
+      help = new ShowHelpAction(new URL(serverURL), null);
     }
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);

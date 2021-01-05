@@ -35,21 +35,28 @@ import VASSAL.chat.messageboard.MessageBoard;
 import VASSAL.chat.peer2peer.PeerPoolInfo;
 import VASSAL.command.Command;
 import VASSAL.command.NullCommand;
+import VASSAL.tools.ConfigFileReader;
 import VASSAL.tools.SequenceEncoder;
 
 public class HttpMessageServer implements MessageBoard, WelcomeMessageServer {
+  private String serverURL = "";
+
   private HttpRequestWrapper welcomeURL;
   private HttpRequestWrapper getMessagesURL;
   private HttpRequestWrapper postMessageURL;
   private PeerPoolInfo info;
 
   public HttpMessageServer(PeerPoolInfo info) {
-    this(
-      "http://www.vassalengine.org/util/getMessages", //$NON-NLS-1$
-      "http://www.vassalengine.org/util/postMessage", //$NON-NLS-1$
-      "http://www.vassalengine.org/util/motd",        //$NON-NLS-1$
-      info
-    );
+
+    // read the config file to get the server URL
+    ConfigFileReader config = new ConfigFileReader();
+    
+    serverURL = config.getServerURL();
+    
+    this.getMessagesURL = new HttpRequestWrapper(serverURL + "/util/getMessages");
+    this.welcomeURL = new HttpRequestWrapper(serverURL + "/util/motd");
+    this.postMessageURL = new HttpRequestWrapper(serverURL + "/util/postMessage");
+    this.info = info;
   }
 
   public HttpMessageServer(String getMessagesURL, String postMessageURL, String welcomeURL, PeerPoolInfo info) {

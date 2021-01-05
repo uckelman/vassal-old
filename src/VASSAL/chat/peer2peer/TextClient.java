@@ -89,12 +89,33 @@ public class TextClient {
     if (System.getProperty("stderr") != null) {
       System.setErr(new PrintStream(new FileOutputStream(System.getProperty("stderr"))));
     }
+    
+    Boolean serverSSL = false;
+    String serverName = "";
+    String serverURL = "";
+    int serverPort = -1;
+
+    // read server URL and port from the configuration file
+    Configurations configs = new Configurations();
+    try
+    {
+        XMLConfiguration config = configs.xml("vassal.xml"); //$NON-NLS-1$
+
+		serverSSL = config.getBoolean("useSSL", false);
+        serverName = config.getString("server"); //$NON-NLS-1$
+        serverURL = (serverSSL ? "https://" : "http://") + serverName + "/util/"; //$NON-NLS-1$ //$NON-NLS-2$
+        serverPort = config.getInt("port", 5050); //$NON-NLS-1$
+    }
+    catch (ConfigurationException cex)
+    {
+    	ErrorDialog.bug(cex);
+    }
     Properties p = new ArgsParser(args).getProperties();
     String modName = p.getProperty("module", "test");
     String myName = p.getProperty("name", "rk");
     String poolType = p.getProperty("type", "Brokered");
     String host = p.getProperty("host", "localhost");
-    int port = Integer.parseInt(p.getProperty("port", "5050"));
+    int port = Integer.parseInt(p.getProperty("port", String.valueOf(serverPort));
     final BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
     final String moduleName = modName;
     final String userName = myName;
@@ -128,7 +149,7 @@ public class TextClient {
     else {
       PeerPool pool;
       if ("CGI".equals(poolType)) {
-        pool = new CgiPeerPool(info, "http://www.vassalengine.org/util/");
+        pool = new CgiPeerPool(info, serverURL);
       }
       else if ("Proxy".equals(poolType)) {
         pool = new ProxyPeerPool(info, host, port);

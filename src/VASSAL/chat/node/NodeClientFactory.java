@@ -19,6 +19,8 @@ package VASSAL.chat.node;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -31,6 +33,7 @@ import VASSAL.chat.CommandDecoder;
 import VASSAL.chat.HttpMessageServer;
 import VASSAL.chat.peer2peer.PeerPoolInfo;
 import VASSAL.i18n.Resources;
+import VASSAL.tools.ConfigFileReader;
 
 /**
  * @author rkinney
@@ -49,8 +52,18 @@ public class NodeClientFactory extends ChatServerFactory {
   }
 
   public ChatServerConnection buildServer(Properties param) {
-    final String host = param.getProperty(NODE_HOST,"game.vassalengine.org");  //$NON-NLS-1$
-    final int port = Integer.parseInt(param.getProperty(NODE_PORT, "5050"));  //$NON-NLS-1$
+	
+    // read the config file to get the server URL
+    ConfigFileReader config = new ConfigFileReader();
+    
+    
+	// DEBUG-MITRE
+    StringWriter writer = new StringWriter();
+    param.list(new PrintWriter(writer));
+    logger.info("NodeClientFactory.buildServer(): \n{}", writer.getBuffer().toString());
+	    
+    final String host = param.getProperty(NODE_HOST, config.getServerName());//$NON-NLS-1$
+    final int port = Integer.parseInt(param.getProperty(NODE_PORT, String.valueOf(config.getServerPort())));  //$NON-NLS-1$
     NodeServerInfo nodeServerInfo = new NodeServerInfo() {
       public String getHostName() {
         return host;

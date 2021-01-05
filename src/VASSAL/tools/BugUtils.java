@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 import VASSAL.Info;
 import VASSAL.tools.io.IOUtils;
@@ -16,8 +17,19 @@ public class BugUtils {
                                    Throwable t) throws IOException {
     final HTTPPostBuilder pb = new HTTPPostBuilder();
 
-    InputStream in = null;
-    try {
+	// read the config file to get the server URL
+	ConfigFileReader config = new ConfigFileReader();
+	
+	String serverURL = ""; //$NON-NLS-1$
+	serverURL = config.getServerURL() + "/util/bug.php"; //$NON-NLS-1$
+	
+
+    pb.setParameter("version", Info.getVersion());
+    pb.setParameter("email", email);
+    pb.setParameter("summary", getSummary(t));
+    pb.setParameter("description", description);
+    pb.setParameter("log", "errorLog", errorLog);
+
 /*
       final URL url = new URL("http://sourceforge.net/tracker/index.php");
       pb.setParameter("group_id", "90612");
@@ -30,16 +42,10 @@ public class BugUtils {
       pb.setParameter("input_file", "errorLog", errorLog);
       pb.setParameter("file_description", "the errorLog");
       pb.setParameter("submit", "SUBMIT");
-*/
-      final String url = "http://www.vassalengine.org/util/bug.php";
-      pb.setParameter("version", Info.getVersion());
-      pb.setParameter("email", email);
-      pb.setParameter("summary", getSummary(t));
-      pb.setParameter("description", description);
-      pb.setParameter("log", "errorLog", errorLog);
+    */
 
-      in = pb.post(url);
-      final String result = IOUtils.toString(in);
+    try (InputStream in = pb.post(serverURL)) {
+      final String result = IOUtils.toString(in, StandardCharsets.UTF_8);
 
       // script should return zero on success, otherwise it failed
       try {
@@ -52,9 +58,6 @@ public class BugUtils {
       }
 
       in.close();
-    }
-    finally {
-      IOUtils.closeQuietly(in);
     }
   }
 

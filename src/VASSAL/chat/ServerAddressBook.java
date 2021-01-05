@@ -62,6 +62,7 @@ import VASSAL.chat.peer2peer.P2PClientFactory;
 import VASSAL.configure.StringConfigurer;
 import VASSAL.i18n.Resources;
 import VASSAL.preferences.Prefs;
+import VASSAL.tools.ConfigFileReader;
 import VASSAL.tools.PropertiesEncoder;
 import VASSAL.tools.SequenceEncoder;
 import VASSAL.tools.icon.IconFactory;
@@ -95,6 +96,8 @@ public class ServerAddressBook {
   private static ServerAddressBook instance;
   private static String localIPAddress;
   private static String externalIPAddress;
+  
+  private static String serverURL = "";
 
   private JButton addButton;
   private JButton removeButton;
@@ -144,7 +147,7 @@ public class ServerAddressBook {
 
   private static String discoverMyIpAddressFromRemote() throws IOException {
     String theIp = null;
-    HttpRequestWrapper r = new HttpRequestWrapper("http://www.vassalengine.org/util/getMyAddress"); //$NON-NLS-1$
+    HttpRequestWrapper r = new HttpRequestWrapper(serverURL + "/util/getMyAddress"); //$NON-NLS-1$
     List<String> l = r.doGet(null);
     if (!l.isEmpty()) {
       theIp = l.get(0);
@@ -228,8 +231,15 @@ public class ServerAddressBook {
 
   public ServerAddressBook() {
     instance = this;
-  }
-
+    
+    // read the config file to get the server URL
+    ConfigFileReader config = new ConfigFileReader();
+    
+    serverURL = config.getServerURL();
+    
+    
+}
+    
   public JComponent getControls() {
     if (controls == null) {
 
@@ -918,7 +928,7 @@ public class ServerAddressBook {
       setProperty(DYNAMIC_TYPE, JabberClientFactory.JABBER_SERVER_TYPE);
       setProperty(JabberClientFactory.JABBER_LOGIN, ""); //$NON-NLS-1$
       setProperty(JabberClientFactory.JABBER_PWD, ""); //$NON-NLS-1$
-      setProperty(DynamicClientFactory.URL, DynamicClient.JABBER_URL);
+      setProperty(DynamicClientFactory.URL, DynamicClient.getJabberURL());
     }
 
     public VassalJabberEntry(Properties props) {
@@ -987,7 +997,7 @@ public class ServerAddressBook {
       setDescription(Resources.getString("ServerAddressBook.legacy_server")); //$NON-NLS-1$
       setType(DYNAMIC_TYPE);
       setProperty(DynamicClientFactory.DYNAMIC_TYPE, NodeClientFactory.NODE_TYPE);
-      setProperty(DynamicClientFactory.URL, DynamicClient.LEGACY_URL);
+      setProperty(DynamicClientFactory.URL, DynamicClient.getLegacyURL());
     }
 
     public LegacyEntry(Properties props) {

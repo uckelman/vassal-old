@@ -27,19 +27,25 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import VASSAL.tools.ArgsParser;
+import VASSAL.tools.ConfigFileReader;
 
 /**
  * The server-side Main class
  */
 public class Server extends Thread {
+    private static final Logger logger =
+            LoggerFactory.getLogger(Server.class);
   private AsynchronousServerNode rootNode;
   private ServerSocket socket;
 
   public Server(AsynchronousServerNode rootNode, int port) throws IOException {
     this.rootNode = rootNode;
     socket = new ServerSocket(port);
-    System.err.println("Started server on port " + port); //$NON-NLS-1$
+    logger.info("Started server on port {}", port); //$NON-NLS-1$
     start();
   }
 
@@ -61,10 +67,14 @@ public class Server extends Thread {
   }
 
   public static void main(String[] args) throws Exception {
+
+    // read the config file to get the server URL
+    ConfigFileReader config = new ConfigFileReader();
+    
     Properties p = new ArgsParser(args).getProperties();
 
-    int port = Integer.parseInt(p.getProperty("port", "5050")); //$NON-NLS-1$ //$NON-NLS-2$
-    String reportURL = p.getProperty("URL", "http://www.vassalengine.org/util/"); //$NON-NLS-1$ //$NON-NLS-2$
+    int port = Integer.parseInt(p.getProperty("port", String.valueOf(config.getServerPort()))); //$NON-NLS-1$
+    String reportURL = p.getProperty("URL", config.getServerURL() + "/util"); //$NON-NLS-1$ //$NON-NLS-2$
     if ("null".equals(reportURL)) { //$NON-NLS-1$
       reportURL = null;
     }
@@ -76,7 +86,7 @@ public class Server extends Thread {
       Socket soc = new Socket("localHost", port); //$NON-NLS-1$
       SocketHandler handler = new BufferedSocketHandler(soc, new SocketWatcher() {
         public void handleMessage(String msg) {
-          System.err.println(msg);
+          logger.error(msg);
         }
 
         public void socketClosed(SocketHandler handler) {
@@ -101,7 +111,7 @@ public class Server extends Thread {
             soc = new Socket("localHost", port); //$NON-NLS-1$
             handler = new BufferedSocketHandler(soc, new SocketWatcher() {
               public void handleMessage(String msg) {
-                System.err.println(msg);
+                logger.error(msg);
               }
 
               public void socketClosed(SocketHandler handler) {
