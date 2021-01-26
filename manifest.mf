@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Class-Path: bsh-core-2.0b4.jar cglib-2.1_3-src.jar cglib-nodep-2.1_3.jar
+ cglib-nodep-2.2.jar hamcrest-core-1.1.jar hamcrest-library-1.1.jar jmock
+ -2.5.1.jar jmock-junit3-2.5.1.jar jmock-junit4-2.5.1.jar jmock-legacy-2
+ .5.1.jar jmock-script-2.5.1.jar junit-4.7.jar mockito-all-1.8.1.jar obje
+ nesis-1.0.jar batik-anim-1.12.jar batik-awt-util-1.12.jar batik-bridge-1
+ .12.jar batik-codec-1.12.jar batik-constants-1.12.jar batik-css-1.12.jar
+ batik-dom-1.12.jar batik-ext-1.12.jar batik-extension-1.12.jar batik-gui
+ -util-1.12.jar batik-gvt-1.12.jar batik-i18n-1.12.jar batik-parser-1.12.
+ jar batik-script-1.12.jar batik-svg-dom-1.12.jar batik-svggen-1.12.jar b
+ atik-swing-1.12.jar batik-transcoder-1.12.jar batik-util-1.12.jar batik-
+ xml-1.12.jar commons-codec-1.13.jar commons-compiler-3.0.6.jar commons-i
+ o-2.6.jar commons-lang3-3.9.jar janino-3.0.6.jar java-getopt-1.0.13.jar 
+ jl1.0.1.jar logback-classic-1.2.3.jar logback-core-1.2.3.jar miglayout-c
+ ore-4.2.jar miglayout-swing-4.2ju.jar slf4j-api-1.7.30.jar smack.jar sma
+ ckx-debug.jar smackx.jar swingx-all-1.6.5-1.jar TimingFramework-1.0.jar 
+ wizard.jar xml-apis-ext-1.3.04.jar xmlgraphics-commons-2.3.jar commons-c
+ onfiguration2-2.7.jar commons-logging-1.2.jar commons-text-1.9.jar commo
+ ns-beanutils-1.9.4.jar
+Main-Class: VASSAL.launch.ModuleManager
+

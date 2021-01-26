@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry excluding="VASSAL/tools/swing/" kind="src" path="test"/>
-	<classpathentry kind="src" path="test/VASSAL/tools/swing"/>
 	<classpathentry kind="src" path="doc"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/java-11-openjdk-11.0.5-1">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
@@ -23,28 +21,28 @@
 	<classpathentry kind="lib" path="lib-nondist/jmock-legacy-2.5.1.jar"/>
 	<classpathentry kind="lib" path="lib-nondist/jmock-script-2.5.1.jar"/>
 	<classpathentry kind="lib" path="lib-nondist/junit-4.7.jar"/>
-	<classpathentry kind="lib" path="lib-nondist/mockito-core-3.3.12.jar"/>
-	<classpathentry kind="lib" path="lib-nondist/objenesis-2.6.jar"/>
-	<classpathentry kind="lib" path="lib/batik-anim-1.13.jar"/>
-	<classpathentry kind="lib" path="lib/batik-awt-util-1.13.jar"/>
-	<classpathentry kind="lib" path="lib/batik-bridge-1.13.jar"/>
-	<classpathentry kind="lib" path="lib/batik-codec-1.13.jar"/>
-	<classpathentry kind="lib" path="lib/batik-constants-1.13.jar"/>
-	<classpathentry kind="lib" path="lib/batik-css-1.13.jar"/>
-	<classpathentry kind="lib" path="lib/batik-dom-1.13.jar"/>
-	<classpathentry kind="lib" path="lib/batik-ext-1.13.jar"/>
-	<classpathentry kind="lib" path="lib/batik-extension-1.13.jar"/>
-	<classpathentry kind="lib" path="lib/batik-gui-util-1.13.jar"/>
-	<classpathentry kind="lib" path="lib/batik-gvt-1.13.jar"/>
-	<classpathentry kind="lib" path="lib/batik-i18n-1.13.jar"/>
-	<classpathentry kind="lib" path="lib/batik-parser-1.13.jar"/>
-	<classpathentry kind="lib" path="lib/batik-script-1.13.jar"/>
-	<classpathentry kind="lib" path="lib/batik-svg-dom-1.13.jar"/>
-	<classpathentry kind="lib" path="lib/batik-svggen-1.13.jar"/>
-	<classpathentry kind="lib" path="lib/batik-swing-1.13.jar"/>
-	<classpathentry kind="lib" path="lib/batik-transcoder-1.13.jar"/>
-	<classpathentry kind="lib" path="lib/batik-util-1.13.jar"/>
-	<classpathentry kind="lib" path="lib/batik-xml-1.13.jar"/>
+	<classpathentry kind="lib" path="lib-nondist/mockito-all-1.8.1.jar"/>
+	<classpathentry kind="lib" path="lib-nondist/objenesis-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/batik-anim-1.12.jar"/>
+	<classpathentry kind="lib" path="lib/batik-awt-util-1.12.jar"/>
+	<classpathentry kind="lib" path="lib/batik-bridge-1.12.jar"/>
+	<classpathentry kind="lib" path="lib/batik-codec-1.12.jar"/>
+	<classpathentry kind="lib" path="lib/batik-constants-1.12.jar"/>
+	<classpathentry kind="lib" path="lib/batik-css-1.12.jar"/>
+	<classpathentry kind="lib" path="lib/batik-dom-1.12.jar"/>
+	<classpathentry kind="lib" path="lib/batik-ext-1.12.jar"/>
+	<classpathentry kind="lib" path="lib/batik-extension-1.12.jar"/>
+	<classpathentry kind="lib" path="lib/batik-gui-util-1.12.jar"/>
+	<classpathentry kind="lib" path="lib/batik-gvt-1.12.jar"/>
+	<classpathentry kind="lib" path="lib/batik-i18n-1.12.jar"/>
+	<classpathentry kind="lib" path="lib/batik-parser-1.12.jar"/>
+	<classpathentry kind="lib" path="lib/batik-script-1.12.jar"/>
+	<classpathentry kind="lib" path="lib/batik-svg-dom-1.12.jar"/>
+	<classpathentry kind="lib" path="lib/batik-svggen-1.12.jar"/>
+	<classpathentry kind="lib" path="lib/batik-swing-1.12.jar"/>
+	<classpathentry kind="lib" path="lib/batik-transcoder-1.12.jar"/>
+	<classpathentry kind="lib" path="lib/batik-util-1.12.jar"/>
+	<classpathentry kind="lib" path="lib/batik-xml-1.12.jar"/>
 	<classpathentry kind="lib" path="lib/commons-codec-1.13.jar"/>
 	<classpathentry kind="lib" path="lib/commons-compiler-3.0.6.jar"/>
 	<classpathentry kind="lib" path="lib/commons-configuration2-2.7.jar">
